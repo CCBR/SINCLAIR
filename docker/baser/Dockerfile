@@ -52,7 +52,7 @@ RUN g++ -std=c++11 -O3 FIt-SNE/src/sptree.cpp FIt-SNE/src/tsne.cpp FIt-SNE/src/n
 
 # Github
 RUN R  --no-echo --no-restore --no-save -e 'install.packages("remotes",repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE); \
-    remotes::install_github("seurat5",version="satijalab/seurat-wrappers",update=TRUE,ask=FALSE,dependencies=TRUE)'
+    remotes::install_github("seurat5",version="satijalab/seurat",update=TRUE,ask=FALSE,dependencies=TRUE)'
 
 # Install bioconductor dependencies & suggests
 # RUN Rscript --no-echo --no-restore --no-save -e 'install.packages("BiocManager",repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE); BiocManager::install(c("multtest", "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "glmGamPoi"),repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE)'
