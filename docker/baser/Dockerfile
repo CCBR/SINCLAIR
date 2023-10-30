@@ -34,7 +34,8 @@ RUN apt-get install -y \
     git \
     libfftw3-dev \
     libgsl-dev \
-    pkg-config
+    pkg-config \
+    cmake
 
 #RUN apt-get install -y llvm-10
 
