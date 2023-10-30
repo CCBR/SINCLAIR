@@ -8,9 +8,10 @@ scRNA_handle_packages<-function(pkg_df){
     need_install <- pkg[!(pkg %in% installed.packages()[,"Package"])]
     if (length(need_install)!=0){
       print(paste0("Installing: ", pkg))
-      if (source=="bc") BiocManager::install(pkg,repos = "http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE)
+      requireNamespace("BiocManager")
+      if (source=="bc") BiocManager::install(pkg,update=TRUE,ask=FALSE,dependencies=TRUE)
       if (source=="cr") install.packages(pkg,version=version,repos = "http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE)
-      if (source=="gh") remotes::install_github(gh_name,version=version,repos = "http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE)
+      if (source=="gh") remotes::install_github(gh_name,version=version,update=TRUE,ask=FALSE,dependencies=TRUE)
     }
   }
 }
