@@ -40,7 +40,8 @@ RUN apt-get install -y \
     m4 \
     automake \
     fontconfig \
-    libfontconfig1-dev 
+    libfontconfig1-dev \
+    mypackage
 
 # Install system library for rgeos
 RUN apt-get install -y libgeos-dev
