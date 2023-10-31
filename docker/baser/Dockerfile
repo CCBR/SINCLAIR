@@ -40,8 +40,7 @@ RUN apt-get install -y \
     m4 \
     automake \
     fontconfig \
-    libfontconfig1-dev \
-    mypackage
+    libfontconfig1-dev
 
 # Install system library for rgeos
 RUN apt-get install -y libgeos-dev
@@ -58,7 +57,8 @@ RUN g++ -std=c++11 -O3 FIt-SNE/src/sptree.cpp FIt-SNE/src/tsne.cpp FIt-SNE/src/n
 # Github
 RUN R  --no-echo --no-restore --no-save -e 'install.packages("remotes",repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE); \
     remotes::install_github("satijalab/seurat",version="seurat5",update=TRUE,ask=FALSE,dependencies=TRUE); \
-    remotes::install_github("chris-mcginnis-ucsf/DoubletFinder",update=TRUE,ask=FALSE,dependencies=TRUE)'
+    remotes::install_github("chris-mcginnis-ucsf/DoubletFinder",update=TRUE,ask=FALSE,dependencies=TRUE); \
+    remotes::install_github("satijalab/seurat-wrappers",version="seurat5", update=TRUE,ask=FALSE,dependencies=TRUE)'
 
 # Install bioconductor dependencies & suggests
 # RUN Rscript --no-echo --no-restore --no-save -e 'install.packages("BiocManager",repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE); BiocManager::install(c("multtest", "S4Vectors", "SummarizedExperiment", "SingleCellExperiment", "MAST", "DESeq2", "BiocGenerics", "GenomicRanges", "IRanges", "rtracklayer", "monocle", "Biobase", "limma", "glmGamPoi"),repos="http://cran.r-project.org",update=TRUE,ask=FALSE,dependencies=TRUE)'
