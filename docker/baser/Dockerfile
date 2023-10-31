@@ -38,9 +38,9 @@ RUN apt-get install -y \
     cmake \
     libtool \
     m4 \
-    automake
-
-#RUN apt-get install -y llvm-10
+    automake \
+    fontconfig \
+    libfontconfig1-dev 
 
 # Install system library for rgeos
 RUN apt-get install -y libgeos-dev
