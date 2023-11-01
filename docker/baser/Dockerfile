@@ -93,8 +93,7 @@ RUN Rscript /opt2/install_packages_v1.0.R
 COPY Dockerfile /opt2/Dockerfile_${REPONAME}.${BUILD_TAG}
 RUN chmod a+r /opt2/Dockerfile_${REPONAME}.${BUILD_TAG}
 ENV PATH="/opt2/:$PATH"
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+RUN apt-get clean && \
     apt-get autoclean && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+    apt-get autoremove -y
 WORKDIR /data2
