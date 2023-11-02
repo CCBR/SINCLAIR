@@ -11,16 +11,15 @@ scRNA_handle_packages<-function(pkg_df){
     need_install <- pkg[!(pkg %in% installed.packages()[,"Package"])]
     if (length(need_install)!=0){
       print(paste0("Installing: ", pkg))
-      if (source=="bc") BiocManager::install(pkg)
+      if (source=="bc") BiocManager::install(pkg,ask=FALSE,update=FALSE)
       if (source=="cr") install.packages(pkg,version=version,repos = "http://cran.us.r-project.org",
-                                         local = FALSE)
-      if (source=="gh") remotes::install_github(gh_name,version=version,local = FALSE)
+                                         local = FALSE,ask=FALSE,update=FALSE)
+      if (source=="gh") remotes::install_github(gh_name,version=version,local = FALSE,update=FALSE)
     }
     
     print(paste0("Loading: ",pkg))
     invisible(lapply(pkg, library, character.only = TRUE))
   }
-  
 }
 
 ##################################################################

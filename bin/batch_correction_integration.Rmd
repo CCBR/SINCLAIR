@@ -8,19 +8,19 @@ editor_options:
 always_allow_html: true
 params:
   gid: "text"
-  mergedObj: "/data/sevillas2/scRNA_test/seurat/merge/group1-group2_seurat_merged.rds"
-  ccaObj: "/data/sevillas2/scRNA_test/batch_correct/group1-group2_batch_correction_cca.rds"
-  rpcaObj: "/data/sevillas2/scRNA_test/batch_correct/group1-group2_batch_correction_rpca.rds"
-  harmonyObj: "/data/sevillas2/scRNA_test/batch_correct/group1-group2_batch_correction_harmony.rds"
-  scviObj: "/data/sevillas2/scRNA_test/batch_correct/group1-group2_batch_correction_scvi.rds"
-  ligerObj: "/data/sevillas2/scRNA_test/batch_correct/group1-group2_batch_correction_liger.rds"
+  mergedObj: "/data/sevillas2/sinclair/dev/results/seurat/merge/group1-group2_seurat_merged.rds"
+  ccaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_cca.rds"
+  rpcaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_rpca.rds"
+  harmonyObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_harmony.rds"
+  scviObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_scvi.rds"
+  ligerObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_liger.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
   citeseq: "text"
   annot: "text"
   npcs: "20"
   Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/SINCLAIR/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/SINCLAIR/bin/scRNA_functions.R"
+  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
+  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
   testing: "Y"
 ---
 
@@ -75,7 +75,7 @@ scRNA_handle_packages(pkg_df)
 
 ```{r, processing, message=FALSE, echo=FALSE, include=FALSE}
 # read in merged objects
-so_merged_raw = readRDS(mergedObj)
+so_merged = readRDS(mergedObj)
 so_rpca = readRDS(rpcaObj)
 so_harmony = readRDS(harmonyObj)
 so_scvi = readRDS(scviObj)
@@ -84,16 +84,6 @@ so_integrated = readRDS(CCAintegratedObj)
 
 # identify object list
 objList = c("merged","rpca","integrated","harmony","scvi","liger")
-```
-
-```{r mergedObjDims, message=FALSE, echo=FALSE, include=FALSE}
-# add reduction methods to the mergedObj for plotting
-so_merged <- ScaleData(so_merged_raw, vars.to.regress = c("percent.mt", "nFeature_RNA"), assay = "RNA")
-so_merged <- RunPCA(so_merged, npcs = 50, verbose = F)
-so_merged <- RunTSNE(so_merged, reduction = "pca", dims = 1:30, perplexity = 30, max_iter = 1000,
-                   theta = 0.5, eta = 200, num_threads = 0)
-so_merged <- RunUMAP(so_merged, reduction = "pca", dims = 1:30, n.components = 2, n.neighbors = 30,
-                   n.epochs = 200, min.dist = 0.3, learning.rate = 1, spread = 1)
 ```
 
 ## DimPlots {.tabset}
