@@ -6,13 +6,14 @@ process BATCH_CORRECT_SCVI {
     tuple val(gid), path(mergedObj)
     val(species)
     val(npcs)
+    val(vars_to_regress)
     val(resolution_list)
     val(conda_path)
     val(python_path)
     val(Rlib_dir)
     path(Rpkg_config)
     path(rmd)
-    path(scRNA_functions)  
+    path(scRNA_functions)
 
     output:
     tuple val(gid), path ("*.rds")                 , emit:rds
@@ -26,6 +27,7 @@ process BATCH_CORRECT_SCVI {
             mergedObj="$mergedObj",
             species="$species",
             npcs="$npcs",
+            vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
             conda_path="$conda_path",
             python_path="$python_path",

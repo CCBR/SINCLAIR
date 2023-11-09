@@ -6,6 +6,7 @@ process BATCH_CORRECT_HARMONY {
     tuple val(gid), path(mergedObj)
     val(species)
     val(npcs)
+    val(vars_to_regress)
     val(resolution_list)
     val(Rlib_dir)
     path(Rpkg_config)
@@ -24,6 +25,7 @@ process BATCH_CORRECT_HARMONY {
             mergedObj="$mergedObj",
             species="$species",
             npcs="$npcs",
+            vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
             Rlib_dir="$Rlib_dir",
             Rpkg_config="$Rpkg_config",

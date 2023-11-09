@@ -6,10 +6,11 @@ process SEURAT_MERGE {
     tuple val(gid), path(rdsFiles)
     path(samplesheet)
     val(species)
+    val(vars_to_regress)
     val(Rlib_dir)
     path(Rpkg_config)
     path(rmd)
-    path(scRNA_functions)  
+    path(scRNA_functions)
 
     output:
     tuple val(gid), path ("*_seurat_merged.rds")                 , emit:rds
@@ -20,6 +21,7 @@ process SEURAT_MERGE {
     """
     Rscript -e 'rmarkdown::render("${rmd}",
         params=list(species="$species",
+            vars_to_regress="$vars_to_regress",
             rdsFiles="$rdsFiles",
             gid="$gid",
             samplesheet="$samplesheet",

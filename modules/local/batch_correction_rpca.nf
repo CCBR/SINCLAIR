@@ -6,6 +6,7 @@ process BATCH_CORRECT_RPCA {
     tuple val(gid), path(mergedObj)
     val(species)
     val(npcs)
+    val(vars_to_regress)
     val(resolution_list)
     val(Rlib_dir)
     path(Rpkg_config)
@@ -15,7 +16,7 @@ process BATCH_CORRECT_RPCA {
     output:
     tuple val(gid), path ("*.rds")                 , emit:rds
     tuple val(gid), path ("*.html")                 , emit:logs
-    
+
     script:
     def args = task.ext.args ?: ''
     """
@@ -24,6 +25,7 @@ process BATCH_CORRECT_RPCA {
             mergedObj="$mergedObj",
             species="$species",
             npcs="$npcs",
+            vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
             Rlib_dir="$Rlib_dir",
             Rpkg_config="$Rpkg_config",

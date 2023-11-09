@@ -10,6 +10,7 @@
 PYTHON_VERSION="python/3.9"
 NEXTFLOW_VERSION="nextflow/23.04.1"
 SINGULARITY_VERSION="singularity/3.10.5"
+CCBRPIPELINER_VERSION="ccbrpipeliner/5"
 
 set -eo pipefail
 module purge
@@ -53,7 +54,7 @@ echo "Git Commit/Tag: $GIT_COMMIT_TAG"
 ## FUNCTIONS
 ################################################
 
-function usage() { 
+function usage() {
 # This function prints generic usage of the wrapper script.
   echo "${SCRIPTBASENAME}
   --> run SINCLAIR
@@ -77,7 +78,7 @@ function usage() {
   "
 }
 
-function err() { 
+function err() {
 # This function print a error message (argument 1), the usage and then exits with non-zero status
   cat <<< "
   #
@@ -87,14 +88,14 @@ function err() {
   #
   #
   #
-  " && usage && exit 1 1>&2; 
+  " && usage && exit 1 1>&2;
 }
 
 function init() {
 # This function initializes the workdir by:
 # 1. creating the working dir
 # 2. copying essential files like config.yaml and samples.tsv into the workdir
-# 3. setting up logs and stats folders
+# 3. setting up log dir
   # create output folder
   if [ -d $WORKDIR ];then err "Folder $WORKDIR already exists!"; fi
   mkdir -p $WORKDIR
@@ -111,9 +112,8 @@ function init() {
     rsync -avz --no-perms --no-owner --no-group --progress $PIPELINE_HOME/$f $WORKDIR/
   done
 
-  #create log and stats folders
-  if [ ! -d $WORKDIR/logs ]; then mkdir -p $WORKDIR/logs;echo "Logs Dir: $WORKDIR/logs";fi
-  if [ ! -d $WORKDIR/stats ];then mkdir -p $WORKDIR/stats;echo "Stats Dir: $WORKDIR/stats";fi
+  #create log dir
+  if [ ! -d $WORKDIR/log ]; then mkdir -p $WORKDIR/log;echo "log Dir: $WORKDIR/log";fi
 
   echo
   echo "************************************************************************************************"
@@ -141,6 +141,7 @@ function runcheck(){
   check_essential_files
   module load $PYTHON_VERSION
   module load $NEXTFLOW_VERSION
+  module load $CCBRPIPELINER_VERSION
 }
 
 function runlocal() {
@@ -179,18 +180,18 @@ function runtest() {
 function preruncleanup() {
 # Cleanup function to rename/move files related to older runs to prevent overwriting them.
   # check initialization
-  check_essential_files 
+  check_essential_files
 
   cd $WORKDIR
   ## Archive previous run files
-  if [ -f ${WORKDIR}/logs/.nextflow.log ];then 
+  if [ -f ${WORKDIR}/.nextflow.log ];then
     modtime=$(stat ${WORKDIR}/.nextflow.log |grep Modify|awk '{print $2,$3}'|awk -F"." '{print $1}'|sed "s/ //g"|sed "s/-//g"|sed "s/://g")
-    mv ${WORKDIR}/logs/.nextflow.log ${WORKDIR}/stats/nextflow.${modtime}.log
+    mv ${WORKDIR}/.nextflow.log ${WORKDIR}/log/nextflow.${modtime}.log
   fi
 
   nslurmouts=$(find ${WORKDIR} -maxdepth 1 -name "slurm-*.out" |wc -l)
   if [ "$nslurmouts" != "0" ];then
-    for f in $(ls ${WORKDIR}/slurm-*.out);do mv ${f} ${WORKDIR}/logs/;done
+    for f in $(ls ${WORKDIR}/slurm-*.out);do mv ${f} ${WORKDIR}/log/;done
   fi
 
 }
@@ -223,7 +224,7 @@ function run() {
     fi
 
   elif [ "$1" == "slurm" ];then
-  
+
     preruncleanup
 
     cat > ${WORKDIR}/submit_script.sbatch << EOF
@@ -236,6 +237,7 @@ function run() {
 
     module load $PYTHON_VERSION
     module load $NEXTFLOW_VERSION
+    module load $CCBRPIPELINER_VERSION
 
     cd \$SLURM_SUBMIT_DIR
 
@@ -258,7 +260,7 @@ EOF
   # submit to sbatch
   sbatch ${WORKDIR}/submit_script.sbatch
   fi
-  
+
 }
 
 ################################################

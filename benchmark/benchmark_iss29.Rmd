@@ -7,7 +7,6 @@ editor_options:
   chunk_output_type: console
 params:
   species: "hg19"
-  vars_to_regress: "percent.mt,nFeature_RNA"
   samplesheet: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/assets/input_manifest_cellranger.csv"
   rdsFiles: "/data/sevillas2/sinclair/dev/results/seurat/preprocess/sample2_seurat_preprocess.rds /data/sevillas2/sinclair/dev/results/seurat/preprocess/sample4_seurat_preprocess.rds"
   gid: "group1-group2"
@@ -17,10 +16,9 @@ params:
   testing: "Y"
 ---
 
-```{r, prep_args,  message=FALSE, include=FALSE}
+```{r, prep_args,  message=FALSE,include=FALSE}
 # set up params
 species <- params$species
-vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
 rds_files <- strsplit(params$rdsFiles, " ")[[1]]
 gid <- params$gid
 samplesheet <- params$samplesheet
@@ -29,14 +27,9 @@ scRNA_functions <- params$scRNA_functions
 Rlib_dir <- params$Rlib_dir
 Rpkg_config <- params$Rpkg_config
 testing <- params$testing
-
-print("These variables are used:")
-print(paste0("species:", species))
-print(paste0("vars_to_regress_list:", vars_to_regress_list))
-print(paste0("gid:", gid))
 ```
 
-```{r, handle_pkg, message=FALSE, include=FALSE}
+```{r, handle_pkg, message=FALSE,include=FALSE}
 # set library dir, load this and remove any other dirs to avoid confusion
 # between personally created pkgs and the pipeline package
 ## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
@@ -81,7 +74,7 @@ source(scRNA_functions)
 options(future.globals.maxSize = 1e12)
 ```
 
-```{r, processing, message=FALSE}
+```{r, processing, message=FALSE,include=FALSE}
 # print group info
 print(paste0("This merged object includes groups: ", gid))
 
@@ -109,7 +102,7 @@ for (p in readObj) {
 }
 ```
 
-```{r merge_objs, message=FALSE}
+```{r merge_objs, message=FALSE,include=FALSE}
 # create ref list
 reference.list <- combinedObj.list[unlist(readObj)]
 
@@ -124,28 +117,43 @@ combinedObj.integratedRNA <- merge(reference.list[[1]], reference.list[2:length(
 VariableFeatures(combinedObj.integratedRNA) <- selectFeatures
 ```
 
-```{r mergedObjDims, message=FALSE, echo=FALSE, include=FALSE}
-# use variables to regress, if provided by user
-if (length(vars_to_regress_list) > 0) {
-  so_merged <- SCTransform(combinedObj.integratedRNA, vars.to.regress = vars_to_regress_list, assay = "RNA")
-} else {
-  so_merged <- SCTransform(combinedObj.integratedRNA, assay = "RNA")
-}
-# add reduction methods to the mergedObj for plotting
-so_merged <- RunPCA(combinedObj.integratedRNA, npcs = 50, verbose = F)
-so_merged <- RunTSNE(so_merged,
-  reduction = "pca", dims = 1:30, perplexity = 30, max_iter = 1000,
-  theta = 0.5, eta = 200, num_threads = 0
-)
-so_merged <- RunUMAP(so_merged,
-  reduction = "pca", dims = 1:30, n.components = 2, n.neighbors = 30,
-  n.epochs = 200, min.dist = 0.3, learning.rate = 1, spread = 1
-)
-```
+# Benchmark
+## Merged Object
+| ID | variables_to_include |
+| ---| --- |
+| test1 | None |
+| test2 | percent.mt, nfeatureRNA |
+| test 3 | S.Score, G2M.Score, percent.mt, nfeatureRNA, nCount_RNA |
 
-```{r}
-# save RDS files
-so_merged
-fpath <- paste0(gid, "_seurat_merged.rds")
-saveRDS(so_merged, fpath)
+```{r mergedObjDims, message=FALSE, echo=FALSE, warning=FALSE}
+library(patchwork)
+library(ggpubr)
+v_all <- c("percent.mt", "nFeature_RNA", "S.Score", "G2M.Score", "nCount_RNA")
+v_some <- c("percent.mt", "nFeature_RNA", "nCount_RNA")
+
+# test 1-3
+t1 <- SCTransform(combinedObj.integratedRNA, assay = "RNA")
+t2 <- SCTransform(combinedObj.integratedRNA, vars.to.regress = v_some, assay = "RNA")
+t3 <- SCTransform(combinedObj.integratedRNA, vars.to.regress = v_all, assay = "RNA")
+
+run_plots <- function(obj_in, variable_in, title_in) {
+  p1 <- VlnPlot(object = obj_in, features = variable_in, split.by = "annot", stack = TRUE)
+  pf <- p1 + plot_annotation(title = title_in)
+  return(pf)
+}
+p1 <- run_plots(t1, v_all, "Test 1")
+p2 <- run_plots(t2, v_all, "Test 2")
+p3 <- run_plots(t3, v_all, "Test 3")
+ggarrange(p1, p2, p3)
+
+run_feat <- function(obj_in, variable_in, title_in) {
+  obj_in <- RunPCA(obj_in, npcs = 50, verbose = F)
+  p1 <- FeaturePlot(object = obj_in, features = variable_in, cols = c("grey", "blue"), reduction = "pca")
+  pf <- p1 + plot_annotation(title = title_in)
+  return(pf)
+}
+p1 <- run_feat(t1, v_all, "Test 1")
+p2 <- run_feat(t2, v_all, "Test 2")
+p3 <- run_feat(t3, v_all, "Test 3")
+ggarrange(p1, p2, p3)
 ```
