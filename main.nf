@@ -55,15 +55,15 @@ workflow.onComplete {
         }
     }
 }
-workflow.onError {
-    if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-        println "Running spooker (failed)"
-        def message = Utils.spooker(workflow)
-        if (message) {
-            println message
-        }
-    }
-}
+// workflow.onError {
+//     if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+//         println "Running spooker (failed)"
+//         def message = Utils.spooker(workflow)
+//         if (message) {
+//             println message
+//         }
+//     }
+// }
 
 /*
 ===================================================================

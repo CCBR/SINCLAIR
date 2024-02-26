@@ -66,123 +66,123 @@ workflow GEX_EXQC {
             params.script_functions
         )
 
-        // creates metadata
-        // creates tuple of group_id_key: all RDS files from INPUT_CHECK_GEX
-        // which matches those samples:
-        //     example: INPUT_CHECK_GEX.out.group_samplesheet; SEURAT_SINGLE.out.rds
-        //     example: sample1:group1_group2; sample1:sample1.rds
-        //     example: sample1:group1_group2_group3; sample1:sample1.rds
-        //     example: sample2:group1_group2; sample2:sample2.rds
-        // output: group1_group2: [sample1.rds,sample2.rds]
-        // output: group1_group2_group3: [sample1.rds]
-        ch_groups = group_samplesheet
-            .splitCsv( header:true, sep:',', strip:true )
-            .map { row ->
-                    def key = row["keyid"]
-                    def sample = row["sampleid"]
-                    return [sample, key]
-                }
-            .combine(SEURAT_PREPROCESS.out.rds, by: 0)
-            .map { sample, key, rds_file -> tuple( key, rds_file ) }
-            .groupTuple()
+    //     // creates metadata
+    //     // creates tuple of group_id_key: all RDS files from INPUT_CHECK_GEX
+    //     // which matches those samples:
+    //     //     example: INPUT_CHECK_GEX.out.group_samplesheet; SEURAT_SINGLE.out.rds
+    //     //     example: sample1:group1_group2; sample1:sample1.rds
+    //     //     example: sample1:group1_group2_group3; sample1:sample1.rds
+    //     //     example: sample2:group1_group2; sample2:sample2.rds
+    //     // output: group1_group2: [sample1.rds,sample2.rds]
+    //     // output: group1_group2_group3: [sample1.rds]
+    //     ch_groups = group_samplesheet
+    //         .splitCsv( header:true, sep:',', strip:true )
+    //         .map { row ->
+    //                 def key = row["keyid"]
+    //                 def sample = row["sampleid"]
+    //                 return [sample, key]
+    //             }
+    //         .combine(SEURAT_PREPROCESS.out.rds, by: 0)
+    //         .map { sample, key, rds_file -> tuple( key, rds_file ) }
+    //         .groupTuple()
 
-        SEURAT_MERGE (
-            ch_groups,
-            ch_input,
-            params.species,
-            params.vars_to_regress,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_merge,
-            params.script_functions
-        )
+    //     SEURAT_MERGE (
+    //         ch_groups,
+    //         ch_input,
+    //         params.species,
+    //         params.vars_to_regress,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_merge,
+    //         params.script_functions
+    //     )
 
-        // Run batch corrections
-        BATCH_CORRECT_HARMONY (
-            SEURAT_MERGE.out.rds,
-            params.species,
-            params.npcs,
-            params.vars_to_regress,
-            params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_bc_harmony,
-            params.script_functions
-        )
+    //     // Run batch corrections
+    //     BATCH_CORRECT_HARMONY (
+    //         SEURAT_MERGE.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.vars_to_regress,
+    //         params.resolution_list,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_bc_harmony,
+    //         params.script_functions
+    //     )
 
-        // Run batch corrections
-        BATCH_CORRECT_RPCA (
-            SEURAT_MERGE.out.rds,
-            params.species,
-            params.npcs,
-            params.vars_to_regress,
-            params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_bc_rpca,
-            params.script_functions
-        )
+    //     // Run batch corrections
+    //     BATCH_CORRECT_RPCA (
+    //         SEURAT_MERGE.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.vars_to_regress,
+    //         params.resolution_list,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_bc_rpca,
+    //         params.script_functions
+    //     )
 
-        // Run batch corrections
-        BATCH_CORRECT_CCA (
-            SEURAT_MERGE.out.rds,
-            params.species,
-            params.npcs,
-            params.vars_to_regress,
-            params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_bc_cca,
-            params.script_functions
-        )
+    //     // Run batch corrections
+    //     BATCH_CORRECT_CCA (
+    //         SEURAT_MERGE.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.vars_to_regress,
+    //         params.resolution_list,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_bc_cca,
+    //         params.script_functions
+    //     )
 
-        // Run batch corrections
-        BATCH_CORRECT_SCVI (
-            SEURAT_MERGE.out.rds,
-            params.species,
-            params.npcs,
-            params.vars_to_regress,
-            params.resolution_list,
-            params.conda_path,
-            params.python_path,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_scvi,
-            params.script_functions
-        )
+    //     // Run batch corrections
+    //     BATCH_CORRECT_SCVI (
+    //         SEURAT_MERGE.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.vars_to_regress,
+    //         params.resolution_list,
+    //         params.conda_path,
+    //         params.python_path,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_scvi,
+    //         params.script_functions
+    //     )
 
-        // Run batch corrections
-        BATCH_CORRECT_LIGER (
-            SEURAT_MERGE.out.rds,
-            params.species,
-            params.npcs,
-            params.vars_to_regress,
-            params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_liger,
-            params.script_functions
-        )
+    //     // Run batch corrections
+    //     BATCH_CORRECT_LIGER (
+    //         SEURAT_MERGE.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.vars_to_regress,
+    //         params.resolution_list,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_liger,
+    //         params.script_functions
+    //     )
 
-        // Integrate batch corrections
-        BATCH_CORRECT_INTEGRATION (
-            SEURAT_MERGE.out.rds,
-            BATCH_CORRECT_HARMONY.out.rds,
-            BATCH_CORRECT_RPCA.out.rds,
-            BATCH_CORRECT_CCA.out.rds,
-            BATCH_CORRECT_SCVI.out.rds,
-            BATCH_CORRECT_LIGER.out.rds,
-            params.species,
-            params.npcs,
-            params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_bc_integration,
-            params.script_functions
-        )
+    //     // Integrate batch corrections
+    //     BATCH_CORRECT_INTEGRATION (
+    //         SEURAT_MERGE.out.rds,
+    //         BATCH_CORRECT_HARMONY.out.rds,
+    //         BATCH_CORRECT_RPCA.out.rds,
+    //         BATCH_CORRECT_CCA.out.rds,
+    //         BATCH_CORRECT_SCVI.out.rds,
+    //         BATCH_CORRECT_LIGER.out.rds,
+    //         params.species,
+    //         params.npcs,
+    //         params.resolution_list,
+    //         params.Rlib_dir,
+    //         params.Rpkg,
+    //         params.script_bc_integration,
+    //         params.script_functions
+    //     )
 
-    emit:
-        harmony_rds         = BATCH_CORRECT_HARMONY.out.rds
-        rpca_rds            = BATCH_CORRECT_RPCA.out.rds
-        cca_rds             = BATCH_CORRECT_CCA.out.rds
+    // emit:
+    //     harmony_rds         = BATCH_CORRECT_HARMONY.out.rds
+    //     rpca_rds            = BATCH_CORRECT_RPCA.out.rds
+    //     cca_rds             = BATCH_CORRECT_CCA.out.rds
 }

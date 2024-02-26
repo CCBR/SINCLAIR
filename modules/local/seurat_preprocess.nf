@@ -2,6 +2,8 @@ process SEURAT_PREPROCESS {
     tag "${id}"
     label 'process_medium'
 
+    container "${params.containers.baser}"
+
     input:
     tuple val(id), val(inDir)
     path(h5)
@@ -23,7 +25,7 @@ process SEURAT_PREPROCESS {
     output:
     tuple val(id), path ("*.rds")                 , emit:rds
     tuple val(id), path ("*.pdf")                 , emit:logs
-    
+
     script:
     def args = task.ext.args ?: ''
     """
