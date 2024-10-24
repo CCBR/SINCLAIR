@@ -15,6 +15,7 @@ dependencies:
   - r-base=4
   - r-essentials
   - r-future.apply
+  - r-liger=1
   - r-presto
   - r-remotes
   - r-reticulate
