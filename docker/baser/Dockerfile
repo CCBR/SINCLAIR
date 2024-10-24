@@ -12,7 +12,7 @@ ENV REPONAME=${REPONAME}
 COPY install_packages_v1.0.R /opt2
 COPY Rpack_v1.0.yml /opt2
 WORKDIR /opt2
-RUN Rscript install_packages_v1.0.R
+RUN Rscript /opt2/install_packages_v1.0.R
 
 # cleanup etc
 # Save Dockerfile in the docker
