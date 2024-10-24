@@ -47,7 +47,7 @@ jobs:
             -stub \
             -profile docker,ci_stub \
             -entry GEX \
-            --input ../test_dir/gex_samplesheet.csv \
+            --input ../tests/test_dir/gex_samplesheet.csv \
             --contrast ../assets/contrast_manifest.csv
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v3
