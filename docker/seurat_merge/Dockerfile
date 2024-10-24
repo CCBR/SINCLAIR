@@ -13,7 +13,6 @@ ENV GITHUB_PAT=${GITHUB_PAT}
 # R, python, and other packages available in conda should be installed with mamba here.
 # Specify all dependencies in environment.yml
 COPY environment.yml /data2/
-COPY install.R /data2/
 ENV CONDA_ENV=merge
 RUN mamba env create -n ${CONDA_ENV} -f /data2/environment.yml && \
     echo "conda activate ${CONDA_ENV}" > ~/.bashrc
