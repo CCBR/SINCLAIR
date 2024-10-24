@@ -11,7 +11,7 @@ dependencies:
   - bioconductor-orthology.eg.db
   - bioconductor-scrnaseq
   - bioconductor-singlecellexperiment
-  - bioconductor-singler=2.2
+  - bioconductor-singler=2
   - r-base=4
   - r-essentials
   - r-future.apply
@@ -19,6 +19,6 @@ dependencies:
   - r-remotes
   - r-reticulate
   - r-seurat=5.1
-  - r-signac=1.14
+  - r-signac=1
   - r-tidyverse
   - scvi-tools=1.2
