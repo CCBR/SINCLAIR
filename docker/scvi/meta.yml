@@ -1,4 +1,4 @@
 dockerhub_namespace: nciccbr
-image_name: sinclair_scvi_1.0
+image_name: sinclair_scvi
 version: 0.1.0
 container: "$(dockerhub_namespace)/$(image_name):$(version)"

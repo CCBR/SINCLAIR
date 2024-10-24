@@ -1,4 +1,4 @@
-FROM nciccbr/ccbr_ubuntu_base_20.04:v5
+FROM nciccbr/ccbr_ubuntu_base_20.04:v7
 
 # build time variables
 ARG BUILD_DATE="000000"
@@ -8,27 +8,15 @@ ENV BUILD_TAG=${BUILD_TAG}
 ARG REPONAME="000000"
 ENV REPONAME=${REPONAME}
 
-# install miniconda
-ENV CONDA_DIR /opt2/conda
-WORKDIR /opt2
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /opt2/miniconda.sh && \
-  /bin/bash /opt2/miniconda.sh -b -p /opt2/conda
-ENV PATH=$CONDA_DIR/bin:$PATH
-
-# install environment
-RUN conda create -n scvi python=3.9
-RUN . /opt2/conda/etc/profile.d/conda.sh && \
-  conda activate scvi && \
-  cconda install scvi-tools -c conda-forge
-RUN . /opt2/conda/etc/profile.d/conda.sh && \
-  conda activate scvi && \
-  conda install -c conda-forge r-base r-essentials r-reticulate
-WORKDIR /opt2
-
-# create wrapper for scvi conda env
-COPY scvi /opt2
-RUN chmod a+x /opt2/scvi
-ENV PATH=/opt2:$PATH
+# R, python, and other packages available in conda should be installed with mamba here.
+# Specify all dependencies in environment.yml
+COPY environment.yml /data2/
+COPY install.R /data2/
+ENV CONDA_ENV=scvi
+RUN mamba env create -n ${CONDA_ENV} -f /data2/environment.yml && \
+    echo "conda activate ${CONDA_ENV}" > ~/.bashrc
+ENV PATH="/opt2/conda/envs/${CONDA_ENV}/bin:$PATH"
+RUN Rscript install.R
 
 # cleanup etc
 # Save Dockerfile in the docker
