@@ -46,3 +46,4 @@ jobs:
             BUILD_DATE=${{ steps.vars.outputs.DATE }}
             BUILD_TAG=${{ steps.metadata.outputs['version'] }}
             REPONAME=${{ steps.metadata.outputs['image_name'] }}
+            GITHUB_PAT=${{ github.token }}
