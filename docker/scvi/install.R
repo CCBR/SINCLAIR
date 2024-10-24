@@ -1,3 +1,3 @@
-setRepositories(ind = 1:3, addURLs = c("https://satijalab.r-universe.dev", "https://bnprks.r-universe.dev/"))
-install.packages(c("BPCells", "glmGamPoi", "Signac"))
+setRepositories(ind = 1:3)
 remotes::install_github("satijalab/seurat-wrappers")
+remotes::intall_cran("BPCells", repos = c("https://bnprks.r-universe.dev"))
