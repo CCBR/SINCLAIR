@@ -1,14 +1,14 @@
 ---
 title: "scRNA Notebook"
-output: 
-  pdf_document: 
+output:
+  pdf_document:
     toc: yes
-editor_options: 
+editor_options:
   chunk_output_type: console
 params:
   species: "hg19"
   sampleid: "WB_Lysis_1"
-  h5: "/data/sevillas2/scRNA_test/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  h5: "cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
   qc_filtering: "manual"
   nCount_RNA_max: 500000
   nCount_RNA_min: 1000
@@ -18,95 +18,50 @@ params:
   percent_mt_min: 0
   run_doublet_finder: "N"
   npcs: 30
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  scRNA_functions: "bin/scRNA_functions.R"
   testing: "N"
 ---
 
 ```{r, prep_args, message=FALSE}
 # set up params
-species= params$species
-sampleid = params$sampleid
-h5 = params$h5
+species <- params$species
+sampleid <- params$sampleid
+h5 <- params$h5
 
-qc_filtering = params$qc_filtering  # manual, miqc, mads
-nCount_RNA_max = as.numeric(params$nCount_RNA_max)
-nCount_RNA_min = as.numeric(params$nCount_RNA_min)
-nFeature_RNA_max = as.numeric(params$nFeature_RNA_max)
-nFeature_RNA_min = as.numeric(params$nFeature_RNA_min)
-percent_mt_max = as.numeric(params$percent_mt_max)
-percent_mt_min = as.numeric(params$percent_mt_min)
-run_doublet_finder = params$run_doublet_finder #Y, N
-npcs_val = as.numeric(params$npcs)
+qc_filtering <- params$qc_filtering # manual, miqc, mads
+nCount_RNA_max <- as.numeric(params$nCount_RNA_max)
+nCount_RNA_min <- as.numeric(params$nCount_RNA_min)
+nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
+nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
+percent_mt_max <- as.numeric(params$percent_mt_max)
+percent_mt_min <- as.numeric(params$percent_mt_min)
+run_doublet_finder <- params$run_doublet_finder # Y, N
+npcs_val <- as.numeric(params$npcs)
+testing <- params$testing
 
-Rlib_dir=params$Rlib_dir
-Rpkg_config=params$Rpkg_config
-scRNA_functions = params$scRNA_functions
-
-testing = params$testing
-```
-
-```{r, handle_pkg, message=FALSE}
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ",Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-.libPaths()
-
-# read in package info
-pkg_df=read.csv(Rpkg_config)
-pkg_df=subset(pkg_df,preprocess=="Y")
-pkg_df
-
-# for each package check installation, if present then load library
-for (rowid in rownames(pkg_df)){
-  pkg=pkg_df[rowid,"package"]
-  source=pkg_df[rowid,"source"]
-  version=pkg_df[rowid,"version"]
-  gh_name=pkg_df[rowid,"gh_name"]
-
-  need_install <- pkg[!(pkg %in% installed.packages()[,"Package"])]
-  if (length(need_install)!=0){
-    print(paste0("Installing: ", pkg))
-    if (source=="bc") BiocManager::install(pkg)
-    if (source=="cr") install.packages(pkg,version=version,repos = "http://cran.us.r-project.org",
-                                       local = FALSE)
-    if (source=="gh") remotes::install_github(gh_name,version=version,local = FALSE)
-  }
-
-  print(paste0("Loading: ",pkg))
-  invisible(lapply(pkg, library, character.only = TRUE))
-}
-
-# source functions
-source(scRNA_functions)
-
-# additional options
-#tinytex::install_tinytex(force = TRUE)
+source(params$scRNA_functions)
 ```
 
 ```{r, pre-processing, message=FALSE}
 # read in h5 file
-rnaCounts = Read10X_h5(h5)
+rnaCounts <- Read10X_h5(h5)
 
 # create S object
-if (testing=="Y"){
-  pbmc.data=Read10X(data.dir="/data/CCBR_Pipeliner/testdata/SINCLAIR/data_storage/10xFQ/filtered_gene_bc_matrices/hg19/")
-  so = CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+if (testing == "Y") {
+  pbmc.data <- Read10X(data.dir = "/data/CCBR_Pipeliner/testdata/SINCLAIR/data_storage/10xFQ/filtered_gene_bc_matrices/hg19/")
+  so <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
 } else {
-  so <- CreateSeuratObject(counts=rnaCounts)
+  so <- CreateSeuratObject(counts = rnaCounts)
 }
 so
 
 # add metadata
-so$Sample = sampleid
+so$Sample <- sampleid
 
 # determine percent mito
 ## http://htmlpreview.github.io/?https://github.com/satijalab/seurat-wrappers/blob/master/docs/miQC.html
-so[["percent.mt"]] = PercentageFeatureSet(so, pattern = "^mt-|^MT-")
-so[["percent.RP"]] = PercentageFeatureSet(so, pattern = "^R[PL,pl]|R[PS,ps]")
+so[["percent.mt"]] <- PercentageFeatureSet(so, pattern = "^mt-|^MT-")
+so[["percent.RP"]] <- PercentageFeatureSet(so, pattern = "^R[PL,pl]|R[PS,ps]")
 FeatureScatter(so, feature1 = "nFeature_RNA", feature2 = "percent.mt")
 
 VlnPlot(so, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
@@ -114,61 +69,65 @@ VlnPlot(so, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 
 ```{r, QC, message=FALSE}
 # subset
-so_filt = subset(so, subset = nFeature_RNA > 200)
+so_filt <- subset(so, subset = nFeature_RNA > 200)
 so_filt
 
-# run QC, subset for features meeting critera
-so_qc <- RunMiQC(so_filt, 
-              percent.mt = "percent.mt",
-              nFeature_RNA = "nFeature_RNA", 
-              posterior.cutoff = 0.7,
-              model.slot = "flexmix_model")
-#PlotMiQC(so_qc, color.by = "miQC.probability") + 
-  #ggplot2::scale_color_gradient(low = "grey", high = "purple")
+# run QC, subset for features meeting criteria
+so_qc <- RunMiQC(so_filt,
+  percent.mt = "percent.mt",
+  nFeature_RNA = "nFeature_RNA",
+  posterior.cutoff = 0.7,
+  model.slot = "flexmix_model"
+)
+# PlotMiQC(so_qc, color.by = "miQC.probability") +
+# ggplot2::scale_color_gradient(low = "grey", high = "purple")
 ```
 
 ```{r qc2, message=FALSE}
 # define feature info
-nCount_out = outliers_mad(so_qc$nCount_RNA,threshold = 3)$LL_CI_MAD
-nFeature_out = outliers_mad(so_qc$nFeature_RNA,threshold = 3)$LL_CI_MAD
-mt_out = outliers_mad(so_qc$percent.mt,threshold = 3)$UL_CI_MAD
+nCount_out <- outliers_mad(so_qc$nCount_RNA, threshold = 3)$LL_CI_MAD
+nFeature_out <- outliers_mad(so_qc$nFeature_RNA, threshold = 3)$LL_CI_MAD
+mt_out <- outliers_mad(so_qc$percent.mt, threshold = 3)$UL_CI_MAD
 
 # perform QC dependent on user choice
-if(qc_filtering == "manual") {
-  so_qc_select =  subset(so_qc,
-  nCount_RNA_max >= nCount_RNA & nCount_RNA >= nCount_RNA_min & 
-  nFeature_RNA_max >= nFeature_RNA & nFeature_RNA >= nFeature_RNA_min & 
-  percent_mt_max >= percent.mt & percent.mt >= percent_mt_min)
+if (qc_filtering == "manual") {
+  so_qc_select <- subset(
+    so_qc,
+    nCount_RNA_max >= nCount_RNA & nCount_RNA >= nCount_RNA_min &
+      nFeature_RNA_max >= nFeature_RNA & nFeature_RNA >= nFeature_RNA_min &
+      percent_mt_max >= percent.mt & percent.mt >= percent_mt_min
+  )
 } else if (qc_filtering == "miqc") {
-  so_qc_select = subset(so_qc, miQC.keep == "keep")
-} else if(qc_filtering == "mads") {
-  so_qc_select = subset(so_qc, 
-  subset = nFeature_RNA > nFeature_out & 
-  nCount_RNA > nCount_out & 
-  percent.mt < mt_out)
+  so_qc_select <- subset(so_qc, miQC.keep == "keep")
+} else if (qc_filtering == "mads") {
+  so_qc_select <- subset(so_qc,
+    subset = nFeature_RNA > nFeature_out &
+      nCount_RNA > nCount_out &
+      percent.mt < mt_out
+  )
 }
 so_qc_select
 
 VlnPlot(so_qc_select, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 
 # Process data
-so_processed = MAIN_PROCESS_SO(so_qc_select, species, npcs_val)
+so_processed <- MAIN_PROCESS_SO(so_qc_select, species, npcs_val)
 
 # Label data
-so_labeled = MAIN_SINGLER(so_processed,species)
+so_labeled <- MAIN_SINGLER(so_processed, species)
 
 # ID doublets
-so_doublet = MAIN_DOUBLETS(so_labeled, run_doublet_finder)
+so_doublet <- MAIN_DOUBLETS(so_labeled, run_doublet_finder)
 ```
 
 ```{r, save, message=FALSE}
 # clean final object
-so_output = UpdateSeuratObject(so_doublet)
+so_output <- UpdateSeuratObject(so_doublet)
 so_output
 
-VlnPlot(so_output, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3, group.by="Sample")
+VlnPlot(so_output, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3, group.by = "Sample")
 
-#save file
-fpath=paste0(sampleid,"_seurat_preprocess.rds")
-saveRDS(so_output,fpath)
+# save file
+fpath <- paste0(sampleid, "_seurat_preprocess.rds")
+saveRDS(so_output, fpath)
 ```
