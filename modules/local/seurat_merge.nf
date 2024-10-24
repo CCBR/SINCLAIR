@@ -2,6 +2,8 @@ process SEURAT_MERGE {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.seurat_merge}"
+
     input:
     tuple val(gid), path(rdsFiles)
     path(samplesheet)
@@ -22,7 +24,7 @@ process SEURAT_MERGE {
     """
     Rscript -e 'rmarkdown::render("${rmd}",
         params=list(species="$species",
-            npcs="$npcs",  
+            npcs="$npcs",
             vars_to_regress="$vars_to_regress",
             rdsFiles="$rdsFiles",
             gid="$gid",

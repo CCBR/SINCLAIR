@@ -1,4 +1,4 @@
-name: scvi
+name: harmony
 channels:
   - conda-forge
   - bioconda
