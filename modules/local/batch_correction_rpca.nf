@@ -2,6 +2,8 @@ process BATCH_CORRECT_RPCA {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.harmony}"
+
     input:
     tuple val(gid), path(mergedObj)
     val(species)
