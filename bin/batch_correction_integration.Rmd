@@ -2,86 +2,64 @@
 title: "Batch Correction Analysis"
 author: "CCBR"
 date: '`r format(Sys.time(), "%a %b %d %Y - %X")`'
-output: html_document
-editor_options: 
+output:
+  html_document:
+    self_contained: true
+editor_options:
   chunk_output_type: console
 always_allow_html: true
 params:
   gid: "text"
-  mergedObj: "/data/sevillas2/sinclair/dev/results/seurat/merge/group1-group2_seurat_merged.rds"
-  ccaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_cca.rds"
-  rpcaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_rpca.rds"
-  harmonyObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_harmony.rds"
-  scviObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_scvi.rds"
-  ligerObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_liger.rds"
+  mergedObj: "results/seurat/merge/group1-group2_seurat_merged.rds"
+  ccaObj: "results/batch_correct/group1-group2_batch_correction_cca.rds"
+  rpcaObj: "results/batch_correct/group1-group2_batch_correction_rpca.rds"
+  harmonyObj: "results/batch_correct/group1-group2_batch_correction_harmony.rds"
+  scviObj: "results/batch_correct/group1-group2_batch_correction_scvi.rds"
+  ligerObj: "results/batch_correct/group1-group2_batch_correction_liger.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
   citeseq: "text"
   annot: "text"
-  npcs: "20"
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  npcs: 20
+  scRNA_functions: "bin/scRNA_functions.R"
   testing: "Y"
 ---
 
 ```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
 # set up params
-#species= params$species
-gid = params$gid
-mergedObj=params$mergedObj
-CCAintegratedObj=params$ccaObj
-rpcaObj=params$rpcaObj
-harmonyObj=params$harmonyObj
-scviObj=params$scviObj
-ligerObj=params$ligerObj
+# species= params$species
+gid <- params$gid
+mergedObj <- params$mergedObj
+CCAintegratedObj <- params$ccaObj
+rpcaObj <- params$rpcaObj
+harmonyObj <- params$harmonyObj
+scviObj <- params$scviObj
+ligerObj <- params$ligerObj
 
-resolution=as.numeric(strsplit(params$resolution_list,",")[[1]])
-npcs=as.numeric(params$npcs)
+resolution <- as.numeric(strsplit(params$resolution_list, ",")[[1]])
+npcs <- as.numeric(params$npcs)
 
-citeseq=params$citeseq
-annot=params$annot
+citeseq <- params$citeseq
+annot <- params$annot
 
-Rlib_dir=params$Rlib_dir
-Rpkg_config=params$Rpkg_config
-scRNA_functions = params$scRNA_functions
+source(params$scRNA_functions)
 
 # create tmp image directory
-tmp_images="tmp_images"
-unlink(tmp_images,recursive = TRUE)
+tmp_images <- "tmp_images"
+unlink(tmp_images, recursive = TRUE)
 dir.create(file.path("tmp_images"), showWarnings = FALSE)
-```
-
-```{r, handle_pkg, message=FALSE, echo=FALSE, include=FALSE}
-# source functions
-source(scRNA_functions)
-
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ",Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-.libPaths()
-
-# read in package info
-pkg_df=read.csv(Rpkg_config)
-pkg_df=subset(pkg_df,int=="Y")
-pkg_df
-
-# for each package check installation, if present then load library
-scRNA_handle_packages(pkg_df)
 ```
 
 ```{r, processing, message=FALSE, echo=FALSE, include=FALSE}
 # read in merged objects
-so_merged = readRDS(mergedObj)
-so_rpca = readRDS(rpcaObj)
-so_harmony = readRDS(harmonyObj)
-so_scvi = readRDS(scviObj)
-so_liger=readRDS(ligerObj)
-so_integrated = readRDS(CCAintegratedObj)
+so_merged <- readRDS(mergedObj)
+so_rpca <- readRDS(rpcaObj)
+so_harmony <- readRDS(harmonyObj)
+so_scvi <- readRDS(scviObj)
+so_liger <- readRDS(ligerObj)
+so_integrated <- readRDS(CCAintegratedObj)
 
 # identify object list
-objList = c("merged","rpca","integrated","harmony","scvi","liger")
+objList <- c("merged", "rpca", "integrated", "harmony", "scvi", "liger")
 ```
 
 ## DimPlots {.tabset}
@@ -89,272 +67,306 @@ objList = c("merged","rpca","integrated","harmony","scvi","liger")
 ### Samples
 
 ```{r sampleBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
-# plot 
-for(i in 1:length(objList)){
-  obj = OBJECT_SELECT(objList[i])
-  title = NAME_SELECT(objList[i])
-  sampleImage = DimPlot(obj,group.by="Sample",pt.size = 0.01) +
-    ggtitle(title)+
-    theme(legend.position="bottom",
-          legend.text=element_text(size=12))+
-    guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("s",i),value=sampleImage)
+# plot
+for (i in 1:length(objList)) {
+  obj <- OBJECT_SELECT(objList[i])
+  title <- NAME_SELECT(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "Sample", pt.size = 0.01) +
+    ggtitle(title) +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = 12)
+    ) +
+    guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
+  assign(x = paste0("s", i), value = sampleImage)
 }
-p = ggarrange(s1,s2,s3,s4,s5,s6,
-          ncol=3,nrow=2,
-          common.legend=T,
-          legend="bottom")
+p <- ggarrange(s1, s2, s3, s4, s5, s6,
+  ncol = 3, nrow = 2,
+  common.legend = T,
+  legend = "bottom"
+)
 
 annotate_figure(p,
-                top = text_grob("Batch Correction Methods\n by Sample",
-color = "red", face = "bold", size = 14))
+  top = text_grob("Batch Correction Methods\n by Sample",
+    color = "red", face = "bold", size = 14
+  )
+)
 ```
 
 ### Groups
 
 ```{r groupBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
-for(i in 1:length(objList)){
-  obj = OBJECT_SELECT(objList[i])
-  title = NAME_SELECT(objList[i])
-  sampleImage = DimPlot(obj,group.by="Group",raster=F, pt.size= 0.001) +
-    ggtitle(title)+
-    theme(legend.position="bottom",legend.text=element_text(size=12))+
-    guides(colour=guide_legend(override.aes = list(size=3)))
-  assign(x=paste0("g",i),value=sampleImage)
+for (i in 1:length(objList)) {
+  obj <- OBJECT_SELECT(objList[i])
+  title <- NAME_SELECT(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "Group", raster = F, pt.size = 0.001) +
+    ggtitle(title) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12)) +
+    guides(colour = guide_legend(override.aes = list(size = 3)))
+  assign(x = paste0("g", i), value = sampleImage)
 }
-p = ggarrange(g1,g2,g3,g4,g5,g6,
-          ncol=3,nrow=2,
-          common.legend=T,
-          legend="bottom")
+p <- ggarrange(g1, g2, g3, g4, g5, g6,
+  ncol = 3, nrow = 2,
+  common.legend = T,
+  legend = "bottom"
+)
 
 annotate_figure(p,
-                top = text_grob("Batch Correction Methods\n by Groups",
-                                color = "red", face = "bold", size = 14))
+  top = text_grob("Batch Correction Methods\n by Groups",
+    color = "red", face = "bold", size = 14
+  )
+)
 ```
 
 ### Cell type annotations
 
 ```{r annotationBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
-for(i in 1:length(objList)){
-  obj = OBJECT_SELECT(objList[i])
-  title = NAME_SELECT(objList[i])
-  sampleImage = DimPlot(obj,group.by="annot") +
-    ggtitle(title)+
-    theme(legend.position="bottom",legend.text=element_text(size=12))+
-    guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("c",i),value=sampleImage)
+for (i in 1:length(objList)) {
+  obj <- OBJECT_SELECT(objList[i])
+  title <- NAME_SELECT(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "annot") +
+    ggtitle(title) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12)) +
+    guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
+  assign(x = paste0("c", i), value = sampleImage)
 }
-p = ggarrange(c1,c2,c3,c4,c5,c6,
-          ncol=3,nrow=2,
-          common.legend=T,legend="bottom")
+p <- ggarrange(c1, c2, c3, c4, c5, c6,
+  ncol = 3, nrow = 2,
+  common.legend = T, legend = "bottom"
+)
 
 annotate_figure(p,
-                top = text_grob("Batch Correction Methods\n by Primary Annotation",
-                                color = "red", face = "bold", size = 14))
+  top = text_grob("Batch Correction Methods\n by Primary Annotation",
+    color = "red", face = "bold", size = 14
+  )
+)
 
-DT::datatable(as.data.frame.matrix(cbind(table(so_merged$annot,
-                                           so_merged$Sample),table(so_merged$annot))),
-          colnames=c(unique(so_merged$Sample),"Total"))
+DT::datatable(
+  as.data.frame.matrix(cbind(table(
+    so_merged$annot,
+    so_merged$Sample
+  ), table(so_merged$annot))),
+  colnames = c(unique(so_merged$Sample), "Total")
+)
 ```
 
 ## Silhouette scores  {.tabset}
 
 ```{r silhouetteImages,   message=FALSE, echo=FALSE, include=FALSE}
 # create matrix
-resSil_merged=matrix(ncol=2,nrow=length(resolution))
-resSil_merged[]<-0
+resSil_merged <- matrix(ncol = 2, nrow = length(resolution))
+resSil_merged[] <- 0
 
 # Initial loop through batch correction methods
-objList = c("rpca","integrated","harmony","scvi","liger")
-for(i in 1:length(objList)){
+objList <- c("rpca", "integrated", "harmony", "scvi", "liger")
+for (i in 1:length(objList)) {
   # set object
-  obj = OBJECT_SELECT(objList[i])
-  print(paste0("--Running ",objList[[i]]," method"))
-  
+  obj <- OBJECT_SELECT(objList[i])
+  print(paste0("--Running ", objList[[i]], " method"))
+
   # set counter for matrix
-  k=1
+  k <- 1
 
   # Initialize silhouette scores matrix
-  resSil_mat=matrix(ncol=2,nrow=length(resolution))
-  resSil_mat[,1]<- as.numeric(resolution)
-  resSil_mat[,2]<-0
+  resSil_mat <- matrix(ncol = 2, nrow = length(resolution))
+  resSil_mat[, 1] <- as.numeric(resolution)
+  resSil_mat[, 2] <- 0
 
   # Skip all calculations for objects greater than 90k cells
-  if(ncol(obj)<90000){
-
+  if (ncol(obj) < 90000) {
     # if batch correction is harmony, use harmony reduction
     # otherwise use PCA
-    if(length(grep("^harmony",objList[i]))){
+    if (length(grep("^harmony", objList[i]))) {
       print("----Running harmony")
-      dist = dist(Embeddings(obj,reduction='harmony')[,1:npcs])
-    } else if (objList[[i]] == "liger"){
-      dist = dist(Embeddings(obj,reduction='iNMF')[,1:npcs])
+      dist <- dist(Embeddings(obj, reduction = "harmony")[, 1:npcs])
+    } else if (objList[[i]] == "liger") {
+      dist <- dist(Embeddings(obj, reduction = "iNMF")[, 1:npcs])
     } else {
       print("----Running PCA")
-      dist = dist(Embeddings(obj,reduction='pca')[,1:npcs])
+      dist <- dist(Embeddings(obj, reduction = "pca")[, 1:npcs])
     }
 
     # iterate each resolution value
-    for (res in resolution){
-      #convert resolution to numeric value
-      resMod=as.numeric(res)
+    for (res in resolution) {
+      # convert resolution to numeric value
+      resMod <- as.numeric(res)
 
       # set coluumn resolution name
-      slm_name=paste0("SCT_snn_res.",res)
-      
-      # if the resolution column is not avaialble, create this column
-      if ((slm_name %in% colnames(obj@meta.data))==FALSE){
-        print(paste0("----Missing SCT_res column ", resMod,"; creating now"))
-        obj = FindClusters(obj, algorithm =3, resolution = resMod)
-        obj[[slm_name]] = Idents(obj)
-        rdsFile = params[[grep(objList[i],names(params),value=T)]]
-        saveRDS(obj,file=rdsFile)
-      } else{
+      slm_name <- paste0("SCT_snn_res.", res)
+
+      # if the resolution column is not available, create this column
+      if ((slm_name %in% colnames(obj@meta.data)) == FALSE) {
+        print(paste0("----Missing SCT_res column ", resMod, "; creating now"))
+        obj <- FindClusters(obj, algorithm = 3, resolution = resMod)
+        obj[[slm_name]] <- Idents(obj)
+        rdsFile <- params[[grep(objList[i], names(params), value = T)]]
+        saveRDS(obj, file = rdsFile)
+      } else {
         print("----Using available SCT_res column")
       }
-      
+
       # Calculate silhouette scores for resolutions with more than one cluster
-      Idents(obj)=slm_name
-      clusters=as.numeric(as.character(Idents(obj)))
+      Idents(obj) <- slm_name
+      clusters <- as.numeric(as.character(Idents(obj)))
 
       # if there is only one cluster, fail
-      if(length(unique(clusters))>1){
+      if (length(unique(clusters)) > 1) {
         # generate silhouette
-        sil=silhouette(clusters,dist=dist)
-        
+        sil <- silhouette(clusters, dist = dist)
+
         # generate palette colors based on sil cluster IDs
         # use closest neighbor for negative sils
         # https://bioinformatics-core-shared-training.github.io/UnivCambridge_ScRnaSeq_Nov2021/Markdowns/08_ClusteringPostDsi.html
-        testdf=as.data.frame(sil)
-        palette=alpha(colour=hue_pal()(length(unique(Idents(obj)))),alpha=0.7)
-        sil.cols=ifelse(testdf[,3] > 0, testdf[,1], testdf[,2])
-        unique.sils=sort(unique(sil.cols))
+        testdf <- as.data.frame(sil)
+        palette <- alpha(colour = hue_pal()(length(unique(Idents(obj)))), alpha = 0.7)
+        sil.cols <- ifelse(testdf[, 3] > 0, testdf[, 1], testdf[, 2])
+        unique.sils <- sort(unique(sil.cols))
         sil.cols[sil.cols %in% unique.sils] <- palette[match(sil.cols, unique.sils, nomatch = 0)]
 
         # arrange sil based on the clusters, then width
-        testdf$pal=sil.cols
-        sil.cols=dplyr::arrange(testdf, desc(cluster), sil_width)$pal
-        
-        # create silhouette plots
-        fileName = paste0(tmp_images,"/silhouette_",objList[[i]],"_res_",res,".png")
-        png(fileName)
-        plot(sil, col=sil.cols,
-                   border=sil.cols,
-                   main=paste0(objList[[i]]," clustering | resolution: ", resMod), 
-                   lty=2,
-                   sub=paste("Average silhouette width:",
-                             format(round(mean(sil[,3]), 4), nsmall = 4)))
-        abline(v=mean(sil[,3]), col="red4", lty=2)
-        dev.off()
-        
-        # create cluster plots
-        clusterPlot = DimPlot(obj, group.by=slm_name,
-                              label=T,repel=T,
-                              order=sort(as.numeric(as.character(unique(obj[[slm_name]][,1]))),
-                                         decreasing=T))+
-          ggtitle(paste0(objList[[i]]," clusters | resolution: ",resMod))
-        fileName = paste0(tmp_images,"/clusters_",objList[[i]],"_res_",res,".png")
-        ggsave(fileName,clusterPlot)
+        testdf$pal <- sil.cols
+        sil.cols <- dplyr::arrange(testdf, desc(cluster), sil_width)$pal
 
-        #Store resolution vs average silhouette score
-        resSil_mat[k,2] = format(round(mean(sil[,3]), 4), nsmall = 4)
-        k=k+1
+        # create silhouette plots
+        fileName <- paste0(tmp_images, "/silhouette_", objList[[i]], "_res_", res, ".png")
+        png(fileName)
+        plot(sil,
+          col = sil.cols,
+          border = sil.cols,
+          main = paste0(objList[[i]], " clustering | resolution: ", resMod),
+          lty = 2,
+          sub = paste(
+            "Average silhouette width:",
+            format(round(mean(sil[, 3]), 4), nsmall = 4)
+          )
+        )
+        abline(v = mean(sil[, 3]), col = "red4", lty = 2)
+        dev.off()
+
+        # create cluster plots
+        clusterPlot <- DimPlot(obj,
+          group.by = slm_name,
+          label = T, repel = T,
+          order = sort(as.numeric(as.character(unique(obj[[slm_name]][, 1]))),
+            decreasing = T
+          )
+        ) +
+          ggtitle(paste0(objList[[i]], " clusters | resolution: ", resMod))
+        fileName <- paste0(tmp_images, "/clusters_", objList[[i]], "_res_", res, ".png")
+        ggsave(fileName, clusterPlot)
+
+        # Store resolution vs average silhouette score
+        resSil_mat[k, 2] <- format(round(mean(sil[, 3]), 4), nsmall = 4)
+        k <- k + 1
       }
     }
-    
-  } else{
-    for (res in resolution){
-      fileName = paste0(tmp_images,"/silhouette_",objList[[i]],"_res_",res,".png")
+  } else {
+    for (res in resolution) {
+      fileName <- paste0(tmp_images, "/silhouette_", objList[[i]], "_res_", res, ".png")
       png(fileName)
       plot.new()
-      text(0.5,0.5,"No silhouette available for datasets with more than 90,000 cells")
+      text(0.5, 0.5, "No silhouette available for datasets with more than 90,000 cells")
       dev.off()
     }
   }
-  #Convert character matrix to numeric matrix and assign to appropriate variable
-  resSil_mat = matrix(as.numeric(resSil_mat),ncol=ncol(resSil_mat))
+  # Convert character matrix to numeric matrix and assign to appropriate variable
+  resSil_mat <- matrix(as.numeric(resSil_mat), ncol = ncol(resSil_mat))
 
   # create silhouette vs clustering plots
-  fileName = paste0(tmp_images,"/clusters_vs_sil_",objList[[i]],".png")
+  fileName <- paste0(tmp_images, "/clusters_vs_sil_", objList[[i]], ".png")
   png(fileName)
-  plot(resSil_mat,lty=3,pch=1,type="b",
-       lwd=2,cex=3,
-       main="Average silhouette score vs clustering resolution",
-       xlab = "Resolution", ylab="Average Silhouette Score",
-       xlim=c(min(resSil_mat[,1])-0.1,max(resSil_mat[,1])+0.1),
-       ylim=c(round(min(resSil_mat[,2])-0.005,digits=3),
-              round(max(resSil_mat[,2])+0.005,digits=3)))
-        dev.off()
+  plot(resSil_mat,
+    lty = 3, pch = 1, type = "b",
+    lwd = 2, cex = 3,
+    main = "Average silhouette score vs clustering resolution",
+    xlab = "Resolution", ylab = "Average Silhouette Score",
+    xlim = c(min(resSil_mat[, 1]) - 0.1, max(resSil_mat[, 1]) + 0.1),
+    ylim = c(
+      round(min(resSil_mat[, 2]) - 0.005, digits = 3),
+      round(max(resSil_mat[, 2]) + 0.005, digits = 3)
+    )
+  )
+  dev.off()
 }
 ```
 
 ### RPCA
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="rpca"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "rpca"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("silhouette_", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### ccaIntegrated
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="int"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "int"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("silhouette_", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### Harmony
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="harmony"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "harmony"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("silhouette_", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### scvi
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="scvi"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "scvi"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("silhouette_", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### liger
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="liger"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "liger"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("silhouette_", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
@@ -364,69 +376,79 @@ if(length(files)>0){
 ### RPCA
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="rpca"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "rpca"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("clusters_.*", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### ccaIntegrated
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="int"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "int"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("clusters_.*", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### Harmony
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="harmony"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "harmony"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("clusters_.*", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### scvi
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="scvi"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "scvi"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("clusters_.*", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```
 
 ### liger
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="liger"
-files <- list.files(path = tmp_images, 
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
+method <- "liger"
+files <- list.files(
+  path = tmp_images,
+  pattern = paste0("clusters_.*", method, "*.*[.]png"),
+  full.names = TRUE
+)
+if (length(files) > 0) {
   knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
+} else {
+  print(paste0("Batch correction method was not included:", method))
 }
 ```

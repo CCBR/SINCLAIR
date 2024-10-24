@@ -2,6 +2,8 @@ process BATCH_CORRECT_INTEGRATION {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.integ}"
+
     input:
     tuple val(gid), path(rds_m)
     tuple val(gid), path(rds_h)
@@ -19,7 +21,7 @@ process BATCH_CORRECT_INTEGRATION {
 
     output:
     tuple val(gid), path ("*.html")                 , emit:logs
-        
+
     script:
     def args = task.ext.args ?: ''
     """
