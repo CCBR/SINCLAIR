@@ -2,6 +2,8 @@ process BATCH_CORRECT_SCVI {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.scvi}"
+
     input:
     tuple val(gid), path(mergedObj)
     val(species)
