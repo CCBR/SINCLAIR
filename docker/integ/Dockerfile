@@ -27,3 +27,5 @@ RUN chmod a+r /opt2/Dockerfile_${REPONAME}.${BUILD_TAG}
 RUN chmod -R a+rx /opt2/argparse.bash
 
 WORKDIR /data2
+
+ENV GITHUB_PAT=""
