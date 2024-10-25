@@ -12,8 +12,6 @@ process BATCH_CORRECT_SCVI {
     val(resolution_list)
     val(conda_path)
     val(python_path)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
@@ -33,8 +31,6 @@ process BATCH_CORRECT_SCVI {
             resolution_list="$resolution_list",
             conda_path="$conda_path",
             python_path="$python_path",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_scvi.html")'

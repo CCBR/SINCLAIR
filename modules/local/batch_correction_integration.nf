@@ -14,8 +14,6 @@ process BATCH_CORRECT_INTEGRATION {
     val(species)
     val(npcs)
     val(resolution_list)
-    path(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
@@ -37,8 +35,6 @@ process BATCH_CORRECT_INTEGRATION {
             resolution_list="$resolution_list",
             citeseq="",
             annot="",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_integration.html")'

@@ -57,8 +57,6 @@ workflow GEX_EXQC {
             params.percent_mt_min,
             params.run_doublet_finder,
             params.npcs,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_preprocess,
             params.script_functions
         )
@@ -89,8 +87,6 @@ workflow GEX_EXQC {
             params.species,
             params.npcs,
             params.vars_to_regress,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_merge,
             params.script_functions
         )
@@ -102,8 +98,6 @@ workflow GEX_EXQC {
             params.npcs,
             params.vars_to_regress,
             params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_bc_harmony,
             params.script_functions
         )
@@ -115,8 +109,6 @@ workflow GEX_EXQC {
             params.npcs,
             params.vars_to_regress,
             params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_bc_rpca,
             params.script_functions
         )
@@ -128,8 +120,6 @@ workflow GEX_EXQC {
             params.npcs,
             params.vars_to_regress,
             params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_bc_cca,
             params.script_functions
         )
@@ -143,8 +133,6 @@ workflow GEX_EXQC {
             params.resolution_list,
             params.conda_path,
             params.python_path,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_scvi,
             params.script_functions
         )
@@ -156,8 +144,6 @@ workflow GEX_EXQC {
             params.npcs,
             params.vars_to_regress,
             params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_liger,
             params.script_functions
         )
@@ -173,8 +159,6 @@ workflow GEX_EXQC {
             params.species,
             params.npcs,
             params.resolution_list,
-            params.Rlib_dir,
-            params.Rpkg,
             params.script_bc_integration,
             params.script_functions
         )
