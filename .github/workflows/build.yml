@@ -45,7 +45,7 @@ jobs:
           sinclair init
           sinclair run \
             -stub \
-            -profile docker,ci_stub \
+            -profile ci_stub \
             -entry GEX \
             --input ../tests/test_dir/gex_samplesheet.csv \
             --contrast ../assets/contrast_manifest.csv
