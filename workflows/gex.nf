@@ -131,8 +131,6 @@ workflow GEX_EXQC {
             params.npcs,
             params.vars_to_regress,
             params.resolution_list,
-            params.conda_path,
-            params.python_path,
             params.script_scvi,
             params.script_functions
         )

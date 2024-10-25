@@ -10,8 +10,6 @@ process BATCH_CORRECT_SCVI {
     val(npcs)
     val(vars_to_regress)
     val(resolution_list)
-    val(conda_path)
-    val(python_path)
     path(rmd)
     path(scRNA_functions)
 
@@ -29,8 +27,6 @@ process BATCH_CORRECT_SCVI {
             npcs="$npcs",
             vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
-            conda_path="$conda_path",
-            python_path="$python_path",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_scvi.html")'

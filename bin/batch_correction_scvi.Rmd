@@ -43,8 +43,7 @@ so[["RNA"]] <- split(so[["RNA"]], f = so$Sample)
 # integrate
 so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
   method_in = "scVIIntegration", reduction_in = "integrated.scvi",
-  v_list = vars_to_regress_list,
-  conda_env = conda_path
+  v_list = vars_to_regress_list
 )
 so_corrected
 ```
