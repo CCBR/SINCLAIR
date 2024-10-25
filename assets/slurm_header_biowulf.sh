@@ -6,7 +6,7 @@
 #SBATCH -J "sinclair"
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --output "log/slurm_%j.log"
-#SBATCH --output "log/slurm_%j.log"
+#SBATCH --error "log/slurm_%j.log"
 
 module load ccbrpipeliner
 module load nextflow
