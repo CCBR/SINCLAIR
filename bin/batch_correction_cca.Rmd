@@ -17,7 +17,8 @@ params:
 ---
 
 
-```{r, prep_args,  message=FALSE}
+```{r setup,  message=FALSE}
+options(future.globals.maxSize = 96000 * 1024^2)
 # set up params
 species <- params$species
 gid <- params$gid
@@ -25,10 +26,17 @@ mergedObj <- params$mergedObj
 resolution <- as.numeric(strsplit(params$resolution_list, ",")[[1]])
 npcs <- as.numeric(params$npcs)
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
-
 testing <- params$testing
+
 source(params$scRNA_functions)
-options(future.globals.maxSize = 96000 * 1024^2)
+library(Seurat)
+library(SingleR)
+library(tinytex)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
+library(harmony)
 ```
 
 ```{r, processing, message=FALSE}

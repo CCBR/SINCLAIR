@@ -15,7 +15,8 @@ params:
   scRNA_functions: "bin/scRNA_functions.R"
 ---
 
-```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
+```{r setup,  message=FALSE, echo=FALSE, include=FALSE}
+options(future.globals.maxSize = 96000 * 1024^2)
 # set up params
 species <- params$species
 gid <- params$gid
@@ -24,14 +25,10 @@ resolution <- as.numeric(strsplit(params$resolution_list, ",")[[1]])
 npcs <- as.numeric(params$npcs)
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
 
-scRNA_functions <- params$scRNA_functions
-```
-
-```{r, handle_pkg, message=FALSE, echo=FALSE, include=FALSE}
-# source functions
-source(scRNA_functions)
-
-options(future.globals.maxSize = 96000 * 1024^2)
+source(params$scRNA_functions)
+library(Seurat)
+library(SeuratWrappers)
+library(SingleR)
 ```
 
 ```{r, processing,  message=FALSE, echo=FALSE, include=FALSE}

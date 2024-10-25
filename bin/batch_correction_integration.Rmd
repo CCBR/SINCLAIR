@@ -24,7 +24,7 @@ params:
   testing: "Y"
 ---
 
-```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
+```{r setup,  message=FALSE, echo=FALSE, include=FALSE}
 # set up params
 # species= params$species
 gid <- params$gid
@@ -42,6 +42,17 @@ citeseq <- params$citeseq
 annot <- params$annot
 
 source(params$scRNA_functions)
+library(Seurat)
+library(R.utils)
+library(cluster)
+library(SeuratWrappers)
+library(ggplot2)
+library(ggpubr)
+library(DT)
+library(scales)
+library(png)
+library(gridExtra)
+library(cowplot)
 
 # create tmp image directory
 tmp_images <- "tmp_images"

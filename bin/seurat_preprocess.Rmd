@@ -22,7 +22,7 @@ params:
   testing: "N"
 ---
 
-```{r, prep_args, message=FALSE}
+```{r setup, message=FALSE}
 # set up params
 species <- params$species
 sampleid <- params$sampleid
@@ -40,6 +40,25 @@ npcs_val <- as.numeric(params$npcs)
 testing <- params$testing
 
 source(params$scRNA_functions)
+library(Seurat)
+library(hdf5r)
+library(R.utils)
+library(cluster)
+library(SeuratWrappers)
+library(GenomeInfoDbData)
+library(farver)
+library(SingleCellExperiment)
+library(SingleR)
+library(DoubletFinder)
+library(flexmix)
+library(celldex)
+library(ggplot2)
+library(tinytex)
+library(Routliers)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
 ```
 
 ```{r, pre-processing, message=FALSE}

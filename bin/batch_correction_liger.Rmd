@@ -17,7 +17,8 @@ params:
 ---
 
 
-```{r, prep_args,  message=FALSE}
+```{r setup,  message=FALSE}
+options(future.globals.maxSize = 96000 * 1024^2)
 # set up params
 species <- params$species
 gid <- params$gid
@@ -27,7 +28,10 @@ npcs <- as.numeric(params$npcs)
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
 
 source(params$scRNA_functions)
-options(future.globals.maxSize = 96000 * 1024^2)
+library(Seurat)
+library(SeuratWrappers)
+library(SingleR)
+library(rliger)
 ```
 
 ```{r, processing, message=FALSE}

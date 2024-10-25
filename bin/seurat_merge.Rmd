@@ -16,7 +16,8 @@ params:
   testing: "Y"
 ---
 
-```{r, prep_args,  message=FALSE, include=FALSE}
+```{r setup,  message=FALSE, include=FALSE}
+options(future.globals.maxSize = 1e12)
 # set up params
 species <- params$species
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
@@ -32,7 +33,18 @@ print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
 
 source(params$scRNA_functions)
-options(future.globals.maxSize = 1e12)
+library(Seurat)
+library(SingleCellExperiment)
+library(SingleR)
+library(celldex)
+library(tinytex)
+library(stringr)
+library(scRNAseq)
+library(Orthology.eg.db)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
 ```
 
 ```{r, processing, message=FALSE}
