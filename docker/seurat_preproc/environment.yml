@@ -18,5 +18,6 @@ dependencies:
   - r-flexmix
   - r-hdf5r
   - r-remotes
+  - r-r.utils
   - r-seurat=5.1
   - r-tidyverse
