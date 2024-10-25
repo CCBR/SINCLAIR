@@ -32,8 +32,7 @@ process SAMPLESHEET_CHECK {
 
     stub:
     """
-    for f in gex atac contrast groups; do
-        touch \${f}_samplesheet.csv
-    done
+    cp $samplesheet STUB_gex_samplesheet.csv
+    cp $contrast_samplesheet STUB_contrast_samplesheet.csv
     """
 }
