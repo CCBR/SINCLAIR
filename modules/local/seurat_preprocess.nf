@@ -26,7 +26,13 @@ process SEURAT_PREPROCESS {
     script:
     def args = task.ext.args ?: ''
     """
-    Rscript -e 'rmarkdown::render("${rmd}",
+    #!/usr/bin/env Rscript --vanilla
+    options(rlang_trace_top_env = rlang::current_env())
+    options(error = function() {
+        sink()
+        print(rlang::trace_back(bottom = sys.frame(-1)), simplify = "none")
+    })
+    rmarkdown::render("${rmd}",
         params=list(
             species="$species",
             sampleid="$id",
@@ -41,7 +47,8 @@ process SEURAT_PREPROCESS {
             run_doublet_finder="$run_doublet_finder",
             npcs=$npcs,
             scRNA_functions="$scRNA_functions"),
-        output_file = "${id}_seurat_preprocess.pdf")'
+        output_file = "${id}_seurat_preprocess.pdf"
+    )
     """
 
     stub:
