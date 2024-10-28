@@ -29,10 +29,4 @@ process SAMPLESHEET_CHECK {
         project
     fi
     """
-
-    stub:
-    """
-    cp $samplesheet STUB_gex_samplesheet.csv
-    cp $contrast_samplesheet STUB_contrast_samplesheet.csv
-    """
 }
