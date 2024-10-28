@@ -1,0 +1,37 @@
+{
+    "samplesheet_check snapshot test": {
+        "content": [
+            {
+                "0": [
+                    "project_gex_samplesheet.csv:md5,c26412db5a297b2652b18c1e09ea3601"
+                ],
+                "1": [
+
+                ],
+                "2": [
+                    "project_contrast_samplesheet.csv:md5,a11ed7f973f579f771ab1ac48effd315"
+                ],
+                "3": [
+                    "project_groups_samplesheet.csv:md5,b4643b0b4bc7bf076f1d4c9ee2008a39"
+                ],
+                "atac_samplesheet": [
+
+                ],
+                "contrast_samplesheet": [
+                    "project_contrast_samplesheet.csv:md5,a11ed7f973f579f771ab1ac48effd315"
+                ],
+                "gex_samplesheet": [
+                    "project_gex_samplesheet.csv:md5,c26412db5a297b2652b18c1e09ea3601"
+                ],
+                "group_samplesheet": [
+                    "project_groups_samplesheet.csv:md5,b4643b0b4bc7bf076f1d4c9ee2008a39"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.1",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-25T13:09:06.373895882"
+    }
+}

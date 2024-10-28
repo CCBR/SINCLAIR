@@ -36,6 +36,8 @@ work/
 .nextflow.log*
 .nextflow/cache/
 .nextflow/history
+.nf-test/
+tests/results/
 
 # tmp ignore testing fastqs
 test_dir/*/*/*.gz
@@ -55,8 +57,6 @@ tmp_images
 .Rhistory
 *.Rproj
 
-**/.koparde*
-test_dir/**
 
 **/.koparde*
 

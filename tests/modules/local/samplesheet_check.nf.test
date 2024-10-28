@@ -1,0 +1,28 @@
+nextflow_process {
+
+    name "Test Process SAMPLESHEET_CHECK"
+    script "modules/local/samplesheet_check.nf"
+    process "SAMPLESHEET_CHECK"
+
+    test("samplesheet_check snapshot test") {
+
+        when {
+            params {
+            }
+            process {
+                """
+                input[0] = file(params.input)
+                input[1] = file(params.contrast)
+                input[2] = params.run_cellranger
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
+
+}
