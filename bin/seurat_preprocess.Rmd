@@ -23,6 +23,11 @@ params:
 ---
 
 ```{r setup}
+options(rlang_trace_top_env = rlang::current_env())
+options(error = function() {
+  sink()
+  print(rlang::trace_back(bottom = sys.frame(-1)), simplify = "none")
+})
 knitr::opts_chunk$set(message = FALSE)
 # set up params
 species <- params$species

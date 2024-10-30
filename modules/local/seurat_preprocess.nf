@@ -27,11 +27,6 @@ process SEURAT_PREPROCESS {
     def args = task.ext.args ?: ''
     """
     #!/usr/bin/env Rscript --vanilla
-    options(rlang_trace_top_env = rlang::current_env())
-    options(error = function() {
-        sink()
-        print(rlang::trace_back(bottom = sys.frame(-1)), simplify = "none")
-    })
     rmarkdown::render("${rmd}",
         params=list(
             species="$species",
