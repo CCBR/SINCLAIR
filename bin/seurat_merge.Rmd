@@ -32,7 +32,6 @@ print(paste0("species:", species))
 print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
 
-source(params$scRNA_functions)
 library(Seurat)
 library(SingleCellExperiment)
 library(SingleR)

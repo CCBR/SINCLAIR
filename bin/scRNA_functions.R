@@ -20,34 +20,6 @@ CONVERT_TO_HUMAN_GENELIST <- function(gns) {
   return(as.character(unlist(mapped$MUS)))
 }
 
-MAIN_PROCESS_SO <- function(so_in, species, npcs_in) {
-  # assign genes depending on species input
-  if (species == "hg38" || species == "hg19") {
-    print("--proccesing human data")
-    s.genes <- cc.genes$s.genes
-    g2m.genes <- cc.genes$g2m.genes
-  } else if (species == "mm10") {
-    print("--proccesing mouse data")
-    s.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$s.genes)
-    g2m.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$g2m.genes)
-  }
-
-  # process
-  so_1 <- NormalizeData(so_in,
-    normalization.method = "LogNormalize",
-    scale.factor = 10000,
-    assay = "RNA"
-  )
-  so_2 <- ScaleData(so_1, assay = "RNA")
-  so_3 <- CellCycleScoring(so_2,
-    s.features = s.genes,
-    g2m.features = g2m.genes,
-    set.ident = TRUE
-  )
-  so_4 <- SCTransform(so_3)
-  so_out <- SEURAT_CLUSTERING(so_4, npcs_in)
-  return(so_out)
-}
 
 RUN_SINGLEr <- function(obj, refFile, fineORmain) {
   obj <- DietSeurat(obj, graphs = "umap")
@@ -55,65 +27,6 @@ RUN_SINGLEr <- function(obj, refFile, fineORmain) {
   ref <- refFile
   s <- SingleR(test = sce, ref = ref, labels = ref[[fineORmain]])
   return(s$pruned.labels)
-}
-
-MAIN_SINGLER <- function(so_in, species) {
-  if (species == "hg38" || species == "hg19") {
-    so_in$HPCA_main <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.main")
-    so_in$HPCA <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.fine")
-    so_in$BP_encode_main <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.main")
-    so_in$BP_encode <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.fine")
-    so_in$monaco_main <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.main")
-    so_in$monaco <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.fine")
-    so_in$immu_cell_exp_main <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
-      "label.main"
-    )
-    so_in$immu_cell_exp <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
-      "label.fine"
-    )
-    so_in$annot <- so_in$HPCA_main
-  } else if (species == "mm10") {
-    so_in$immgen_main <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.main")
-    so_in$immgen <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.fine")
-    so_in$mouseRNAseq_main <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.main")
-    so_in$mouseRNAseq <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.fine")
-    so_in$annot <- so_in$immgen_main
-  }
-  return(so_in)
-}
-
-MAIN_DOUBLETS <- function(so_in, run_doublet_finder) {
-  if (run_doublet_finder == "Y") {
-    sweep.res.list_kidney <- paramSweep_v3(so_in, PCs = 1:10, sct = T)
-    sweep.stats_kidney <- summarizeSweep(sweep.res.list_kidney, GT = FALSE)
-    bcmvn_kidney <- find.pK(sweep.stats_kidney)
-
-    ## Homotypic Doublet Proportion Estimate
-    homotypic.prop <- modelHomotypic(so_in$annot)
-    perc <- 0.005 * (length(colnames(so_in)) / 1000)
-    nExp_poi <- round(perc * length(colnames(so_in))) # dfso@cell.names
-    nExp_poi.adj <- round(nExp_poi * (1 - homotypic.prop))
-
-    ## Run DoubletFinder with varying classification stringencies
-    dfso <- doubletFinder_v3(so_in,
-      pN = 0.25, pK = 0.09,
-      nExp = nExp_poi,
-      reuse.pANN = FALSE, PCs = 1:10, sct = T
-    )
-
-    pAAN <- tail(names(dfso@meta.data), 2)[1]
-    dfso <- doubletFinder_v3(dfso,
-      pN = 0.25, pK = 0.09,
-      nExp = nExp_poi.adj,
-      reuse.pANN = pAAN, PCs = 1:10, sct = T
-    )
-    so_in$DF_hi.lo <- dfso[[tail(names(dfso@meta.data), 1)]]
-    so_in <- subset(so_in, cells = names(so_in$DF_hi.lo)[so_in$DF_hi.lo == "Singlet"])
-  }
-
-  return(so_in)
 }
 
 #' run batch corrections
@@ -132,6 +45,7 @@ RUN_SINGLEr_AVERAGE <- function(obj, refFile, fineORmain) {
   return(annotVect)
 }
 
+#' batch correction function used in multiple rmarkdown notebooks
 MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_in, reduction_in, v_list) {
   # set assay to RNA to avoid double transform/norm
   DefaultAssay(so_in) <- "RNA"
