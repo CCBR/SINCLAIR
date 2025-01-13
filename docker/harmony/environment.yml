@@ -9,6 +9,7 @@ dependencies:
   - bioconductor-orthology.eg.db
   - bioconductor-singler=2
   - r-base=4
+  - r-evaluate=1.0.3
   - r-harmony=0.1
   - r-remotes
   - r-seurat=5.1

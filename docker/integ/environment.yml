@@ -7,6 +7,7 @@ dependencies:
   - r-cluster=2
   - r-cowplot
   - r-DT
+  - r-evaluate=1.0.3
   - r-ggpubr
   - r-gridextra
   - r-png

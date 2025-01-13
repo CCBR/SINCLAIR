@@ -14,6 +14,7 @@ dependencies:
   - bioconductor-singler=2
   - r-base=4
   - r-essentials
+  - r-evaluate=1.0.3
   - r-future.apply
   - r-liger=1
   - r-presto
