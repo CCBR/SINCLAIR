@@ -3,7 +3,7 @@ title: "Batch Correction Analysis"
 author: "CCBR"
 date: '`r format(Sys.time(), "%a %b %d %Y - %X")`'
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 always_allow_html: true
 params:
@@ -89,7 +89,7 @@ objList = c("merged","rpca","integrated","harmony","scvi","liger")
 ### Samples
 
 ```{r sampleBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
-# plot 
+# plot
 for(i in 1:length(objList)){
   obj = OBJECT_SELECT(objList[i])
   title = NAME_SELECT(objList[i])
@@ -170,7 +170,7 @@ for(i in 1:length(objList)){
   # set object
   obj = OBJECT_SELECT(objList[i])
   print(paste0("--Running ",objList[[i]]," method"))
-  
+
   # set counter for matrix
   k=1
 
@@ -201,7 +201,7 @@ for(i in 1:length(objList)){
 
       # set coluumn resolution name
       slm_name=paste0("SCT_snn_res.",res)
-      
+
       # if the resolution column is not avaialble, create this column
       if ((slm_name %in% colnames(obj@meta.data))==FALSE){
         print(paste0("----Missing SCT_res column ", resMod,"; creating now"))
@@ -212,7 +212,7 @@ for(i in 1:length(objList)){
       } else{
         print("----Using available SCT_res column")
       }
-      
+
       # Calculate silhouette scores for resolutions with more than one cluster
       Idents(obj)=slm_name
       clusters=as.numeric(as.character(Idents(obj)))
@@ -221,7 +221,7 @@ for(i in 1:length(objList)){
       if(length(unique(clusters))>1){
         # generate silhouette
         sil=silhouette(clusters,dist=dist)
-        
+
         # generate palette colors based on sil cluster IDs
         # use closest neighbor for negative sils
         # https://bioinformatics-core-shared-training.github.io/UnivCambridge_ScRnaSeq_Nov2021/Markdowns/08_ClusteringPostDsi.html
@@ -234,19 +234,19 @@ for(i in 1:length(objList)){
         # arrange sil based on the clusters, then width
         testdf$pal=sil.cols
         sil.cols=dplyr::arrange(testdf, desc(cluster), sil_width)$pal
-        
+
         # create silhouette plots
         fileName = paste0(tmp_images,"/silhouette_",objList[[i]],"_res_",res,".png")
         png(fileName)
         plot(sil, col=sil.cols,
                    border=sil.cols,
-                   main=paste0(objList[[i]]," clustering | resolution: ", resMod), 
+                   main=paste0(objList[[i]]," clustering | resolution: ", resMod),
                    lty=2,
                    sub=paste("Average silhouette width:",
                              format(round(mean(sil[,3]), 4), nsmall = 4)))
         abline(v=mean(sil[,3]), col="red4", lty=2)
         dev.off()
-        
+
         # create cluster plots
         clusterPlot = DimPlot(obj, group.by=slm_name,
                               label=T,repel=T,
@@ -261,7 +261,7 @@ for(i in 1:length(objList)){
         k=k+1
       }
     }
-    
+
   } else{
     for (res in resolution){
       fileName = paste0(tmp_images,"/silhouette_",objList[[i]],"_res_",res,".png")
@@ -292,7 +292,7 @@ for(i in 1:length(objList)){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="rpca"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -306,7 +306,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="int"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -320,7 +320,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="harmony"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -334,7 +334,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="scvi"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -348,7 +348,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="liger"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -365,7 +365,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="rpca"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -379,7 +379,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="int"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -393,7 +393,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="harmony"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -407,7 +407,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="scvi"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
@@ -421,7 +421,7 @@ if(length(files)>0){
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method="liger"
-files <- list.files(path = tmp_images, 
+files <- list.files(path = tmp_images,
                     pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){

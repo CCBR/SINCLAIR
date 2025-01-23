@@ -4,7 +4,7 @@ from os import listdir
 import yaml
 import os
 import re
-import pandas as pd 
+import pandas as pd
 import numpy as np
 
 
@@ -41,7 +41,7 @@ df1 = df1.apply(lambda x: '_'.join(x.index[x]),axis=1)
 seqPerSample['pipeline'] = df1
 #print(seqPerSample)
 
-seqPerSample["sampPipe"] = seqPerSample["Sample"] + "__" + seqPerSample["pipeline"] 
+seqPerSample["sampPipe"] = seqPerSample["Sample"] + "__" + seqPerSample["pipeline"]
 
 samples = seqPerSample["sampPipe"]#.tolist()
 d = dict()
@@ -57,11 +57,11 @@ print(samples)
 rule all:
 	params:
 		batch='--time=12:00:00',
-	input:  
+	input:
 		expand(join(workpath,"cellrangerOut","{mySample}"), mySample=toRun),
 		expand(join(workpath,"flags","{name}.txt"),name=d),
 		expand(join(workpath,"seuratOut","{name}.rds"),name=d)
-		
+
 rule seurat:
 	input:
 		expand(join(workpath,"cellrangerOut","{mySample}"), mySample=toRun)
@@ -74,9 +74,9 @@ rule seurat:
 		org=specie,
 		workpath=workpath
 	shell: """
-mkdir -p flags 
+mkdir -p flags
 module load R/4.2.0;
-module load python; 
+module load python;
 python workflow/scripts/runSeurat.py {params.sample} {params.workpath} {params.pipeline} {params.org} {output.rds}
 touch {output.flag}
 touch {params.sample} {params.pipeline} {params.org}

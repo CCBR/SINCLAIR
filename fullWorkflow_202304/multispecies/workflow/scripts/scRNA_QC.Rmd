@@ -237,7 +237,7 @@ so <- RunMiQC(so, percent.mt = "percent.mt", nFeature_RNA = "nFeature_RNA", post
 so_prefilter = so
 so = subset(so, miQC.keep == "keep")
 
-if(species=="both"){    
+if(species=="both"){
   so$nCount_GRCh38 = apply(so@assays$RNA@counts[grep("GRCh38",rownames(so)),],2,sum)
   so$nCount_mm10 = apply(so@assays$RNA@counts[grep("mm10",rownames(so)),],2,sum)
   so$nFeature_GRCh38 = apply(so@assays$RNA@counts[grep("GRCh38",rownames(so)),],2,function(x) length(which(x>0)))

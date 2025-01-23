@@ -42,14 +42,14 @@ return(s$pruned.labels)
 
 
 doublets <-function(dfso){
-          
+
   sweep.res.list_kidney <- paramSweep_v3(dfso,PCs = 1:10, sct = T)
   sweep.stats_kidney <- summarizeSweep(sweep.res.list_kidney, GT = FALSE)
   print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   bcmvn_kidney <- find.pK(sweep.stats_kidney)
   ## pK Identification (ground-truth) ------------------------------------------------------------------------------------------
 
- 
+
   ## Homotypic Doublet Proportion Estimate -------------------------------------------------------------------------------------
   homotypic.prop <- modelHomotypic(dfso$annot)
   perc = 0.005 * (length(colnames(dfso))/1000)
@@ -60,7 +60,7 @@ doublets <-function(dfso){
   dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi, reuse.pANN = FALSE,PCs = 1:10,sct = T)
   pAAN=tail(names(dfso@meta.data),2)[1]
   dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi.adj, reuse.pANN = pAAN,PCs = 1:10,sct = T)
- 
+
   return(dfso)
 }
 
@@ -81,14 +81,13 @@ singleRClusters = function(obj,refFile,fineORmain){
   avg = as.data.frame(avg)
   ref = refFile
   s = SingleR(test = as.matrix(avg),ref = ref,labels = ref[[fineORmain]])
-  
+
   clustAnnot = s$labels
   names(clustAnnot) = colnames(avg)
   names(clustAnnot) = gsub("SCT.","",names(clustAnnot))
-  
+
   clustAnnot = clustAnnot[match(obj$seurat_clusters,names(clustAnnot))]
   names(clustAnnot) = colnames(obj)
   obj$clustAnnot = clustAnnot
   return(obj$clustAnnot)
 }
-

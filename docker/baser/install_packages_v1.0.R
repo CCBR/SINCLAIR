@@ -4,7 +4,7 @@ scRNA_handle_packages<-function(pkg_df){
     source=pkg_df[rowid,"source"]
     version=pkg_df[rowid,"version"]
     gh_name=pkg_df[rowid,"gh_name"]
-    
+
     need_install <- pkg[!(pkg %in% installed.packages()[,"Package"])]
     if (length(need_install)!=0){
       print(paste0("Installing: ", pkg))

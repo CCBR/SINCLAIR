@@ -9,9 +9,9 @@ Hashtag2,Rep2,Antibody Capture,R2,5P(BC),GGTCGAGAGCATTCA
 #Reference: https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref
 
 #id: Unique ID for tracking feature counts, must not clash with gene names
-#name: Human readable name used in Loupe Cell Browser 
+#name: Human readable name used in Loupe Cell Browser
 #sequence: Oligo-tag sequence attached to the antibody used for counts. Provided by sequencing group
-#feature_type: Description of data type. Must match the labels available here: 
+#feature_type: Description of data type. Must match the labels available here:
 	#https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-types
 #read: specifies if feature barcode is in R1 or R2. Most often in R2
 #pattern: defines how to locate the barcode in the read sequence. Further reading:

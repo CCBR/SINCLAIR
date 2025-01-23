@@ -71,7 +71,7 @@ DF = as.data.frame(as.matrix(so@assays$HTO@data))
 so$assignHTO = rownames(DF)[apply(DF,2,which.max)]
 so.list = SplitObject(so,split.by="assignHTO")
 
-#remove samples with less than 100 cells 
+#remove samples with less than 100 cells
 ncells = vector()
 for(n in 1:length(so.list) ){ncells = append(ncells,ncol(so.list[[n]])) }
 
@@ -88,4 +88,3 @@ so.list <- lapply(X = so.list, FUN = saveRDS, paste0("x"))
 for(n in 1:length(so.list)){}
 
 for(n in 1:length(so.list)){saveRDS(so.list[[n]] , paste0("x_",names(so.list)[n]),".rds")}
-

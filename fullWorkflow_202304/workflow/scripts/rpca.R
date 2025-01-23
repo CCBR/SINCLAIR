@@ -8,7 +8,7 @@ library("SingleR",lib.loc=loc)
 library(scRNAseq,lib.loc=loc)
 library(SingleCellExperiment,lib.loc=loc)
 library(dplyr)
-library(Matrix) 
+library(Matrix)
 library(tools)
 library(glmGamPoi,lib.loc=loc)
 
@@ -29,19 +29,19 @@ file.names <- dir(path = matrix,pattern ="rds")
 groupFile = read.delim("groups.tab",header=F,stringsAsFactors = F)
 groupFile=groupFile[groupFile$V2 %in% stringr::str_split_fixed(contrasts,pattern = "-",n = Inf)[1,],]
 
-splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2) 
+splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2)
 splitFiles = stringr::str_split_fixed(splitFiles,pattern = "__",n = Inf)[,1]
 file.names=file.names[match(groupFile$V1,splitFiles,nomatch = F)]
 print(groupFile$V1)
 print(splitFiles)
-print(file.names)    
+print(file.names)
 
 
 readObj = list()
 for (obj in file.names) {
   Name=strsplit(obj,".rds")[[1]][1]
   assign(paste0("S_",Name),readRDS(paste0(matrix,"/",obj)))
-  readObj = append(readObj,paste0("S_",Name))  
+  readObj = append(readObj,paste0("S_",Name))
  }
 
 
@@ -49,7 +49,7 @@ for (obj in file.names) {
 combinedObj.list=list()
 i=1
 for (p in readObj){
-  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]])) 
+  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]]))
   combinedObj.list[[p]]$Sample = names(combinedObj.list)[i]
   i <- i + 1
  }
@@ -99,7 +99,7 @@ colnames(obj@meta.data) = gsub("integrated_snn_res","Leiden_int_snn_res",colname
 colnames(obj@meta.data) = gsub("SCT_snn_res","Leiden_SCT_snn_res",colnames(obj@meta.data))
 
 
-obj <- RunUMAP(object = obj, reduction = "pca", 
+obj <- RunUMAP(object = obj, reduction = "pca",
                                   dims = 1:npcs,n.components = 3)
 
 #obj$groups = groupFile$V2[match(obj$Sample,  groupFile$V1,nomatch = F)]
@@ -145,4 +145,3 @@ combinedObj.integrated = runInt(combinedObj.integrated,npcs)
 
 
 saveRDS(combinedObj.integrated,outDirSeurat)
-

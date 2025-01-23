@@ -1,7 +1,9 @@
 # 3. Running the Pipeline
 
 ## 3.1 Pipeline Overview
+
 The Nextflow workflow can be run as follows:
+
 ```
 nextflow run main.nf \
     -entry $datatype \
@@ -14,6 +16,7 @@ nextflow run main.nf \
 ```
 
 ## 3.2 Commands explained
+
 The following explains each of the command options:
 
 - entry: accepts the datatype to be used; IE gex
@@ -26,7 +29,9 @@ The following explains each of the command options:
 - args: any additional arguments; IE --stub-run
 
 ## 3.3 Typical Workflow
+
 A typical command workflow, running the pipeline for the first time locally, is as follows:
+
 ```
 nextflow run main.nf \
     -entry gex \
@@ -38,6 +43,7 @@ nextflow run main.nf \
 ```
 
 A typical command workflow, running the pipeline for a repeated time locally, running cellranger, is as follows:
+
 ```
 nextflow run main.nf -resume \
     -entry gex \
@@ -51,6 +57,7 @@ nextflow run main.nf -resume \
 ```
 
 A typical command workflow, running the pipeline in a `dryrun mode`, without running cellranger, is as follows:
+
 ```
 nextflow run main.nf \
     -entry gex \
@@ -65,6 +72,7 @@ nextflow run main.nf \
 ```
 
 Alternatively a script was created to run the pipeline, which takes the following flags:
+
 - species: hg19
 - datatype: GEX
 - outDir: /path/to/output/dir
@@ -73,6 +81,7 @@ Alternatively a script was created to run the pipeline, which takes the followin
 - stubrun: Y or N
 
 Examples:
+
 ```
 # run GEX on test data, for the first time
 sh run_scRNA.sh hg19 GEX N /path/to/output/dir

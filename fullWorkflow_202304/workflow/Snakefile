@@ -4,7 +4,7 @@ from os import listdir
 import yaml
 import os
 import re
-import pandas as pd 
+import pandas as pd
 import numpy as np
 
 
@@ -31,7 +31,7 @@ for line in contrasts:
 rule all:
 	params:
 		batch='--time=12:00:00',
-	input:  
+	input:
 		expand(join(workpath,"cellrangerOut","{name}","outs","filtered_feature_bc_matrix.h5"), name=toRun),
 		expand(join(workpath,"seuratOut","{name}.rds"),name=toRun),
 		expand(join(workpath,"integration","merged","{myGroups}.rds"),myGroups=contList),
@@ -68,8 +68,8 @@ rule seuratIntegration:
 		batch='--cpus-per-task=4 --mem=300g --time=24:00:00',
 		specie = specie,
 		contrasts = "{myGroups}"
-		
-		
+
+
 	shell: """
 		. "/data/CCBR_Pipeliner/db/PipeDB/Conda/etc/profile.d/conda.sh"
 		conda activate scRNA4
@@ -87,7 +87,7 @@ rule rpca:
 		batch='--cpus-per-task=4 --mem=300g --time=24:00:00',
 		specie = specie,
 		contrasts = "{myGroups}"
-	
+
 	shell: """
 		. "/data/CCBR_Pipeliner/db/PipeDB/Conda/etc/profile.d/conda.sh"
 		conda activate scRNA4
@@ -95,7 +95,7 @@ rule rpca:
 		Rscript workflow/scripts/rpca.R seuratOut/ {output}  {params.specie} {params.contrasts} "0.1,0.2,0.3,0.5,0.6,0.8,1"
 	"""
 
-rule harmony: 
+rule harmony:
 	input:
 		expand(join(workpath,"seuratOut","{mySample}.rds"), mySample=toRun)
 	output:

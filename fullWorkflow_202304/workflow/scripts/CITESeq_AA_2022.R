@@ -7,7 +7,7 @@ rawMatrix <- as.character(args[3])
 
 
 
-#read data 
+#read data
 so = readRDS(rds)
 filtMatrix = Read10X_h5(filtMatrix)
 rawMatrix <- Read10X_h5(rawMatrix)

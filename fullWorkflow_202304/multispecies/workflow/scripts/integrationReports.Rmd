@@ -203,7 +203,7 @@ for(k in 1:length(objList)){
       pdf(fileName)
       plot.new()
       text(0.5,0.5,"No silhouette available for datasets with more than 90,000 cells")
-      dev.off()    
+      dev.off()
     }
   }else{
     if(length(grep("^harmony",objList[k]))){
@@ -214,7 +214,7 @@ for(k in 1:length(objList)){
 
     for (res in resString){
       #convert resolution to numeric value
-      resMod=as.numeric(res)   
+      resMod=as.numeric(res)
       #SLM name ident determination, based on integration method
       slm_name = grep("^SLM",colnames(obj@meta.data),value=T)
       if (objList[k] %in% c("integrated","rpca")){
