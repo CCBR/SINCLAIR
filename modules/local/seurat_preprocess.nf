@@ -2,6 +2,8 @@ process SEURAT_PREPROCESS {
     tag "${id}"
     label 'process_medium'
 
+    container "${params.containers.seurat_preproc}"
+
     input:
     tuple val(id), val(inDir), path(h5)
     val(species)
@@ -14,8 +16,6 @@ process SEURAT_PREPROCESS {
     val(percent_mt_min)
     val(run_doublet_finder)
     val(npcs)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
@@ -26,7 +26,8 @@ process SEURAT_PREPROCESS {
     script:
     def args = task.ext.args ?: ''
     """
-    Rscript -e 'rmarkdown::render("${rmd}",
+    #!/usr/bin/env Rscript --vanilla
+    rmarkdown::render("${rmd}",
         params=list(
             species="$species",
             sampleid="$id",
@@ -40,10 +41,9 @@ process SEURAT_PREPROCESS {
             percent_mt_min=$percent_mt_min,
             run_doublet_finder="$run_doublet_finder",
             npcs=$npcs,
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions"),
-        output_file = "${id}_seurat_preprocess.pdf")'
+        output_file = "${id}_seurat_preprocess.pdf"
+    )
     """
 
     stub:

@@ -2,6 +2,8 @@ process BATCH_CORRECT_INTEGRATION {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.integ}"
+
     input:
     tuple val(gid), path(rds_m)
     tuple val(gid), path(rds_h)
@@ -12,14 +14,12 @@ process BATCH_CORRECT_INTEGRATION {
     val(species)
     val(npcs)
     val(resolution_list)
-    path(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
     output:
     tuple val(gid), path ("*.html")                 , emit:logs
-        
+
     script:
     def args = task.ext.args ?: ''
     """
@@ -35,8 +35,6 @@ process BATCH_CORRECT_INTEGRATION {
             resolution_list="$resolution_list",
             citeseq="",
             annot="",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_integration.html")'

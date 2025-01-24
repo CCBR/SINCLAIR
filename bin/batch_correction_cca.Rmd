@@ -8,18 +8,17 @@ editor_options:
 params:
   species: "hg19"
   gid: "group1-group2"
-  mergedObj: "/data/sevillas2/sinclair/dev/results/seurat/merge/group1-group2_seurat_merged.rds"
+  mergedObj: "results/seurat/merge/group1-group2_seurat_merged.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
   npcs: 50
   vars_to_regress: "percent.mt,nFeature_RNA"
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  scRNA_functions: "bin/scRNA_functions.R"
   testing: "Y"
 ---
 
 
-```{r, prep_args,  message=FALSE}
+```{r setup,  message=FALSE}
+options(future.globals.maxSize = 96000 * 1024^2)
 # set up params
 species <- params$species
 gid <- params$gid
@@ -27,35 +26,17 @@ mergedObj <- params$mergedObj
 resolution <- as.numeric(strsplit(params$resolution_list, ",")[[1]])
 npcs <- as.numeric(params$npcs)
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
-
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
 testing <- params$testing
-scRNA_functions <- params$scRNA_functions
-```
 
-```{r, handle_pkg, message=FALSE}
-# source functions
-source(scRNA_functions)
-
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ", Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-.libPaths()
-
-# read in package info
-pkg_df <- read.csv(Rpkg_config)
-pkg_df <- subset(pkg_df, cca == "Y")
-pkg_df
-
-# for each package check installation, if present then load library
-scRNA_handle_packages(pkg_df)
-
-# additional options
-# tinytex::install_tinytex(force = TRUE)
-options(future.globals.maxSize = 96000 * 1024^2)
+source(params$scRNA_functions)
+library(Seurat)
+library(SingleR)
+library(tinytex)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
+library(harmony)
 ```
 
 ```{r, processing, message=FALSE}

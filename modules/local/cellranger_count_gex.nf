@@ -1,6 +1,8 @@
 process CELLRANGER_COUNT {
     tag "${id}"
 
+    container 'litd/docker-cellranger:v7.2.0'
+
     input:
     tuple val(id), val(inDir)
     val(genome_dir)

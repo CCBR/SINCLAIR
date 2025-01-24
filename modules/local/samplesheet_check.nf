@@ -29,5 +29,4 @@ process SAMPLESHEET_CHECK {
         project
     fi
     """
-
 }

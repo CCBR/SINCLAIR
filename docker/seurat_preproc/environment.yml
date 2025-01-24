@@ -1,0 +1,24 @@
+name: preproc
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconductor-annotationdbi
+  - bioconductor-biocparallel
+  - bioconductor-celldex
+  - bioconductor-genomeinfodbdata
+  - bioconductor-org.mm.eg.db
+  - bioconductor-org.hs.eg.db
+  - bioconductor-orthology.eg.db
+  - bioconductor-singlecellexperiment
+  - bioconductor-singler=2
+  - r-base=4
+  - r-cluster
+  - r-evaluate=1.0.3
+  - r-farver
+  - r-flexmix
+  - r-hdf5r
+  - r-remotes
+  - r-r.utils
+  - r-seurat=5.1
+  - r-tidyverse

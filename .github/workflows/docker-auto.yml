@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - containerize
     paths:
       - "docker/**"
 
@@ -57,3 +58,4 @@ jobs:
             BUILD_DATE=${{ steps.date.outputs.DATE }}
             BUILD_TAG=${{ steps.metadata.outputs['version'] }}
             REPONAME=${{ steps.metadata.outputs['image_name'] }}
+            GITHUB_PAT=${{ github.token }}

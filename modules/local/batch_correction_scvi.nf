@@ -2,16 +2,14 @@ process BATCH_CORRECT_SCVI {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.containers.scvi}"
+
     input:
     tuple val(gid), path(mergedObj)
     val(species)
     val(npcs)
     val(vars_to_regress)
     val(resolution_list)
-    val(conda_path)
-    val(python_path)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
@@ -29,10 +27,6 @@ process BATCH_CORRECT_SCVI {
             npcs="$npcs",
             vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
-            conda_path="$conda_path",
-            python_path="$python_path",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_scvi.html")'

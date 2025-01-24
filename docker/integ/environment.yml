@@ -1,0 +1,19 @@
+name: integ
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4
+  - r-cluster=2
+  - r-cowplot
+  - r-DT
+  - r-evaluate=1.0.3
+  - r-ggpubr
+  - r-gridextra
+  - r-png
+  - r-remotes
+  - r-r.utils
+  - r-scales
+  - r-seurat=5.1
+  - r-signac=1
+  - r-tidyverse

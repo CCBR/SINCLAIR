@@ -1,4 +1,4 @@
 dockerhub_namespace: nciccbr
-image_name: sinclair_scvi
-version: 0.2.1
+image_name: sinclair_harmony
+version: 0.1.1
 container: "$(dockerhub_namespace)/$(image_name):$(version)"

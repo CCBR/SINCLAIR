@@ -1,4 +1,4 @@
 dockerhub_namespace: nciccbr
-image_name: sinclair_scvi
+image_name: sinclair_seurat_merge
 version: 0.2.1
 container: "$(dockerhub_namespace)/$(image_name):$(version)"

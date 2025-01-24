@@ -1,4 +1,4 @@
 dockerhub_namespace: nciccbr
-image_name: sinclair_baser
-version: 0.1.0
+image_name: sinclair_seurat_preproc
+version: 0.1.2
 container: "$(dockerhub_namespace)/$(image_name):$(version)"

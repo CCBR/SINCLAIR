@@ -9,16 +9,15 @@ params:
   species: "hg19"
   npcs: 50
   vars_to_regress: "percent.mt,nFeature_RNA"
-  samplesheet: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/assets/input_manifest_cellranger.csv"
-  rdsFiles: "/data/sevillas2/sinclair/dev/results/seurat/preprocess/sample2_seurat_preprocess.rds /data/sevillas2/sinclair/dev/results/seurat/preprocess/sample4_seurat_preprocess.rds"
+  samplesheet: "assets/input_manifest_cellranger.csv"
+  rdsFiles: "results/seurat/preprocess/sample2_seurat_preprocess.rds /data/sevillas2/sinclair/dev/results/seurat/preprocess/sample4_seurat_preprocess.rds"
   gid: "group1-group2"
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  scRNA_functions: "bin/scRNA_functions.R"
   testing: "Y"
 ---
 
-```{r, prep_args,  message=FALSE, include=FALSE}
+```{r setup,  message=FALSE, include=FALSE}
+options(future.globals.maxSize = 1e12)
 # set up params
 species <- params$species
 vars_to_regress_list <- strsplit(gsub(" ", "", params$vars_to_regress), ",")[[1]]
@@ -26,61 +25,25 @@ rds_files <- strsplit(params$rdsFiles, " ")[[1]]
 gid <- params$gid
 samplesheet <- params$samplesheet
 npcs <- as.numeric(params$npcs)
-
-scRNA_functions <- params$scRNA_functions
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
 testing <- params$testing
 
 print("These variables are used:")
 print(paste0("species:", species))
 print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
-```
 
-```{r, handle_pkg, message=FALSE, include=FALSE}
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ", Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-message(.libPaths())
-
-# read in package info
-pkg_df <- read.csv(Rpkg_config)
-pkg_df <- subset(pkg_df, merge == "Y")
-pkg_df
-
-# for each package check installation, if present then load library
-for (rowid in rownames(pkg_df)) {
-  pkg <- pkg_df[rowid, "package"]
-  source <- pkg_df[rowid, "source"]
-  version <- pkg_df[rowid, "version"]
-  gh_name <- pkg_df[rowid, "gh_name"]
-
-  need_install <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(need_install) != 0) {
-    print(paste0("Installing: ", pkg))
-    if (source == "bc") BiocManager::install(pkg)
-    if (source == "cr") {
-      install.packages(pkg,
-        version = version, repos = "http://cran.us.r-project.org",
-        local = FALSE
-      )
-    }
-    if (source == "gh") remotes::install_github(gh_name, version = version, local = FALSE)
-  }
-
-  print(paste0("Loading: ", pkg))
-  invisible(lapply(pkg, library, character.only = TRUE))
-}
-
-# source functions
-source(scRNA_functions)
-
-# additional options
-# tinytex::install_tinytex(force = TRUE)
-options(future.globals.maxSize = 1e12)
+library(Seurat)
+library(SingleCellExperiment)
+library(SingleR)
+library(celldex)
+library(tinytex)
+library(stringr)
+library(scRNAseq)
+library(Orthology.eg.db)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
 ```
 
 ```{r, processing, message=FALSE}

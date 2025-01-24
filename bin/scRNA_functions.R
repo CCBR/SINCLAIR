@@ -1,34 +1,4 @@
-##################################################################
-# Handle packages
-##################################################################
-scRNA_handle_packages <- function(pkg_df) {
-  for (rowid in rownames(pkg_df)) {
-    pkg <- pkg_df[rowid, "package"]
-    source <- pkg_df[rowid, "source"]
-    version <- pkg_df[rowid, "version"]
-    gh_name <- pkg_df[rowid, "gh_name"]
-
-    need_install <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-    if (length(need_install) != 0) {
-      print(paste0("Installing: ", pkg))
-      if (source == "bc") BiocManager::install(pkg, ask = FALSE, update = FALSE)
-      if (source == "cr") {
-        install.packages(pkg,
-          version = version, repos = "http://cran.us.r-project.org",
-          local = FALSE, ask = FALSE, update = FALSE
-        )
-      }
-      if (source == "gh") remotes::install_github(gh_name, version = version, local = FALSE, update = FALSE)
-    }
-
-    print(paste0("Loading: ", pkg))
-    invisible(lapply(pkg, library, character.only = TRUE))
-  }
-}
-
-##################################################################
-# Seurat Pre-processing
-##################################################################
+#' Seurat pre-processing
 SEURAT_CLUSTERING <- function(so_in, npcs_in) {
   # Runs Principal Component Analysis, FindNeighbors, clustering with the Smart Local Moving algorithm, and UMAP dimensionality reduction
   so <- RunPCA(
@@ -38,7 +8,7 @@ SEURAT_CLUSTERING <- function(so_in, npcs_in) {
     npcs = 50
   )
   so <- FindNeighbors(so, dims = 1:npcs_in)
-  so <- FindClusters(so, resolution = 0.8, algorithm = 3, verbose=TRUE)
+  so <- FindClusters(so, resolution = 0.8, algorithm = 3, verbose = TRUE)
   so <- RunUMAP(so, dims = 1:npcs_in, n.components = 3)
   return(so)
 }
@@ -50,38 +20,7 @@ CONVERT_TO_HUMAN_GENELIST <- function(gns) {
   return(as.character(unlist(mapped$MUS)))
 }
 
-MAIN_PROCESS_SO <- function(so_in, species, npcs_in) {
-  # assign genes depending on species input
-  if (species == "hg38" || species == "hg19") {
-    print("--proccesing human data")
-    s.genes <- cc.genes$s.genes
-    g2m.genes <- cc.genes$g2m.genes
-  } else if (species == "mm10") {
-    print("--proccesing mouse data")
-    s.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$s.genes)
-    g2m.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$g2m.genes)
-  }
 
-  # process
-  so_1 <- NormalizeData(so_in,
-    normalization.method = "LogNormalize",
-    scale.factor = 10000,
-    assay = "RNA"
-  )
-  so_2 <- ScaleData(so_1, assay = "RNA")
-  so_3 <- CellCycleScoring(so_2,
-    s.features = s.genes,
-    g2m.features = g2m.genes,
-    set.ident = TRUE
-  )
-  so_4 <- SCTransform(so_3)
-  so_out <- SEURAT_CLUSTERING(so_4, npcs_in)
-  return(so_out)
-}
-
-##################################################################
-#
-##################################################################
 RUN_SINGLEr <- function(obj, refFile, fineORmain) {
   obj <- DietSeurat(obj, graphs = "umap")
   sce <- as.SingleCellExperiment(obj, assay = "SCT")
@@ -90,71 +29,7 @@ RUN_SINGLEr <- function(obj, refFile, fineORmain) {
   return(s$pruned.labels)
 }
 
-MAIN_SINGLER <- function(so_in, species) {
-  if (species == "hg38" || species == "hg19") {
-    so_in$HPCA_main <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.main")
-    so_in$HPCA <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.fine")
-    so_in$BP_encode_main <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.main")
-    so_in$BP_encode <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.fine")
-    so_in$monaco_main <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.main")
-    so_in$monaco <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.fine")
-    so_in$immu_cell_exp_main <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
-      "label.main"
-    )
-    so_in$immu_cell_exp <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
-      "label.fine"
-    )
-    so_in$annot <- so_in$HPCA_main
-  } else if (species == "mm10") {
-    so_in$immgen_main <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.main")
-    so_in$immgen <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.fine")
-    so_in$mouseRNAseq_main <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.main")
-    so_in$mouseRNAseq <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.fine")
-    so_in$annot <- so_in$immgen_main
-  }
-  return(so_in)
-}
-
-##################################################################
-#
-##################################################################
-MAIN_DOUBLETS <- function(so_in, run_doublet_finder) {
-  if (run_doublet_finder == "Y") {
-    sweep.res.list_kidney <- paramSweep_v3(so_in, PCs = 1:10, sct = T)
-    sweep.stats_kidney <- summarizeSweep(sweep.res.list_kidney, GT = FALSE)
-    bcmvn_kidney <- find.pK(sweep.stats_kidney)
-
-    ## Homotypic Doublet Proportion Estimate
-    homotypic.prop <- modelHomotypic(so_in$annot)
-    perc <- 0.005 * (length(colnames(so_in)) / 1000)
-    nExp_poi <- round(perc * length(colnames(so_in))) # dfso@cell.names
-    nExp_poi.adj <- round(nExp_poi * (1 - homotypic.prop))
-
-    ## Run DoubletFinder with varying classification stringencies
-    dfso <- doubletFinder_v3(so_in,
-      pN = 0.25, pK = 0.09,
-      nExp = nExp_poi,
-      reuse.pANN = FALSE, PCs = 1:10, sct = T
-    )
-
-    pAAN <- tail(names(dfso@meta.data), 2)[1]
-    dfso <- doubletFinder_v3(dfso,
-      pN = 0.25, pK = 0.09,
-      nExp = nExp_poi.adj,
-      reuse.pANN = pAAN, PCs = 1:10, sct = T
-    )
-    so_in$DF_hi.lo <- dfso[[tail(names(dfso@meta.data), 1)]]
-    so_in <- subset(so_in, cells = names(so_in$DF_hi.lo)[so_in$DF_hi.lo == "Singlet"])
-  }
-
-  return(so_in)
-}
-
-##################################################################
-# run batch corrections
-##################################################################
+#' run batch corrections
 RUN_SINGLEr_AVERAGE <- function(obj, refFile, fineORmain) {
   avg <- AverageExpression(obj, assays = "SCT")
   avg <- as.data.frame(avg)
@@ -170,7 +45,8 @@ RUN_SINGLEr_AVERAGE <- function(obj, refFile, fineORmain) {
   return(annotVect)
 }
 
-MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_in, reduction_in, v_list, conda_env = "") {
+#' batch correction function used in multiple rmarkdown notebooks
+MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_in, reduction_in, v_list) {
   # set assay to RNA to avoid double transform/norm
   DefaultAssay(so_in) <- "RNA"
 
@@ -189,7 +65,7 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
     so_integrate <- IntegrateLayers(
       object = so_pca, method = scVIIntegration,
       new.reduction = "integrated.scvi",
-      conda_env = conda_path, dims = 1:npcs
+      dims = 1:npcs
     )
   } else if (method_in == "LIGER") {
     print("--running LIGER")
@@ -248,9 +124,7 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
   return(so)
 }
 
-##################################################################
-# Integration Report Functions
-##################################################################
+#' Integration Report Functions
 OBJECT_SELECT <- function(id) {
   obj <- switch(id,
     "merged" = so_merged,

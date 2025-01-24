@@ -1,0 +1,26 @@
+name: scvi
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - bioconductor-biocparallel
+  - bioconductor-celldex
+  - bioconductor-glmgampoi
+  - bioconductor-org.mm.eg.db
+  - bioconductor-org.hs.eg.db
+  - bioconductor-orthology.eg.db
+  - bioconductor-scrnaseq
+  - bioconductor-singlecellexperiment
+  - bioconductor-singler=2
+  - r-base=4
+  - r-essentials
+  - r-evaluate=1.0.3
+  - r-future.apply
+  - r-liger=1
+  - r-presto
+  - r-remotes
+  - r-reticulate
+  - r-seurat=5.1
+  - r-signac=1
+  - r-tidyverse
+  - scvi-tools=1.2
