@@ -198,7 +198,7 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
     so_norm <- NormalizeData(so_in)
     so_norm <- FindVariableFeatures(so_norm)
     so_norm <- ScaleData(so_norm, do.center = FALSE)
-    so_norm <- RunOptimizeALS(so_norm, k = 20, lambda = 5)
+    so_norm <- RunOptimizeALS(so_norm, k = npcs, lambda = 5)
     so_integrate <- RunQuantileNorm(so_norm)
   } else {
     print("--running SCT")

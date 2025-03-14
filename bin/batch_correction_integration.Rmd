@@ -12,7 +12,7 @@ params:
   ccaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_cca.rds"
   rpcaObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_rpca.rds"
   harmonyObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_harmony.rds"
-  scviObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_scvi.rds"
+  # scviObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_scvi.rds"
   ligerObj: "/data/sevillas2/sinclair/dev/results/batch_correct/group1-group2_batch_correction_liger.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
   citeseq: "text"
@@ -32,7 +32,7 @@ mergedObj=params$mergedObj
 CCAintegratedObj=params$ccaObj
 rpcaObj=params$rpcaObj
 harmonyObj=params$harmonyObj
-scviObj=params$scviObj
+# scviObj=params$scviObj
 ligerObj=params$ligerObj
 
 resolution=as.numeric(strsplit(params$resolution_list,",")[[1]])
@@ -76,12 +76,14 @@ scRNA_handle_packages(pkg_df)
 so_merged = readRDS(mergedObj)
 so_rpca = readRDS(rpcaObj)
 so_harmony = readRDS(harmonyObj)
-so_scvi = readRDS(scviObj)
+# so_scvi = readRDS(scviObj)
 so_liger=readRDS(ligerObj)
 so_integrated = readRDS(CCAintegratedObj)
 
 # identify object list
-objList = c("merged","rpca","integrated","harmony","scvi","liger")
+#objList = c("merged","rpca","integrated","harmony","scvi","liger") # TO BE MODIFIED TO INCLUDE SCVI IN FUTURE RELEASE
+objList = c("merged","rpca","integrated","harmony","liger")
+
 ```
 
 ## DimPlots {.tabset}
@@ -90,6 +92,7 @@ objList = c("merged","rpca","integrated","harmony","scvi","liger")
 
 ```{r sampleBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
 # plot 
+plot_list_s = list()
 for(i in 1:length(objList)){
   obj = OBJECT_SELECT(objList[i])
   title = NAME_SELECT(objList[i])
@@ -98,9 +101,11 @@ for(i in 1:length(objList)){
     theme(legend.position="bottom",
           legend.text=element_text(size=12))+
     guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("s",i),value=sampleImage)
+  plot_list_s[[paste0("s",i)]]=sampleImage
 }
-p = ggarrange(s1,s2,s3,s4,s5,s6,
+
+##### FUTURE USAGE OF SCOT-BASED ggarrange automation
+p = ggarrange(plotlist=plot_list_s,
           ncol=3,nrow=2,
           common.legend=T,
           legend="bottom")
@@ -113,6 +118,7 @@ color = "red", face = "bold", size = 14))
 ### Groups
 
 ```{r groupBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
+plot_list_g = list()
 for(i in 1:length(objList)){
   obj = OBJECT_SELECT(objList[i])
   title = NAME_SELECT(objList[i])
@@ -120,9 +126,9 @@ for(i in 1:length(objList)){
     ggtitle(title)+
     theme(legend.position="bottom",legend.text=element_text(size=12))+
     guides(colour=guide_legend(override.aes = list(size=3)))
-  assign(x=paste0("g",i),value=sampleImage)
+  plot_list_g[[paste0("g",i)]]=sampleImage
 }
-p = ggarrange(g1,g2,g3,g4,g5,g6,
+p = ggarrange(plotlist=plot_list_g,
           ncol=3,nrow=2,
           common.legend=T,
           legend="bottom")
@@ -135,6 +141,7 @@ annotate_figure(p,
 ### Cell type annotations
 
 ```{r annotationBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
+plot_list_annot=list()
 for(i in 1:length(objList)){
   obj = OBJECT_SELECT(objList[i])
   title = NAME_SELECT(objList[i])
@@ -142,9 +149,9 @@ for(i in 1:length(objList)){
     ggtitle(title)+
     theme(legend.position="bottom",legend.text=element_text(size=12))+
     guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("c",i),value=sampleImage)
+  plot_list_annot[[paste0("c",i)]]=sampleImage
 }
-p = ggarrange(c1,c2,c3,c4,c5,c6,
+p = ggarrange(plotlist=plot_list_annot,
           ncol=3,nrow=2,
           common.legend=T,legend="bottom")
 
@@ -165,7 +172,8 @@ resSil_merged=matrix(ncol=2,nrow=length(resolution))
 resSil_merged[]<-0
 
 # Initial loop through batch correction methods
-objList = c("rpca","integrated","harmony","scvi","liger")
+#objList = c("rpca","integrated","harmony","scvi","liger") #INCLUDE SCVI IN LATER RELEASE
+objList = c("rpca","integrated","harmony","liger")
 for(i in 1:length(objList)){
   # set object
   obj = OBJECT_SELECT(objList[i])
@@ -330,6 +338,8 @@ if(length(files)>0){
 }
 ```
 
+<!-- THIS SHOULD COMMENT OUT THE SCVI CHUNK OF EVALUATION
+
 ### scvi
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
@@ -343,6 +353,8 @@ if(length(files)>0){
   print(paste0("Batch correction method was not included:",method))
 }
 ```
+
+-->
 
 ### liger
 
@@ -403,6 +415,8 @@ if(length(files)>0){
 }
 ```
 
+<!-- COMMENT OUT SCVI CHUNK FOR LATER RELEASE
+
 ### scvi
 
 ```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
@@ -416,6 +430,8 @@ if(length(files)>0){
   print(paste0("Batch correction method was not included:",method))
 }
 ```
+
+-->
 
 ### liger
 

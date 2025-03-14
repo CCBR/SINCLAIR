@@ -10,7 +10,7 @@ params:
   gid: "group1-group2"
   mergedObj: "/data/sevillas2/sinclair/dev/results/seurat/merge/group1-group2_seurat_merged.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
-  npcs: 20
+  npcs: 50
   vars_to_regress: "percent.mt,nFeature_RNA"
   Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
   Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"

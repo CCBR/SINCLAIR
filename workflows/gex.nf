@@ -29,7 +29,7 @@ include { SEURAT_MERGE                                  } from '../modules/local
 include { BATCH_CORRECT_HARMONY                         } from '../modules/local/batch_correction_harmony.nf'
 include { BATCH_CORRECT_RPCA                            } from '../modules/local/batch_correction_rpca.nf'
 include { BATCH_CORRECT_CCA                             } from '../modules/local/batch_correction_cca.nf'
-include { BATCH_CORRECT_SCVI                            } from '../modules/local/batch_correction_scvi.nf'
+// include { BATCH_CORRECT_SCVI                            } from '../modules/local/batch_correction_scvi.nf' //BLOCKING SCVI FOR FUTURE RELEASE
 include { BATCH_CORRECT_LIGER                           } from '../modules/local/batch_correction_liger.nf'
 include { BATCH_CORRECT_INTEGRATION                     } from '../modules/local/batch_correction_integration.nf'
 /*
@@ -134,6 +134,7 @@ workflow GEX_EXQC {
             params.script_functions
         )
 
+/* BLOCKING SCVI FOR FUTURE RELEASE
         // Run batch corrections
         BATCH_CORRECT_SCVI (
             SEURAT_MERGE.out.rds,
@@ -148,8 +149,9 @@ workflow GEX_EXQC {
             params.script_scvi,
             params.script_functions
         )
-
-        // Run batch corrections
+*/
+ 
+       // Run batch corrections
         BATCH_CORRECT_LIGER (
             SEURAT_MERGE.out.rds,
             params.species,
@@ -168,7 +170,7 @@ workflow GEX_EXQC {
             BATCH_CORRECT_HARMONY.out.rds,
             BATCH_CORRECT_RPCA.out.rds,
             BATCH_CORRECT_CCA.out.rds,
-            BATCH_CORRECT_SCVI.out.rds,
+//            BATCH_CORRECT_SCVI.out.rds,
             BATCH_CORRECT_LIGER.out.rds,
             params.species,
             params.npcs,
