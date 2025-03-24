@@ -23,7 +23,8 @@
   - Set all default parameters in `nextflow.config`. (#85, @epehrsson)
     - Previously, some parameters were set in `conf/process_params.config`, but we found this confusing, so we consolidated them to the main `nextflow.config` file.
   - Allow sample IDs to contain hyphens. (#94, @wong-nw)
-  - Places SCVI batch correction on hold until a later release (#109, @wong-nw)
+  - Disables SCVI batch correction.  (#109, @wong-nw)
+    - This feature is on hold until a later release.
 - New features
 
   - Allows users to determine what variables to regress out. (#55, @slsevilla)
