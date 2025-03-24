@@ -92,7 +92,7 @@ objList = c("merged","rpca","integrated","harmony","liger")
 
 ```{r sampleBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
 
-# plot 
+# plot
 plot_list_s = list()
 
 for(i in 1:length(objList)){

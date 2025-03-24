@@ -25,6 +25,7 @@
   - Allow sample IDs to contain hyphens. (#94, @wong-nw)
   - Places SCVI batch correction on hold until a later release (#109, @wong-nw)
 - New features
+
   - Allows users to determine what variables to regress out. (#55, @slsevilla)
 
 - Documentation improvements

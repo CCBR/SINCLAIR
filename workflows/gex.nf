@@ -150,7 +150,7 @@ workflow GEX_EXQC {
             params.script_functions
         )
 */
- 
+
        // Run batch corrections
         BATCH_CORRECT_LIGER (
             SEURAT_MERGE.out.rds,
