@@ -15,7 +15,7 @@ process SEURAT_MERGE {
 
     output:
     tuple val(gid), path ("*_seurat_merged.rds")                 , emit:rds
-    tuple val(gid), path ("*_seurat_merged.pdf")                 , emit:logs
+    tuple val(gid), path ("*_seurat_merged.html")                 , emit:logs
 
     script:
     def args = task.ext.args ?: ''
@@ -31,12 +31,12 @@ process SEURAT_MERGE {
             Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
-        output_file = "${gid}_seurat_merged.pdf")'
+        output_file = "${gid}_seurat_merged.html")'
     """
 
     stub:
     """
     echo $rdsFiles > ${gid}_seurat_merged.rds
-    touch ${gid}_seurat_merged.pdf
+    touch ${gid}_seurat_merged.html
     """
 }
