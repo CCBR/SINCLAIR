@@ -18,7 +18,7 @@ args <- commandArgs(trailingOnly = T)
 
 
 h5 = as.character(args[1])
-ref =  as.character(args[2])  
+ref =  as.character(args[2])
 outFile = as.character(args[3])
 rnaCounts = Read10X_h5(h5)
 
@@ -41,4 +41,3 @@ if (nrow(groupFile[groupFile$V3 == sample & groupFile$V4 == "vdj",]) > 0 ) {
 	so = import_vdj(input = so, vdj_dir = tcrSamples,  filter_paired = FALSE  )
 
 }
-

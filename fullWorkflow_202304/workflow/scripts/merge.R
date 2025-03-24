@@ -27,19 +27,19 @@ file.names <- dir(path = sampleDir,pattern ="rds")
 groupFile = read.delim("groups.tab",header=F,stringsAsFactors = F)
 groupFile=groupFile[groupFile$V2 %in% stringr::str_split_fixed(contrasts,pattern = "-",n = Inf)[1,],]
 
-splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2) 
+splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2)
 #splitFiles = stringr::str_split_fixed(splitFiles,pattern = "__",n = Inf)[,1]
 file.names=file.names[match(groupFile$V1,splitFiles,nomatch = F)]
 print(groupFile$V1)
 print(splitFiles)
-print(file.names)    
+print(file.names)
 
 
 readObj = list()
 for (obj in file.names) {
   Name=strsplit(obj,".rds")[[1]][1]
   assign(paste0("S_",Name),readRDS(paste0(sampleDir,"/",obj)))
-  readObj = append(readObj,paste0("S_",Name))  
+  readObj = append(readObj,paste0("S_",Name))
  }
 
 
@@ -47,7 +47,7 @@ for (obj in file.names) {
 combinedObj.list=list()
 i=1
 for (p in readObj){
-  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]])) 
+  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]]))
   combinedObj.list[[p]]$Sample = names(combinedObj.list)[i]
   i <- i + 1
  }
@@ -63,4 +63,3 @@ combinedObj.integratedRNA = merge(reference.list[[1]],reference.list[2:length(re
 VariableFeatures(combinedObj.integratedRNA) = selectFeatures
 
 saveRDS(combinedObj.integratedRNA,outDirMerge)
-

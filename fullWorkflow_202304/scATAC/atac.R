@@ -15,8 +15,8 @@ atacCounts = Read10X_h5(h5)$Peaks
 
 print(head(colnames(atacCounts)))
 
-fragments = as.character(args[2])   
-ref =  as.character(args[3])  
+fragments = as.character(args[2])
+ref =  as.character(args[3])
 
 print(ref)
 
@@ -48,4 +48,3 @@ so["ATAC"] <- CreateChromatinAssay(
 )
 
 #Annotation(so[["ATAC"]]) <- annotations
-

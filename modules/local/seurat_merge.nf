@@ -22,7 +22,7 @@ process SEURAT_MERGE {
     """
     Rscript -e 'rmarkdown::render("${rmd}",
         params=list(species="$species",
-            npcs="$npcs",  
+            npcs="$npcs",
             vars_to_regress="$vars_to_regress",
             rdsFiles="$rdsFiles",
             gid="$gid",

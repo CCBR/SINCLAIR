@@ -91,7 +91,7 @@ runInt = function(obj,npcs,harm){
   }
   colnames(obj@meta.data) = gsub("integrated_snn_res","SLM_int_snn_res",colnames(obj@meta.data))
   colnames(obj@meta.data) = gsub("^SCT_snn_res","SLM_SCT_snn_res",colnames(obj@meta.data))
-  
+
    for (res in resolution){
      obj <- FindClusters(obj,verbose=F, resolution = res,algorithm = 4,method="igraph")#
    }

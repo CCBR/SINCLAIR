@@ -32,7 +32,7 @@ workflow INPUT_CHECK_GEX {
 workflow INPUT_CHECK_ATAC {
     take:
         samplesheet
-    
+
     main:
         SAMPLESHEET_CHECK (samplesheet)
             .atac_samplesheet
@@ -61,13 +61,13 @@ workflow INPUT_CHECK_ATAC {
 //         .groupTuple()
 //         .into { sample_fastq_r1r2; sample_fastq_r1r2_2 }
 
-// def create_mapped_channel(row){    
+// def create_mapped_channel(row){
 //     // [WB_Lysis_1:atac-'0',  '/data/CCBR_Pipeliner/Pipelines/TechDev_scRNASeq_Dev2023/test_dir/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/WB_Lysis_1'|gex-'0',  '/data/CCBR_Pipeliner/Pipelines/TechDev_scRNASeq_Dev2023/test_dir/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/WB_Lysis_1']
 //     // [WB_Lysis_2:gex-'0',  '/data/CCBR_Pipeliner/Pipelines/TechDev_scRNASeq_Dev2023/test_dir/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/WB_Lysis_2']
 //     array=[]
 //     sample=row.split(":")[0]
 //     print(sample)
-    
+
 //     //     array = [meta]
 //     //     if dt=="gex":
 //     //         print("Y")

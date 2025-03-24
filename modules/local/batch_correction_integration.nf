@@ -19,7 +19,7 @@ process BATCH_CORRECT_INTEGRATION {
 
     output:
     tuple val(gid), path ("*.html")                 , emit:logs
-        
+
     script:
     def args = task.ext.args ?: ''
     """

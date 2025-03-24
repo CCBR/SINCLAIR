@@ -36,33 +36,38 @@ Example workflow
 
 ```
 # 1) run initialization
-mkdir -p /path/to/output/dir
-cd /path/to/output/dir
-sinclair init
+# --output is optional and defaults to your current working directory.
+sinclair init --output /path/to/output/dir
 
 # 2) update the config files as needed
 ## can change whether cellranger is deployed, species, names of manifest files (default locations listed below)
-/path/to/output/dirnextflow.config
+/path/to/output/dir/nextflow.config
 /path/to/output/dir/assets/contrast_manifest.csv /path/to/output/dir/assets/input_manifest.csv
 
 # 3) deploy the pipeline
 ## A) STUBRUN
-sinclair run -stub -entry GEX
+sinclair run -stub -entry GEX --output /path/to/output/dir
 
 ## B) local run
-sinclair run -entry GEX
+sinclair run -entry GEX --output /path/to/output/dir
 
 ## C) submit to slurm
-sinclair run --mode slurm -entry GEX
+sinclair run --mode slurm -entry GEX --output /path/to/output/dir
 
 # 4) OPTIONAL resume
-sinclair run --mode slurm -entry GEX -resume
+sinclair run --mode slurm -entry GEX -resume --output /path/to/output/dir
 ```
 
 ### 4. Detailed Documentation
 
 Please view the repositories [documentation](https://symmetrical-adventure-ovjq9gl.pages.github.io/) for full details on deploying the pipeline, features, testing, and expected outputs.
 
-### 5. Feedback
+## Help & Contributing
 
-For comments/suggestions/advice please reach out to [Samantha Chill](mailto:samantha.sevilla@nih.gov) or [Nathan Wong](mailto:nathan.wong@nih.gov).
+Come across a **bug**? Open an [issue](https://github.com/CCBR/SINCLAIR/issues) and include a minimal reproducible example.
+
+Have a **question**? Ask it in [discussions](https://github.com/CCBR/SINCLAIR/discussions).
+
+Want to **contribute** to this project? Check out the [contributing guidelines](.github/CONTRIBUTING.md).
+
+**General Inquiries and Collaboration:** Please contact the CCBR Pipeliner team at [CCBR_Pipeliner@nih.gov](mailto:CCBR_Pipeliner@nih.gov).

@@ -7,6 +7,7 @@ https://github.com/beardymcjohnface/Snaketool/wiki/Customising-your-Snaketool
 
 import os
 import click
+import pathlib
 from .util import (
     nek_base,
     get_version,
@@ -14,17 +15,8 @@ from .util import (
     OrderedCommands,
     run_nextflow,
     print_citation,
+    msg_box,
 )
-
-
-def common_options(func):
-    """Common options decorator for use with click commands."""
-    options = [
-        click.argument("nextflow_args", nargs=-1),
-    ]
-    for option in reversed(options):
-        func = option(func)
-    return func
 
 
 @click.group(
@@ -63,6 +55,8 @@ Run with a specific tag, branch, or commit from GitHub:
 """
 
 
+# DEVELOPER NOTE: cannot use single-hyphen options e.g. -m, -o or else it may clash with nextflow's cli options
+# e.g. -profile clashed with -o (--output) and caused the command to be parsed as "-pr -o file"
 @click.command(
     epilog=help_msg_extra,
     context_settings=dict(
@@ -78,6 +72,13 @@ Run with a specific tag, branch, or commit from GitHub:
     show_default=True,
 )
 @click.option(
+    "--output",
+    help="Output directory path for sinclair init & run. Equivalient to nextflow launchDir. Defaults to your current working directory.",
+    type=click.Path(file_okay=False, dir_okay=True, writable=True),
+    default=pathlib.Path.cwd(),
+    show_default=False,
+)
+@click.option(
     "--mode",
     "_mode",
     help="Run mode (slurm, local)",
@@ -85,8 +86,17 @@ Run with a specific tag, branch, or commit from GitHub:
     default="local",
     show_default=True,
 )
-@common_options
-def run(main_path, _mode, **kwargs):
+@click.option(
+    "--forceall",
+    "-F",
+    "force_all",
+    help="Force all processes to run (i.e. do not use nextflow -resume)",
+    is_flag=True,
+    default=False,
+    show_default=True,
+)
+@click.argument("nextflow_args", nargs=-1)
+def run(main_path, output, _mode, force_all, **kwargs):
     """Run the workflow"""
     if (  # this is the only acceptable github repo option for sinclair
         main_path != "CCBR/SINCLAIR"
@@ -96,21 +106,40 @@ def run(main_path, _mode, **kwargs):
             raise FileNotFoundError(
                 f"Path to the sinclair main.nf file not found: {main_path}"
             )
-
-    run_nextflow(
-        nextfile_path=main_path,
-        mode=_mode,
-        **kwargs,
-    )
+    output_dir = output if isinstance(output, pathlib.Path) else pathlib.Path(output)
+    msg_box("output directory", errmsg=str(output_dir))
+    if not output_dir.is_dir() or not (output_dir / "nextflow.config").exists():
+        raise FileNotFoundError(
+            f"output directory not initialized: {output_dir}. Hint: you must initialize the output directory with `sinclair init --output {output_dir}`"
+        )
+    current_wd = os.getcwd()
+    try:
+        os.chdir(output_dir)
+        run_nextflow(
+            nextfile_path=main_path,
+            mode=_mode,
+            force_all=force_all,
+            **kwargs,
+        )
+    finally:
+        os.chdir(current_wd)
 
 
 @click.command()
-def init(**kwargs):
-    """Initialize the working directory by copying the system default config files"""
+@click.option(
+    "--output",
+    help="Output directory path for sinclair init & run. Equivalient to nextflow launchDir. Defaults to your current working directory.",
+    type=click.Path(file_okay=False, dir_okay=True, writable=True),
+    default=pathlib.Path.cwd(),
+    show_default=False,
+)
+def init(output, **kwargs):
+    """Initialize the launch directory by copying the system default config files"""
+    output_dir = output if isinstance(output, pathlib.Path) else pathlib.Path(output)
+    msg_box(f"Initializing SINCLAIR in {output_dir}")
+    (output_dir / "log/").mkdir(parents=True, exist_ok=True)
     paths = ("nextflow.config", "conf/", "assets/")
-    copy_config(paths)
-    if not os.path.exists("log/"):
-        os.mkdir("log/")
+    copy_config(paths, outdir=output_dir)
 
 
 cli.add_command(run)
@@ -120,6 +149,8 @@ cli.add_command(init)
 def main():
     cli()
 
+
+cli(prog_name="sinclair")
 
 if __name__ == "__main__":
     main()

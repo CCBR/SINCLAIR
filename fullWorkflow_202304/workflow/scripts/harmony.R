@@ -10,7 +10,7 @@ library("SingleR",lib.loc=loc)
 library(scRNAseq,lib.loc=loc)
 library(SingleCellExperiment,lib.loc=loc)
 library(dplyr)
-library(Matrix) 
+library(Matrix)
 library(tools)
 
 
@@ -33,19 +33,19 @@ file.names <- dir(path = matrix,pattern ="rds")
 groupFile = read.delim("groups.tab",header=F,stringsAsFactors = F)
 groupFile=groupFile[groupFile$V2 %in% stringr::str_split_fixed(contrasts,pattern = "-",n = Inf)[1,],]
 
-splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2) 
+splitFiles = gsub(".rds","",file.names)#str_split_fixed(file.names,pattern = "[.rd]",n = 2)
 #splitFiles = stringr::str_split_fixed(splitFiles,pattern = "__",n = Inf)[,1]
 file.names=file.names[match(groupFile$V1,splitFiles,nomatch = F)]
 print(groupFile$V1)
 print(splitFiles)
-print(file.names)    
+print(file.names)
 
 
 readObj = list()
 for (obj in file.names) {
   Name=strsplit(obj,".rds")[[1]][1]
   assign(paste0("S_",Name),readRDS(paste0(matrix,"/",obj)))
-  readObj = append(readObj,paste0("S_",Name))  
+  readObj = append(readObj,paste0("S_",Name))
  }
 
 
@@ -53,7 +53,7 @@ for (obj in file.names) {
 combinedObj.list=list()
 i=1
 for (p in readObj){
-  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]])) 
+  combinedObj.list[[p]] <- eval(parse(text = readObj[[i]]))
   combinedObj.list[[p]]$Sample = names(combinedObj.list)[i]
   i <- i + 1
  }
@@ -156,4 +156,3 @@ harmSample = runInt(harmSample,50,"Yes")
 saveRDS(combinedObj.integratedRNA,outDirMerge)
 saveRDS(harmGroup,outDirGroup)
 saveRDS(harmSample,outDirSample)
-

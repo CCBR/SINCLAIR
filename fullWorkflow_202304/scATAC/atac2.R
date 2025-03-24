@@ -68,10 +68,9 @@ so <- RunSVD(so)
 
 so <- FindMultiModalNeighbors(
   object = so,
-  reduction.list = list("pca", "lsi"), 
+  reduction.list = list("pca", "lsi"),
   dims.list = list(1:30, 2:30),
   modality.weight.name = "RNA.weight",
   verbose = TRUE
 )
 saveRDS(so,paste0("atacSoup/",as.character(args[1])))
-

@@ -22,7 +22,7 @@ After defining the object identities, Seurat requires that when when running dif
 seuratObject = PrepSCTFindMarkers(seuratObject)
 ```
 
-The purpose of the `PrepSCTFindMarkers` is to use the minimum of the median UMI  of individual objects to appropriately scale the SCT assay prior to differential expression<sup>[ref](#refPrepSCTfindMarkers)</sup>.
+The purpose of the `PrepSCTFindMarkers` is to use the minimum of the median UMI of individual objects to appropriately scale the SCT assay prior to differential expression<sup>[ref](#refPrepSCTfindMarkers)</sup>.
 
 ## Finding differentially expressed genes in Seurat
 
@@ -41,12 +41,15 @@ By default, Seurat uses the non-parametric Wilcoxon rank-sum test to identify si
 ### Option 2: Running `FindAllMarkers`<sup>[ref](#refFindAllMarkers)</sup>
 
 When looking to define a set of potential clusters or identities using gene markers, the `FindAllMarkers` function will run the differential expression by setting the first identity group (equivalent to `ident.1`) to each cluster in turn and using the remaining clusters as the comparison group (`ident.2`).
+
 ```
 markerGeneList = FindAllMarkers(seuratObject,test.use="MAST")
 ```
+
 The resulting list will show the differentially expressed genes that are significantly enriched or depleted for each identity within the preselected category. In essence, `FindAllMarkers` runs a loop where `FindMarkers` is run for each individual identity.
 
 ### Alternative methods for differential expression
+
 The default values for some of the more frequently altered parameters for the `FindMarkers` and `FindAllMarkers` functions are as follows:
 
 ```
@@ -54,6 +57,7 @@ deGenes = FindMarkers(seuratObject, ident.1=NA, ident.2=NA, features=NULL,
   test.use="wilcox," logfc.threshold=0.25, min.pct=0.1)
 
 ```
+
 If `ident.1` is defined and `ident.2` is left as a NULL value, the cells not included in `ident.1` will be used as the comparison, i.e. essentially running a one vs. rest comparison, similar to what is described in `FindAllMarkers`.
 
 The `features` parameter can take a vector of specified genes and only run differential expression for those genes. Note that this assumes that the gene is not filtered out by any other criteria, such as those listed below. In all other cases, all genes are run through initial filtering and statistical testing.
@@ -70,20 +74,19 @@ Since a number of genes will be unaffected by the experiment, a full differentia
 
 The output of the `deGeneList` variable above will have a table structure resembling the following:
 
-||p_val|avg_log2FC|pct.1|pct.2|p_val_adj|
-|---|-----|----------|-----|-----|---------|
-|Tff1|2.27649774378448e-20|0.503646816090369|0.313|0.039|5.15945448651315e-16|
-|Gkn1|2.37538488060338e-18|0.31537227402121|0.23|0.007|5.3835722933995e-14|
-|Gkn2|9.91735374467266e-14|0.238583210040284|0.166|0.004|2.24766905269261e-09|
-|Oaz1|1.26240861948424e-12|0.198987799763473|0.996|0.968|2.86112289519909e-08|
-|Rab5c|3.39748073842636e-12|0.301705843310934|0.645|0.4|7.7000503455695e-08|
-|Rbm3|5.53653902770416e-12|0.226144933696604|0.97|0.893|1.25480120523887e-07|
-|Cfl1|9.22315807122862e-12|0.171800659275371|1|0.982|2.09033654526325e-07|
-|Cd83|2.27101797312635e-10|0.242223105538207|0.849|0.789|5.14703513429356e-06|
-|Tff2|2.66531282660886e-10|0.226607061165825|0.189|0.025|6.04066499022633e-06|
+|       | p_val                | avg_log2FC        | pct.1 | pct.2 | p_val_adj            |
+| ----- | -------------------- | ----------------- | ----- | ----- | -------------------- |
+| Tff1  | 2.27649774378448e-20 | 0.503646816090369 | 0.313 | 0.039 | 5.15945448651315e-16 |
+| Gkn1  | 2.37538488060338e-18 | 0.31537227402121  | 0.23  | 0.007 | 5.3835722933995e-14  |
+| Gkn2  | 9.91735374467266e-14 | 0.238583210040284 | 0.166 | 0.004 | 2.24766905269261e-09 |
+| Oaz1  | 1.26240861948424e-12 | 0.198987799763473 | 0.996 | 0.968 | 2.86112289519909e-08 |
+| Rab5c | 3.39748073842636e-12 | 0.301705843310934 | 0.645 | 0.4   | 7.7000503455695e-08  |
+| Rbm3  | 5.53653902770416e-12 | 0.226144933696604 | 0.97  | 0.893 | 1.25480120523887e-07 |
+| Cfl1  | 9.22315807122862e-12 | 0.171800659275371 | 1     | 0.982 | 2.09033654526325e-07 |
+| Cd83  | 2.27101797312635e-10 | 0.242223105538207 | 0.849 | 0.789 | 5.14703513429356e-06 |
+| Tff2  | 2.66531282660886e-10 | 0.226607061165825 | 0.189 | 0.025 | 6.04066499022633e-06 |
 
 The first unlabeled column lists the genes, followed by raw p-value, average log2 fold change, the percentage of cells expressing the gene in populations 1 and 2, and finally the adjusted p-value. The sign of the fold change and the definitions of `pct.1` and `pct.2` are defined by the order of groups selected in the `FindMarkers` call: Positive fold changes indicate enrichment in the first group (i.e. defined as `ident.1`), as well as the `pct.1` value
-
 
 ## Common issues and questions
 
@@ -94,6 +97,7 @@ In most circumstances, a small p-value generally indicates that the gene is extr
 Unfortunately, it falls to the user to determine the relative significance of the genes that are identified as significant by examining the other statistics provided (i.e. `avg_log2FC` and `pct.1`/`pct.2`). Additionally, genes of interest can also be run through the `AverageExpression` and the `FeaturePlot` functions to explore the overall expression of the gene in the individual contrast groups. Other approaches, such as pseudobulk differential expression (see below) might be implemented in order to address this p-value phenomenon
 
 #### Requiring `JoinLayers`
+
 Since version 5, Seurat keeps individual samples as "layers" in the S4 data structure. This makes it simpler to apply various functions to each sample, such as SCTransform normalization or variable feature identification, since a single call to the Seurat object will behave like the `lapply` function in R. However, this also keeps the individual counts tables separate, which makes differential expression nigh impossible. To address this, the user needs to join the layers prior to running differential expression:
 
 ```
@@ -130,13 +134,12 @@ In theory, this flag can also be used in all other steps in order to skip the sc
 
 #### Pseudobulk differential expression
 
-If there are enough individual replicates, a user can convert the single cell dataset into a pseudobulk dataset and treat the individual samples as pooled replicates to be submitted through a standard RNASeq differential expression protocol, such as Limma or DESeq2. This has been explored using the [Libra](https://github.com/neurorestore/Libra) tool and through [Seurat](https://satijalab.org/seurat/articles/de_vignette#perform-de-analysis-after-pseudobulking) using their `AggregateExpression` function. The results tend to increase the p-values, which subsequently reduces the likelihood of false positives in identifying differentially expressed genes. 
+If there are enough individual replicates, a user can convert the single cell dataset into a pseudobulk dataset and treat the individual samples as pooled replicates to be submitted through a standard RNASeq differential expression protocol, such as Limma or DESeq2. This has been explored using the [Libra](https://github.com/neurorestore/Libra) tool and through [Seurat](https://satijalab.org/seurat/articles/de_vignette#perform-de-analysis-after-pseudobulking) using their `AggregateExpression` function. The results tend to increase the p-values, which subsequently reduces the likelihood of false positives in identifying differentially expressed genes.
 
 The main warning when running a pseudobulk approach is to ensure that there are enough samples to warrant aggregation; if only one sample is available per experimental condition, the user will be attempting a 1v1 differential expression design, which is not nearly robust enough to account for any intra-group sample variability.
 
 </br>
 </br>
-
 
 <font size='2'>References:
 
@@ -147,7 +150,5 @@ The main warning when running a pseudobulk approach is to ensure that there are 
 <a name=refFindAllMarkers>3.</a> [FindAllMarkers](https://satijalab.org/seurat/reference/findallmarkers)
 
 </font>
-
-
 
 <font size='2'>Author: Nathan Wong. January 2023</font>

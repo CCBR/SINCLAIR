@@ -1,9 +1,9 @@
 ---
 title: "scRNA Notebook"
-output: 
-  pdf_document: 
+output:
+  pdf_document:
     toc: yes
-editor_options: 
+editor_options:
   chunk_output_type: console
 params:
   species: "hg19"
@@ -118,12 +118,12 @@ so_filt = subset(so, subset = nFeature_RNA > 200)
 so_filt
 
 # run QC, subset for features meeting critera
-so_qc <- RunMiQC(so_filt, 
+so_qc <- RunMiQC(so_filt,
               percent.mt = "percent.mt",
-              nFeature_RNA = "nFeature_RNA", 
+              nFeature_RNA = "nFeature_RNA",
               posterior.cutoff = 0.7,
               model.slot = "flexmix_model")
-#PlotMiQC(so_qc, color.by = "miQC.probability") + 
+#PlotMiQC(so_qc, color.by = "miQC.probability") +
   #ggplot2::scale_color_gradient(low = "grey", high = "purple")
 ```
 
@@ -136,15 +136,15 @@ mt_out = outliers_mad(so_qc$percent.mt,threshold = 3)$UL_CI_MAD
 # perform QC dependent on user choice
 if(qc_filtering == "manual") {
   so_qc_select =  subset(so_qc,
-  nCount_RNA_max >= nCount_RNA & nCount_RNA >= nCount_RNA_min & 
-  nFeature_RNA_max >= nFeature_RNA & nFeature_RNA >= nFeature_RNA_min & 
+  nCount_RNA_max >= nCount_RNA & nCount_RNA >= nCount_RNA_min &
+  nFeature_RNA_max >= nFeature_RNA & nFeature_RNA >= nFeature_RNA_min &
   percent_mt_max >= percent.mt & percent.mt >= percent_mt_min)
 } else if (qc_filtering == "miqc") {
   so_qc_select = subset(so_qc, miQC.keep == "keep")
 } else if(qc_filtering == "mads") {
-  so_qc_select = subset(so_qc, 
-  subset = nFeature_RNA > nFeature_out & 
-  nCount_RNA > nCount_out & 
+  so_qc_select = subset(so_qc,
+  subset = nFeature_RNA > nFeature_out &
+  nCount_RNA > nCount_out &
   percent.mt < mt_out)
 }
 so_qc_select

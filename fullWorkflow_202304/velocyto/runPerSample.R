@@ -21,8 +21,8 @@ so_sub = RenameCells(so_sub, new.names = bcs)
   if (exists("dataset")){
 	ldat <- ReadVelocity(file = paste0("cellrangerOut/",file,"/velocyto/",file,".loom"))
 	bm <- as.Seurat(x = ldat)
-	bm[["RNA"]] <- bm[["spliced"]]	
-	bm <- SCTransform(bm)  
+	bm[["RNA"]] <- bm[["spliced"]]
+	bm <- SCTransform(bm)
 	bm = subset(bm,cells = bcs)
 	bm = AddMetaData(bm, so_sub@meta.data[,9:length(colnames(so_sub@meta.data))])
 	umap = rbind(umap, so_sub@reductions$umap@cell.embeddings)

@@ -5,11 +5,10 @@ from time import localtime, strftime
 import click
 import collections.abc
 import os
-import pprint
+import pathlib
 import shutil
 import stat
 import subprocess
-import sys
 import yaml
 
 
@@ -54,16 +53,28 @@ def append_config_block(nf_config="nextflow.config", scope=None, **kwargs):
         f.write("}\n")
 
 
-def copy_config(config_paths, overwrite=True):
-    msg(f"Copying default config files to current working directory")
+def copy_config(config_paths, outdir: pathlib.Path, overwrite=True):
+    """
+    Copies default configuration files to the specified output directory.
+
+    Args:
+        config_paths (list): A list of paths to the local configuration files.
+        outdir (pathlib.Path): The output directory where the configuration files will be copied.
+        overwrite (bool, optional): Whether to overwrite existing files and directories. Defaults to True.
+
+    Raises:
+        FileNotFoundError: If a specified configuration file or directory does not exist.
+    """
+    msg("Copying default config files to current working directory")
     for local_config in config_paths:
         system_config = nek_base(local_config)
+        output_config = outdir / local_config
         if os.path.isfile(system_config):
-            shutil.copyfile(system_config, local_config)
+            shutil.copyfile(system_config, output_config)
         elif os.path.isdir(system_config):
-            shutil.copytree(system_config, local_config, dirs_exist_ok=overwrite)
+            shutil.copytree(system_config, output_config, dirs_exist_ok=overwrite)
         else:
-            raise FileNotFoundError(f"Cannot copy {system_config} to {local_config}")
+            raise FileNotFoundError(f"Cannot copy {system_config} to {output_config}")
 
 
 def read_config(file):
@@ -153,10 +164,9 @@ def get_hpc():
 
 def run_nextflow(
     nextfile_path=None,
-    merge_config=None,
-    threads=None,
-    nextflow_args=None,
     mode="local",
+    force_all=False,
+    nextflow_args=None,
 ):
     """Run a Nextflow workflow"""
     nextflow_command = ["nextflow", "run", nextfile_path]
@@ -183,7 +193,17 @@ def run_nextflow(
         profiles.add("slurm")
     if hpc:
         profiles.add(hpc_options[hpc]["profile"])
-    args_dict["-profile"] = ",".join(sorted(profiles))
+    if (
+        profiles
+    ):  # only add to the profiles if there are any. there are none when champagne is run on GitHub Actions.
+        args_dict["-profile"] = ",".join(sorted(profiles))
+
+    # use -resume by default, or do not use resume if force_all is True
+    if force_all and "-resume" in args_dict.keys():
+        args_dict.pop("-resume")
+    elif not force_all and "-resume" not in args_dict.keys():
+        args_dict["-resume"] = ""
+
     nextflow_command += list(f"{k} {v}" for k, v in args_dict.items())
 
     # Print nextflow command

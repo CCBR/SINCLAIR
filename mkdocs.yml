@@ -9,29 +9,13 @@ repo_url: https://github.com/CCBR/SINCLAIR
 edit_uri: https://github.com/CCBR/SINCLAIR/edit/feature/gex_only/docs/
 
 # Copyright
-copyright: Copyright &copy; 2023 CCR Collaborative Bioinformatics Resource
+copyright: Copyright &copy; 2023-{{ now().year }} CCR Collaborative Bioinformatics Resource
 
 # Configuration
 theme:
-  name: material
-  features:
-    - navigation.tabs
-    - navigation.top
-    - navigation.indexes
-    - toc.integrate
-  palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-    - scheme: slate
-      primary: red
-      accent: red
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
+  name: readthedocs
+  locale: en
+  custom_dir: docs/overrides
 
 # Plugins
 plugins:
@@ -49,8 +33,11 @@ extra:
       link: https://github.com/CCBR
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/orgs/nciccbr/repositories
-  version:
-    provider: mike
+
+extra_css:
+  - css/custom.css
+extra_javascript:
+  - js/custom.js
 
 # Extensions
 markdown_extensions:
@@ -69,16 +56,9 @@ markdown_extensions:
   - pymdownx.caret
   - pymdownx.critic
   - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.keys
-  - pymdownx.magiclink:
-      repo_url_shorthand: true
-      user: squidfunk
-      repo: mkdocs-material
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.snippets:
@@ -98,6 +78,8 @@ nav:
       - 3. Running the Pipeline: user-guide/run.md
       - 4. Expected Output: user-guide/output.md
       - 5. Running Test Data: user-guide/test-info.md
+  - Analysis:
+      - 1. Differential Expression Analysis: user-guide/differentialExpression.md
   - FAQ:
       - Troubleshooting: user-guide/troubleshooting.md
       - How to contribute: contributing.md
