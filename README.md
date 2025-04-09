@@ -3,7 +3,7 @@
 **SIN**gle **C**el**L** **A**nalys**I**s **R**esource
 
 [![build](https://github.com/CCBR/SINCLAIR/actions/workflows/build.yml/badge.svg)](https://github.com/CCBR/SINCLAIR/actions/workflows/build.yml)
-[![docs](https://github.com/CCBR/SINCLAIR/actions/workflows/mkdocs.yml/badge.svg)](https://ccbr.github.io/SINCLAIR/)
+[![docs](https://github.com/CCBR/SINCLAIR/actions/workflows/docs-mkdocs.yml/badge.svg)](https://ccbr.github.io/SINCLAIR/)
 [![release](https://img.shields.io/github/v/release/CCBR/SINCLAIR?color=blue&label=latest%20release)](https://github.com/CCBR/SINCLAIR/releases/latest)
 
 ## Table of contents
