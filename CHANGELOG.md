@@ -1,9 +1,11 @@
 ## SINCLAIR development version
 
+- **Breaking change**: GEX is now the default workflow. The `-entry` argument is no longer used. (#129, @kelly-sovacool)
+
 ### New features
 
 - Allows users to determine what variables to regress out. (#55, @slsevilla)
-- Overhaul the CLI to use python rather than bash, which introduces breaking changes (#61, @kelly-sovacool).
+- Overhaul the CLI to use python rather than bash, which introduces **breaking changes** (#61, @kelly-sovacool).
   - Create a script (`bin/sinclair`) to provide an interface to the CLI that works out-of-the-box without the need to install the python package with pip. (#80, @kelly-sovacool)
 - Use `nextflow run -resume` by default, or turn it off with `sinclair run --forceall`. (#110, @kelly-sovacool)
 - Add `--output` argument for `sinclair init` and `sinclair run`. (#110, @kelly-sovacool)
