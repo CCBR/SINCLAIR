@@ -29,7 +29,7 @@ def test_citation():
 
 def test_preview():
     output = subprocess.run(
-        "./bin/sinclair run -entry GEX -preview -profile ci_stub",
+        "./bin/sinclair run -preview -profile ci_stub",
         capture_output=True,
         shell=True,
         text=True,
@@ -45,7 +45,7 @@ def test_preview():
 
 def test_forceall():
     output = subprocess.run(
-        "./bin/sinclair run -entry GEX --forceall -preview -profile ci_stub",
+        "./bin/sinclair run --forceall -preview -profile ci_stub",
         capture_output=True,
         shell=True,
         text=True,
@@ -83,7 +83,7 @@ def test_run_no_init():
     with pytest.raises(Exception) as exc_info:
         with tempfile.TemporaryDirectory() as tmp_dir:
             output = shell_run(
-                f"./bin/sinclair run -entry GEX --output {tmp_dir}",
+                f"./bin/sinclair run --output {tmp_dir}",
                 check=True,
                 capture_output=True,
             )

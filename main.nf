@@ -72,7 +72,7 @@ workflow.onError {
 //
 // WORKFLOW: Run initialization on input samples, check manifests files
 //
-workflow GEX {
+workflow {
     main:
         PREPROCESS_EXQC ()
         GEX_EXQC (
@@ -80,12 +80,4 @@ workflow GEX {
             PREPROCESS_EXQC.out.group_samplesheet,
         )
 
-}
-
-workflow ATAC {
-    main:
-        PREPROCESS_EXQC ()
-        ATAC_EXQC ()
-    emit:
-        samplesheet         = PREPROCESS_EXQC.out.samplesheet
 }

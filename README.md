@@ -46,16 +46,16 @@ sinclair init --output /path/to/output/dir
 
 # 3) deploy the pipeline
 ## A) STUBRUN
-sinclair run -stub -entry GEX --output /path/to/output/dir
+sinclair run -stub --output /path/to/output/dir
 
 ## B) local run
-sinclair run -entry GEX --output /path/to/output/dir
+sinclair run --output /path/to/output/dir
 
 ## C) submit to slurm
-sinclair run --mode slurm -entry GEX --output /path/to/output/dir
+sinclair run --mode slurm --output /path/to/output/dir
 
 # 4) OPTIONAL resume
-sinclair run --mode slurm -entry GEX -resume --output /path/to/output/dir
+sinclair run --mode slurm -resume --output /path/to/output/dir
 ```
 
 ### 4. Detailed Documentation
