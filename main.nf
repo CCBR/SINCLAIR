@@ -12,8 +12,8 @@
 nextflow.enable.dsl=2
 
 log.info """\
-        S I N C L A I R   P I P E L I N E
-        ===================================
+        SINCLAIR ${workflow.version}
+        ============================
         NF version   : $nextflow.version
         runName      : $workflow.runName
         username     : $workflow.userName
@@ -47,16 +47,6 @@ include { ATAC_EXQC                                 } from './workflows/atac'
 */
 workflow.onComplete {
     if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-        println "Running spooker"
-        def message = Utils.spooker(workflow)
-        if (message) {
-            println message
-        }
-    }
-}
-workflow.onError {
-    if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-        println "Running spooker (failed)"
         def message = Utils.spooker(workflow)
         if (message) {
             println message
