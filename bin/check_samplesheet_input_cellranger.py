@@ -9,6 +9,7 @@
 # Testing
 # bin/check_samplesheet.py assets/input_manifest.csv assets/contrast_manifest.csv /data/sevillas2/tmp/scRNA/project
 
+from collections import defaultdict
 import os
 import sys
 import errno
@@ -241,7 +242,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         ###################################################################################################
         # ALL: Create Contrast DF
         ###################################################################################################
-        contrast_df = pd.read_csv(file_in_c)
+        contrast_df = pd.read_csv(file_in_c, dtype=defaultdict(lambda: str))
         cols_to_cat = contrast_df.columns.values.tolist()
         contrast_df["key"] = contrast_df.astype(str).agg("-".join, axis=1)
         contrast_df["key"] = contrast_df["key"].str.replace("-nan", "")
