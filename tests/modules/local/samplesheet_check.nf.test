@@ -25,4 +25,24 @@ nextflow_process {
 
     }
 
+    test("samplesheet_check snapshot test - INF in contrastsheet") {
+
+        when {
+            params {
+            }
+            process {
+                """
+                input[0] = file(params.contrast_test.input)
+                input[1] = file(params.contrast_test.contrast)
+                input[2] = params.contrast_test.run_cellranger
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out).match()
+        }
+
+    }
 }
