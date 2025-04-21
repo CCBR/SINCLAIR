@@ -46,6 +46,8 @@ def print_citation_flag(ctx, param, value):
 def cli():
     """SINgle CelL AnalysIs Resource
 
+    docs: https://ccbr.github.io/SINCLAIR
+
     For more options, run:
     sinclair [command] --help"""
     pass
@@ -109,7 +111,11 @@ Run with a specific tag, branch, or commit from GitHub:
 )
 @click.argument("nextflow_args", nargs=-1)
 def run(main_path, output, _mode, force_all, **kwargs):
-    """Run the workflow"""
+    """
+    Run the workflow
+
+    docs: https://ccbr.github.io/SINCLAIR
+    """
     if (  # this is the only acceptable github repo option for sinclair
         main_path != "CCBR/SINCLAIR"
     ):

@@ -31,13 +31,14 @@ site/
 # ignore data
 data_storage
 
-# nextlfow files
+# nextflow files
 work/
+log/
 .nextflow.log*
-.nextflow/cache/
-.nextflow/history
+.nextflow/
 .nf-test/
-tests/results/
+results/
+output
 
 # tmp ignore testing fastqs
 test_dir/*/*/*.gz

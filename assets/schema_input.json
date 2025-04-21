@@ -1,0 +1,46 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/CCBR/SINCLAIR/main/assets/schema_input.json",
+    "title": "CCBR/SINCLAIR pipeline - params.input schema",
+    "description": "Schema for the file provided with params.input",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "masterID": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "master ID must be provided and cannot contain spaces",
+          "meta": ["masterID"]
+        },
+        "uniqueID": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "unique ID must be provided and cannot contain spaces",
+          "meta": ["uniqueID"]
+        },
+        "groupID": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "group ID must be provided and cannot contain spaces",
+          "meta": ["groupID"]
+        },
+        "dataType": {
+          "type": "string",
+          "pattern": "^\\S+$",
+          "errorMessage": "dataType must be provided and cannot contain spaces",
+          "enum": ["gex"],
+          "meta": ["dataType"]
+        },
+        "input_dir": {
+          "type": "string",
+          "format": "directory-path",
+          "exists": true,
+          "pattern": "^\\S+$",
+          "errorMessage": "Input directory must exist",
+          "meta": ["input_dir"]
+        }
+      },
+      "required": ["masterID", "uniqueID", "groupID", "dataType", "input_dir"]
+    }
+  }

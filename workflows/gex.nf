@@ -4,15 +4,6 @@ Validate inputs
 =======================================================================================================
 */
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-//input on command line
-if (params.input)    { ch_input    = file(params.input)    } else { exit 1, 'Input samplesheet not specified!' }
-if (params.contrast) { ch_contrast = file(params.contrast) } else { exit 1, 'Contrast samplesheet not specified!' }
-
 /*
 =======================================================================================================
 Assign local subworkflows
@@ -42,6 +33,15 @@ workflow GEX_EXQC {
         ch_fqdir_h5
         group_samplesheet
     main:
+        // Check input path parameters to see if they exist
+        def checkPathParamList = [ params.input]
+        for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+        // Check mandatory parameters
+        //input on command line
+        if (params.input)    { ch_input    = file(params.input)    } else { exit 1, 'Input samplesheet not specified!' }
+        if (params.contrast) { ch_contrast = file(params.contrast) } else { exit 1, 'Contrast samplesheet not specified!' }
+
         // Set output path to relative, species
         outdir_path = Channel.fromPath(params.outdir,relative:true)
         // Run Seurat for individual samples

@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/CCBR/SINCLAIR/main/nextflow_schema.json",
+  "title": "CCBR/SINCLAIR pipeline parameters",
+  "description": "SINgle CelL AnalysIs Resource",
+  "type": "object",
+  "$defs": {
+    "input_output_options": {
+      "title": "Input/output options",
+      "type": "object",
+      "fa_icon": "fas fa-terminal",
+      "description": "Define where the pipeline should find input data and save output data.",
+      "required": ["input", "contrast", "outdir"],
+      "properties": {
+        "input": {
+          "type": "string",
+          "format": "file-path",
+          "exists": true,
+          "schema": "assets/schema_input.json",
+          "mimetype": "text/csv",
+          "pattern": "^\\S+\\.csv$",
+          "description": "Path to CSV file containing information about the samples in the experiment.",
+          "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row.",
+          "fa_icon": "fas fa-file-csv",
+          "default": "assets/input_manifest.csv"
+        },
+        "contrast": {
+          "type": "string",
+          "format": "file-path",
+          "exists": true,
+          "mimetype": "text/csv",
+          "pattern": "^\\S+\\.csv$",
+          "description": "Path to CSV file with contrast specification",
+          "fa_icon": "fas fa-file-csv",
+          "default": "assets/contrast_manifest.csv"
+        },
+        "outdir": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+          "fa_icon": "fas fa-folder-open",
+          "default": "output"
+        }
+      }
+    },
+    "main_options": {
+      "title": "Main options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "species": {
+          "type": "string",
+          "default": "hg19"
+        },
+        "run_cellranger": {
+          "type": "string",
+          "default": "Y",
+          "enum": ["Y", "N"],
+          "description": "whether to run cellranger"
+        },
+        "vars_to_regress": {
+          "type": "string",
+          "default": "percent.mt,nFeature_RNA"
+        },
+        "qc_filtering": {
+          "type": "string",
+          "default": "manual"
+        },
+        "nCount_RNA_max": {
+          "type": "integer",
+          "default": 500000
+        },
+        "nCount_RNA_min": {
+          "type": "integer",
+          "default": 1000
+        },
+        "nFeature_RNA_max": {
+          "type": "integer",
+          "default": 5000
+        },
+        "nFeature_RNA_min": {
+          "type": "integer",
+          "default": 200
+        },
+        "percent_mt_max": {
+          "type": "integer",
+          "default": 10
+        },
+        "percent_mt_min": {
+          "type": "integer",
+          "default": 0
+        },
+        "run_doublet_finder": {
+          "type": "string",
+          "default": "Y",
+          "enum": ["Y", "N"]
+        },
+        "seurat_resolution": {
+          "type": "string",
+          "default": "0.1,0.2,0.3,0.5,0.6,0.8,1"
+        },
+        "npcs": {
+          "type": "integer",
+          "default": 50
+        },
+        "resolution_list": {
+          "type": "string",
+          "default": "0.1,0.2,0.3,0.5,0.6,0.8,1"
+        },
+        "genome_dir": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "Path to the genome references. Overridden by platform configs, e.g. conf/biowulf.config",
+          "fa_icon": "fas fa-folder"
+        }
+      }
+    },
+    "institutional_config_options": {
+      "title": "Institutional config options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "config_profile_name": {
+          "type": "string"
+        },
+        "config_profile_description": {
+          "type": "string"
+        },
+        "config_profile_contact": {
+          "type": "string"
+        },
+        "config_profile_url": {
+          "type": "string"
+        }
+      }
+    },
+    "generic_options": {
+      "title": "Generic options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "publish_dir_mode": {
+          "type": "string",
+          "default": "link"
+        },
+        "tracedir": {
+          "type": "string",
+          "format": "directory-path",
+          "default": "${params.outdir}/pipeline_info"
+        },
+        "max_memory": {
+          "type": "string",
+          "default": "128.GB"
+        },
+        "max_cpus": {
+          "type": "integer",
+          "default": 48
+        },
+        "max_time": {
+          "type": "string",
+          "default": "240.h"
+        }
+      },
+      "required": [
+        "publish_dir_mode",
+        "tracedir",
+        "max_memory",
+        "max_cpus",
+        "max_time"
+      ]
+    },
+    "containers": {
+      "title": "Containers",
+      "type": "object",
+      "description": "Docker/Singularity containers to use for processes. Must be available in dockerhub",
+      "default": "",
+      "properties": {
+        "base_container": {
+          "type": "string",
+          "default": "nciccbr/ccbr_ubuntu_base_20.04:v6.1",
+          "hidden": true
+        },
+        "baser_container": {
+          "type": "string",
+          "default": "nciccbr/sinclair_baser:0.1.0",
+          "hidden": true
+        }
+      }
+    },
+    "hidden_options": {
+      "title": "Hidden options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "Rlib_dir": {
+          "type": "string",
+          "format": "directory-path",
+          "default": "/gpfs/gsfs10/users/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8",
+          "hidden": true
+        },
+        "conda_path": {
+          "type": "string",
+          "format": "directory-path",
+          "default": "/gpfs/gsfs10/users/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env",
+          "hidden": true
+        },
+        "python_path": {
+          "type": "string",
+          "format": "directory-path",
+          "default": "/gpfs/gsfs10/users/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env/bin",
+          "hidden": true
+        },
+        "Rpkg": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/conf/Rpack.config",
+          "hidden": true
+        },
+        "script_functions": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/scRNA_functions.R",
+          "hidden": true
+        },
+        "script_preprocess": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/seurat_preprocess.Rmd",
+          "hidden": true
+        },
+        "script_merge": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/seurat_merge.Rmd",
+          "hidden": true
+        },
+        "script_bc_harmony": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/batch_correction_harmony.Rmd",
+          "hidden": true
+        },
+        "script_bc_rpca": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/batch_correction_rpca.Rmd",
+          "hidden": true
+        },
+        "script_bc_cca": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/batch_correction_cca.Rmd",
+          "hidden": true
+        },
+        "script_liger": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/batch_correction_liger.Rmd",
+          "hidden": true
+        },
+        "script_bc_integration": {
+          "type": "string",
+          "format": "file-path",
+          "default": "${projectDir}/bin/batch_correction_integration.Rmd",
+          "hidden": true
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/input_output_options"
+    },
+    {
+      "$ref": "#/$defs/main_options"
+    },
+    {
+      "$ref": "#/$defs/generic_options"
+    },
+    {
+      "$ref": "#/$defs/containers"
+    },
+    {
+      "$ref": "#/$defs/institutional_config_options"
+    },
+    {
+      "$ref": "#/$defs/hidden_options"
+    }
+  ]
+}

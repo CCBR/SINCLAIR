@@ -1,6 +1,6 @@
 masterID,uniqueID,groupID,dataType,input_dir
-WB_Lysis_1,sample1,group1,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample1
-WB_Lysis_1,sample2,group1,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample2
-WB_Lysis_2,sample3,group2,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample3
-WB_Lysis_2,sample4,group2,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample4
-WB_Lysis_3,sample5,group3,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample5
+WB_Lysis_1,sample1,group1,gex,tests/test_dir/cellranger_counts/sample1
+WB_Lysis_1,sample2,group1,gex,tests/test_dir/cellranger_counts/sample2
+WB_Lysis_2,sample3,group2,gex,tests/test_dir/cellranger_counts/sample3
+WB_Lysis_2,sample4,group2,gex,tests/test_dir/cellranger_counts/sample4
+WB_Lysis_3,sample5,group3,gex,tests/test_dir/cellranger_counts/sample5
