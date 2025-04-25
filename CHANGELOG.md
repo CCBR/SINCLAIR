@@ -1,4 +1,6 @@
-## SINCLAIR 0.3.0
+## SINCLAIR development version
+
+- Minor documentation improvements. (#135, @kelly-sovacool)
 
 ## SINCLAIR 0.3.0
 
