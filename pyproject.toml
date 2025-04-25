@@ -65,7 +65,7 @@ Changelog = "https://github.com/CCBR/SINCLAIR/blob/main/CHANGELOG.md"
 sinclair = "."
 
 [tool.setuptools.package-data]
-"*" = ["CITATION.cff", "LICENSE", "VERSION", "main.nf", "nextflow.config", "assets/**", "bin/**", "conf/**", "lib/**", "modules/**", "subworkflows/**", "workflows/**", "tests/**"]
+"*" = ["CITATION.cff", "LICENSE", "VERSION", "main.nf", "nextflow.config", "nextflow_schema.json", "assets/**", "bin/**", "conf/**", "lib/**", "modules/**", "subworkflows/**", "workflows/**", "tests/**"]
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
