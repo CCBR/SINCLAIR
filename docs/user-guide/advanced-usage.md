@@ -53,7 +53,7 @@ The configuration files control parameters and software of the pipeline. These f
 
 ### 2.1.1 NextFlow Config
 
-The configuration file dictates the global information to be used during the pipeline. Users can alter the default values, as needed:
+The configuration file dictates the global information to be used during the pipeline. Users can alter the default values, as needed. View the full list of parameters [here](../params.md).
 
 - input: path to input manifest; example manifests with (`input_manifest_cellranger.csv`) and without (`input_manifest.csv`) `cellranger` are included in assets
 - contrast: path to contrast manifest; example manifest (`contrast_manifest.csv`) is included in assets
@@ -86,12 +86,9 @@ The Nextflow workflow can be also run as follows:
 
 ```
 nextflow run main.nf \
-    -profile biowulf \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
-    --outdir /data/sevillas2/scRNA_test \
-    --species $species \
-    $args
+    -params-file assets/params.yml
 ```
 
 ## 3.2 Commands explained
@@ -102,7 +99,6 @@ The following explains each of the command options:
 - `-profile`: how to run the processes; IE biowulf singularity, docker
 - `--input`: input_manifest.csv location
 - `--contrast`: contrast_manifest.csv location
-- `--outdir`: complete path to the output dir
 - `--species`: species to be used
 - `--run_cellranger`: whether or not to run cellranger on dataset; IE Y, N
 - args: any additional arguments; IE --stub-run
@@ -117,7 +113,6 @@ nextflow run main.nf \
     -profile biowulf \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
-    --outdir /path/to/scRNA_test \
     --species hg19
 ```
 
@@ -130,7 +125,6 @@ nextflow run main.nf -resume \
     --run_cellranger Y \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
-    --outdir /path/to/scRNA_test \
     --run_cellranger Y \
     --species hg19
 ```
@@ -144,7 +138,6 @@ nextflow run main.nf \
     --run_cellranger Y \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
-    --outdir /path/to/scRNA_test \
     --species hg19 \
     --run_cellranger N \
     --stub-run

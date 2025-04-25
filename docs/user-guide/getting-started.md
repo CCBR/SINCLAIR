@@ -38,22 +38,17 @@ sinteractive --mem=64g --cpus-per-task=16 --time=8:00:00 --gres=lscratch:128
 
 ## 1.5 Installing and setting up SINCLAIR
 
-The CCBRPipeliner module on Biowulf also loads module dependencies, and should be loaded prior to running SINCLAIR:
+The ccbrpipeliner module on Biowulf also loads module dependencies, and should be loaded prior to running SINCLAIR:
 
 ```
-module load ccbrpipeliner
+module load ccbrpipeliner/8
 ```
 
-SINCLAIR can be downloaded directly from the CCBR Github page with the `git clone` command:
-
-```
-git clone https://github.com/CCBR/SINCLAIR
-```
-
-SINCLAIR can also be initialized on Biowulf using the ccbrpipeliner module (as of ccbrpipeliner version 8):
+Initialize the output directory for SINCLAIR. This will create a new directory
+and copy the necessary files to run the pipeline:
 
 ```
 sinclair init --output /path/to/output/dir
 ```
 
-From here, proceed to [preparing the files](./preparing-files.md).
+From here, proceed to [preparing the files](./preparing-files.md) and then [running the pipeline](./run.md).

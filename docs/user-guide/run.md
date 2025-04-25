@@ -1,43 +1,56 @@
 # 3. Running the Pipeline
 
-## Running with SINCLAIR command:
+## Running the SINCLAIR command
 
 As of ccbrpipeliner version 8, sinclair can be run with the command:
 
-```
-sinclair run [OPTIONS]
+```sh
+# initialize the pipeline (only needs to be done once)
+sinclair init --output <output_dir>
+# run the pipeline
+sinclair run --output <output_dir> [OPTIONS]
 ```
 
 Various options can be controlled in the command line call and pipeline parameters can be set in the `params.yml` file.
-View the full list of pipeline parameters that can be set in `params.yml` [here](../params.md).
 
 The most commonly used options are described below.
 
 _Default values indicated with \*_
 
-### General CLI arguments:
+### General CLI arguments
 
-- `--help` Returns the help statement
+- `--help` Prints the help statement
+- `--output` The pipeline output directory (same as the nextflow `launchDir`)
 - `--mode` Determines if the workflow runs on the current system or is submitted as a slurm job
   - `local`\*
   - `slurm`
 - `--forceall` Forces all steps of the workflow to be run
+
+### Nextflow arguments
+
+_Note that [nextflow arguments](https://www.nextflow.io/docs/latest/reference/cli.html#run) are prepended by a **single hyphen** rather than a double hyphen_
+
+- `-params-file assets/params.yml` Specify the pipeline parameters in a YAML file
 - `-profile` Uses pre-defined profiles to determine particular run configurations
-  _Note that this parameter is prepended by a single hyphen, not a double hyphen_
-
-  - `biowulf` Uses the configuration optimized for the Biowulf NIH HPC
   - `test` Applies samples and manifests for the test dataset run
+- `-preview` Preview the pipeline without executing it
 
-### Input and output parameters:
+### Pipeline parameters
 
-- `--input` Points to the input manifest `.csv` file
+These are parameters used within the nextflow workflow.
+They can be passed in via the command line or set in the `params.yml` file.
+View the full list of pipeline parameters [here](../params.md).
+
+#### Input and output parameters
+
+- `--input` The input manifest `.csv` file
   - `./assets/input_manifest_cellranger.csv`\*
   - `./assets/input_manifest.csv`
   - `other/user-defined/manifest.csv`
-- `--contrast` Points to the contrast manifest `.csv` file
+- `--contrast` The contrast manifest `.csv` file
   - `./assets/contrasts.csv`\*
-- `--outdir` Points to the output directory. Can be manually set
-  - `./outputs`\*
+- `--outdir` The nextflow results directory inside the pipeline output directory. Can be manually set
+  - `./output`\*
 - `--species` Which species and genome is to be used for reference in alignment (option) cell type annotation
   - `hg19`\*
   - `hg38`
@@ -46,7 +59,7 @@ _Default values indicated with \*_
   - `Y`\*
   - `N`
 
-### Seurat parameters:
+#### Seurat parameters
 
 <details>
 <summary></summary>
@@ -79,7 +92,7 @@ _Default values indicated with \*_
   - 50\*
   </details>
 
-## Examples:
+## Examples
 
 This run will operate on the `slurm` workflow manager, perform CellRanger alignment to the `mm10` mouse genome, and cluster the cells at the specified resolutions:
 
