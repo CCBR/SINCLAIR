@@ -1,15 +1,7 @@
 # Setting up a test run
 
-## From a workflow inititated by CCBRPipeliner
-
 ```
-sinclair run --mode slurm -entry GEX -profile test
-```
-
-## From a workflow downloaded from GitHub
-
-```
-bin/sinclair run --mode slurm -entry GEX -profile test
+sinclair run --mode slurm -profile test
 ```
 
 # About the data

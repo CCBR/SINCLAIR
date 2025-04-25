@@ -18,8 +18,7 @@ Review the logs in two ways:
 After addressing the issue, unlock the output directory, perform another dry-run and check the status of the pipeline, then resubmit to the cluster.
 
 ```
-nextflow run main.nf \
-    -entry $datatype \
+sinclair run \
     -profile biowulf \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \

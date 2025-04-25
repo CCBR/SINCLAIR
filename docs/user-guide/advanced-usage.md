@@ -31,13 +31,13 @@ Prepare files as described in the (quickstart)[quickstart.md] and the (preparati
 To start a local instance with CellRanger alignment (which is also the default setting):
 
 ```
-bin/sinclair run --mode local -entry GEX --species=<genome> --run_cellranger=Y
+bin/sinclair run --mode local --species=<genome> --run_cellranger=Y
 ```
 
 To start a slurm run:
 
 ```
-bin/sinclair run --mode slurm -entry GEX --species <genome> --run_cellranger Y
+bin/sinclair run --mode slurm --species <genome> --run_cellranger Y
 ```
 
 ## Manually adjusting config files
@@ -86,7 +86,6 @@ The Nextflow workflow can be also run as follows:
 
 ```
 nextflow run main.nf \
-    -entry $datatype \
     -profile biowulf \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
@@ -114,7 +113,7 @@ A typical command workflow, running the pipeline for the first time locally, is 
 
 ```
 nextflow run main.nf \
-    -entry gex \
+    \
     -profile biowulf \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
@@ -126,7 +125,7 @@ A typical command workflow, running the pipeline for a repeated time locally, ru
 
 ```
 nextflow run main.nf -resume \
-    -entry gex \
+    \
     -profile biowulf \
     --run_cellranger Y \
     --input assets/input_manifest.csv \
@@ -140,7 +139,7 @@ A typical command workflow, running the pipeline in a `dryrun mode`, without run
 
 ```
 nextflow run main.nf \
-    -entry gex \
+    \
     -profile biowulf \
     --run_cellranger Y \
     --input assets/input_manifest.csv \

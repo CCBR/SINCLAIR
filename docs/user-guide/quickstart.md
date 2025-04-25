@@ -101,13 +101,13 @@ These instructions will start a basic run of SINCLAIR. For more detailed instruc
 To start a local instance with CellRanger alignment (which is also the default setting):
 
 ```
-sinclair run --mode local -entry GEX --species=<genome> --run_cellranger=Y
+sinclair run --mode local --species=<genome> --run_cellranger=Y
 ```
 
 To start a slurm run:
 
 ```
-sinclair run --mode slurm -entry GEX --species <genome> --run_cellranger Y
+sinclair run --mode slurm --species <genome> --run_cellranger Y
 ```
 
 By default, the genome is `hg19`; other options include `mm10` and `hg38`. In order to run SINCLAIR without CellRanger alignment, the parameter `--run_cellranger N` needs to be set and SINCLAIR will now look at the `input_manifest_cellranger.csv` manifest.
