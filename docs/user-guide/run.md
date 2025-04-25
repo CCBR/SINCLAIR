@@ -92,3 +92,9 @@ This run will operate locally, starting from pre-aligned .h5 files generated fro
 ```
 sinclair run --mode local --run_cellranger N --species hg38 --forceall
 ```
+
+Specify [pipeline parameters](../params.md) in the `params.yml` file and show a preview of the pipeline run (without actually running it):
+
+```
+sinclair run -params-file assets/params.yml -preview
+```
