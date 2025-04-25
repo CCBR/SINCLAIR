@@ -1,6 +1,7 @@
 ## SINCLAIR development version
 
 - Minor documentation improvements. (#135, @kelly-sovacool)
+- SINCLAIR is now archived in Zenodo and can be cited with the DOI [10.5281/zenodo.15283503](10.5281/zenodo.15283503). (#136, @kelly-sovacool)
 
 ## SINCLAIR 0.3.0
 

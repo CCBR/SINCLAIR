@@ -4,6 +4,7 @@
 
 [![build](https://github.com/CCBR/SINCLAIR/actions/workflows/build.yml/badge.svg)](https://github.com/CCBR/SINCLAIR/actions/workflows/build.yml)
 [![docs](https://github.com/CCBR/SINCLAIR/actions/workflows/docs-mkdocs.yml/badge.svg)](https://ccbr.github.io/SINCLAIR/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15283503)](https://doi.org/10.5281/zenodo.15283503)
 [![release](https://img.shields.io/github/v/release/CCBR/SINCLAIR?color=blue&label=latest%20release)](https://github.com/CCBR/SINCLAIR/releases/latest)
 
 ## Table of contents
