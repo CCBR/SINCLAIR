@@ -4,15 +4,21 @@ authors:
   - family-names: Sevilla
     given-names: Samantha
     orcid: https://orcid.org/0000-0002-8734-9875
-    affiliation: Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA
+    affiliation:
+      Advanced Biomedical Computational Science, Frederick National Laboratory
+      for Cancer Research, Frederick, MD 21702, USA
   - family-names: Wong
     given-names: Nathan
     orcid: https://orcid.org/0000-0002-8882-3401
-    affiliation: Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA
+    affiliation:
+      Advanced Biomedical Computational Science, Frederick National Laboratory
+      for Cancer Research, Frederick, MD 21702, USA
   - family-names: Sovacool
     given-names: Kelly
     orcid: https://orcid.org/0000-0003-3283-829X
-    affiliation: Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA
+    affiliation:
+      Advanced Biomedical Computational Science, Frederick National Laboratory
+      for Cancer Research, Frederick, MD 21702, USA
   - family-names: Pehrsson
     given-names: Erica
     orcid: https://orcid.org/0000-0002-2968-6179
@@ -24,11 +30,13 @@ authors:
   - family-names: Koparde
     given-names: Vishal
     orcid: https://orcid.org/0000-0001-8978-8495
-    affiliation: Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA
+    affiliation:
+      Advanced Biomedical Computational Science, Frederick National Laboratory
+      for Cancer Research, Frederick, MD 21702, USA
 title: "SINCLAIR: SINgle CelL AnalysIs Resource"
 url: https://ccbr.github.io/SINCLAIR
 repository-code: https://github.com/CCBR/SINCLAIR
 license: MIT
 type: software
-version: v0.2.0
-date-released: 2023-11-01
+version: v0.3.0
+date-released: "2025-04-25"
