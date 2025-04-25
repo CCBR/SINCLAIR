@@ -28,19 +28,16 @@ def test_citation():
 
 
 def test_preview():
-    output = subprocess.run(
-        "./bin/sinclair run -preview -profile ci_stub",
-        capture_output=True,
-        shell=True,
-        text=True,
-        check=True,
-    ).stdout
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        output = shell_run(
+            f"./bin/sinclair init --output {tmp_dir} && ./bin/sinclair run --output {tmp_dir} -preview"
+        )
     cmd_line = {
         l.split(":")[0].strip(): l.split(":")[1].strip()
         for l in output.split("\n")
         if ":" in l
     }["cmd line"]
-    assert "-preview" in cmd_line and "-resume" in cmd_line
+    assert all(["-preview" in cmd_line, "-resume" in cmd_line])
 
 
 def test_forceall():
