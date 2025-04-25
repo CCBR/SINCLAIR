@@ -22,7 +22,8 @@ Additional required dependencies:
 - Nextflow
 - Singularity
 
-If you're running sinclair on biowulf, the nextflow and singularity modules will be loaded automatically. 
+If you're running sinclair on biowulf, the nextflow and singularity modules will be loaded automatically.
+
 ### Preparation and Running
 
 Prepare files as described in the (quickstart)[quickstart.md] and the (preparation)[preparing-files.md] guides.
