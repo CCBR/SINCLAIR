@@ -5,14 +5,17 @@
 As of ccbrpipeliner version 8, sinclair can be run with the command:
 
 ```
-sinclair run <parameters>
+sinclair run [OPTIONS]
 ```
 
-Various parameters can be adjusted in the command line call and the `params.yml` file. These include the following:
+Various options can be controlled in the command line call and pipeline parameters can be set in the `params.yml` file.
+View the full list of pipeline parameters that can be set in `params.yml` [here](../params.md).
+
+The most commonly used options are described below.
 
 _Default values indicated with \*_
 
-### General parameters
+### General CLI arguments:
 
 - `--help` Returns the help statement
 - `--mode` Determines if the workflow runs on the current system or is submitted as a slurm job
@@ -25,7 +28,7 @@ _Default values indicated with \*_
   - `biowulf` Uses the configuration optimized for the Biowulf NIH HPC
   - `test` Applies samples and manifests for the test dataset run
 
-### Input and output options:
+### Input and output parameters:
 
 - `--input` Points to the input manifest `.csv` file
   - `./assets/input_manifest_cellranger.csv`\*
