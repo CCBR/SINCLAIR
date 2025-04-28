@@ -41,6 +41,7 @@ sinclair --version
 ```sh
 sinclair init --output /path/to/output/dir
 ```
+
 ##### 2. Update the config files as needed
 
 can change whether cellranger is deployed, species, names of manifest files (default locations listed below)
@@ -54,16 +55,19 @@ In `/path/to/output/dir`:
 ##### 3. Run the pipeline
 
 A) preview without executing
+
 ```sh
 sinclair run -preview --output /path/to/output/dir -params-file assets/params.yml
 ```
 
 B) local run
+
 ```sh
 sinclair run --output /path/to/output/dir -params-file assets/params.yml
 ```
 
 C) submit to slurm
+
 ```sh
 sinclair run --mode slurm --output /path/to/output/dir -params-file assets/params.yml
 ```
