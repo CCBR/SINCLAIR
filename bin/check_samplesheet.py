@@ -47,7 +47,7 @@ def print_error(error, context="Line", context_str=""):
     raise ValueError(error_str)
 
 
-def check_files(fileid):
+def check_files(fileid, context):
     # ensure that the file follows the structure
     ## [Sample Name]_S[Sample Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
     # create sample list - will check all samples are the same name
@@ -58,7 +58,11 @@ def check_files(fileid):
     # check S1_L00 is within file
     sID = re.search("S._L00", fileid)
     if sID == None:
-        print_error("Input file must include S[sampleNumber]_L00 in name:", fileid)
+        print_error(
+            "Input file must include S[sampleNumber]_L00 in name:",
+            context,
+            f"file: {fileid}",
+        )
 
     # spit after S1_L00
     postID = fileid.split("_L00")[1]
@@ -68,18 +72,19 @@ def check_files(fileid):
     try:
         float(laneID)
     except ValueError:
-        print_error("Input file laneID must be numeric: %s" % fileid)
+        print_error("Input file laneID must be numeric: ", context, f"file: {fileid}")
 
     accepted_read_type = ["R1", "R2", "I1", "I2"]
     read_type = postID.split("_")[1]
     if not read_type in accepted_read_type:
         print_error(
-            "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type
+            "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type,
+            context,
         )
 
     ext = fileid.split("001.")[1]
     if ext != "fastq.gz":
-        print_error("Input file extension must be .fastq.gz: %s" % ext)
+        print_error("Input file extension must be .fastq.gz: ", context, f"ext: {ext}")
 
     return sample_list
 
@@ -175,7 +180,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 if DATATYPE == "gex":
                     # for every file, check file exists and is properly formatted
                     for fileid in onlyfiles:
-                        sample_list = check_files(fileid)
+                        sample_list = check_files(fileid, f"input_dir: {INPUTDIR}")
 
                     # ensure all samples names are the same
                     if len(set(sample_list)) != 1:
