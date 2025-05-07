@@ -40,20 +40,21 @@ def parse_args(args=None):
 
 def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check samplesheet -> {}".format(error)
-    if context != "" and context_str != "":
-        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
-            error, context.strip(), context_str.strip()
-        )
-    print(error_str)
-    sys.exit(1)
+    if context:
+        error_str += f"\n{context.strip()}"
+        if context_str:
+            error_str += f": {context_str.strip()}"
+    raise ValueError(error_str)
 
 
-def check_files(fileid):
+def check_files(fileid, context):
     # check filtered_feature_bc_matrix is within file
     sID = "filtered_feature_bc_matrix" in fileid
     if sID == False:
         print_error(
-            "Input file must include filtered_feature_bc_matrix in name:", fileid
+            "Input file must include filtered_feature_bc_matrix in name:",
+            context,
+            f"file: {fileid}",
         )
 
     # spit after S1_L00
@@ -61,7 +62,9 @@ def check_files(fileid):
 
     if ext != ".h5":
         print_error(
-            "Input dir must include filtered_feature_bc_matrix.h5 in name:", ext
+            "Input dir must include filtered_feature_bc_matrix.h5 in name:",
+            f"masterID {sample_id}",
+            f"extension: {ext}",
         )
 
 
@@ -105,12 +108,11 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         HEADER = ["masterID", "uniqueID", "groupID", "dataType", "input_dir"]
         header = [x.strip('"') for x in fin.readline().strip().split(",")]
         if header[: len(HEADER)] != HEADER:
-            print(
+            raise ValueError(
                 "ERROR: Please check samplesheet header -> {} != {}".format(
                     ",".join(header), ",".join(HEADER)
                 )
             )
-            sys.exit(1)
 
         ## Check sample entries
         for line in fin.readlines():
@@ -154,7 +156,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
 
                 # for every file, check file exists and is properly formatted
                 for fileid in onlyfiles:
-                    check_files(fileid)
+                    check_files(fileid, f"input_dir: {INPUTDIR}")
 
             ###################################################################################################
             # ALL: Create DICTs for
@@ -307,4 +309,4 @@ def main(args=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

@@ -40,12 +40,11 @@ def parse_args(args=None):
 
 def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check samplesheet -> {}".format(error)
-    if context != "" and context_str != "":
-        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
-            error, context.strip(), context_str.strip()
-        )
-    print(error_str)
-    sys.exit(1)
+    if context:
+        error_str += f"\n{context.strip()}"
+        if context_str:
+            error_str += f": '{context_str.strip()}'"
+    raise ValueError(error_str)
 
 
 def check_files(fileid):
@@ -125,12 +124,11 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         HEADER = ["masterID", "uniqueID", "groupID", "dataType", "input_dir"]
         header = [x.strip('"') for x in fin.readline().strip().split(",")]
         if header[: len(HEADER)] != HEADER:
-            print(
+            raise ValueError(
                 "ERROR: Please check samplesheet header -> {} != {}".format(
                     ",".join(header), ",".join(HEADER)
                 )
             )
-            sys.exit(1)
 
         ## Check sample entries
         for line in fin.readlines():
@@ -357,4 +355,4 @@ def main(args=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
