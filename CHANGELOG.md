@@ -1,6 +1,7 @@
 ## SINCLAIR development version
 
 - Improve error messages in SAMPLESHEET_CHECK processes. (#143, @kelly-sovacool)
+- SINCLAIR now depends on ccbr_tools v0.4 for updated jobby & spooker utilities. (#147, @kelly-sovacool)
 
 ## SINCLAIR 0.3.1
 
