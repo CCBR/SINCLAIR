@@ -55,17 +55,20 @@ def cli():
 
 help_msg_extra = """
 \b
+Nextflow options:
+-profile <profile>    Nextflow profile to use (e.g. test)
+-params-file <file>   Nextflow params file to use (e.g. assets/params.yml)
+-preview              Preview the processes that will run without executing them
+
+\b
 EXAMPLES:
 Execute with slurm:
-    sinclair run ... --mode slurm
+  sinclair run ... --mode slurm
 Preview the processes that will run:
-    sinclair run ... --mode local -preview
+  sinclair run ... --mode local -preview
 Add nextflow args (anything supported by `nextflow run`):
-    sinclair run ... -work-dir path/to/workDir
-Run with a specific installation of sinclair:
-    sinclair run --main path/to/sinclair/main.nf ...
-Run with a specific tag, branch, or commit from GitHub:
-    sinclair run --main CCBR/SINCLAIR -r v0.1.0 ...
+  sinclair run ... -profile test
+  sinclair run ... -profile test -params-file assets/params.yml
 """
 
 
@@ -84,6 +87,7 @@ Run with a specific tag, branch, or commit from GitHub:
     type=str,
     default=repo_base("main.nf"),
     show_default=True,
+    hidden=True,
 )
 @click.option(
     "--output",
