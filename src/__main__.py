@@ -101,7 +101,7 @@ Add nextflow args (anything supported by `nextflow run`):
     "_mode",
     help="Run mode (slurm, local)",
     type=str,
-    default="local",
+    default="slurm",
     show_default=True,
 )
 @click.option(

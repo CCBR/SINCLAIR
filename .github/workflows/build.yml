@@ -62,7 +62,8 @@ jobs:
           sinclair init
           sinclair run \
             -stub \
-            -profile ci_stub,docker,test
+            -profile ci_stub,docker,test \
+            --mode local
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         if: always() # run even if previous steps fail
