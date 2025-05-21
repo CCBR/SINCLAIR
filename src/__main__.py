@@ -55,17 +55,20 @@ def cli():
 
 help_msg_extra = """
 \b
+Nextflow options:
+-profile <profile>    Nextflow profile to use (e.g. test)
+-params-file <file>   Nextflow params file to use (e.g. assets/params.yml)
+-preview              Preview the processes that will run without executing them
+
+\b
 EXAMPLES:
 Execute with slurm:
-    sinclair run ... --mode slurm
+  sinclair run --output path/to/outdir --mode slurm
 Preview the processes that will run:
-    sinclair run ... --mode local -preview
+  sinclair run --output path/to/outdir --mode local -preview
 Add nextflow args (anything supported by `nextflow run`):
-    sinclair run ... -work-dir path/to/workDir
-Run with a specific installation of sinclair:
-    sinclair run --main path/to/sinclair/main.nf ...
-Run with a specific tag, branch, or commit from GitHub:
-    sinclair run --main CCBR/SINCLAIR -r v0.1.0 ...
+  sinclair run --output path/to/outdir --mode slurm -profile test
+  sinclair run --output path/to/outdir --mode slurm -profile test -params-file assets/params.yml
 """
 
 
@@ -84,10 +87,11 @@ Run with a specific tag, branch, or commit from GitHub:
     type=str,
     default=repo_base("main.nf"),
     show_default=True,
+    hidden=True,
 )
 @click.option(
     "--output",
-    help="Output directory path for sinclair init & run. Equivalient to nextflow launchDir. Defaults to your current working directory.",
+    help="Output directory path for sinclair init & run. Be sure to run `sinclair init --output <output_dir>` before `sinclair run`. `--output` is equivalent to the nextflow launchDir. Defaults to your current working directory.",
     type=click.Path(file_okay=False, dir_okay=True, writable=True),
     default=pathlib.Path.cwd(),
     show_default=False,
@@ -97,7 +101,7 @@ Run with a specific tag, branch, or commit from GitHub:
     "_mode",
     help="Run mode (slurm, local)",
     type=str,
-    default="local",
+    default="slurm",
     show_default=True,
 )
 @click.option(
@@ -113,6 +117,8 @@ Run with a specific tag, branch, or commit from GitHub:
 def run(main_path, output, _mode, force_all, **kwargs):
     """
     Run the workflow
+
+    Note: you must first run `sinclair init --output <output_dir>` to initialize the output directory.
 
     docs: https://ccbr.github.io/SINCLAIR
     """
