@@ -63,12 +63,12 @@ Nextflow options:
 \b
 EXAMPLES:
 Execute with slurm:
-  sinclair run ... --mode slurm
+  sinclair run --output path/to/outdir --mode slurm
 Preview the processes that will run:
-  sinclair run ... --mode local -preview
+  sinclair run --output path/to/outdir --mode local -preview
 Add nextflow args (anything supported by `nextflow run`):
-  sinclair run ... --mode slurm -profile test
-  sinclair run ... --mode slurm -profile test -params-file assets/params.yml
+  sinclair run --output path/to/outdir --mode slurm -profile test
+  sinclair run --output path/to/outdir --mode slurm -profile test -params-file assets/params.yml
 """
 
 
