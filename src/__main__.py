@@ -67,8 +67,8 @@ Execute with slurm:
 Preview the processes that will run:
   sinclair run ... --mode local -preview
 Add nextflow args (anything supported by `nextflow run`):
-  sinclair run ... -profile test
-  sinclair run ... -profile test -params-file assets/params.yml
+  sinclair run ... --mode slurm -profile test
+  sinclair run ... --mode slurm -profile test -params-file assets/params.yml
 """
 
 
