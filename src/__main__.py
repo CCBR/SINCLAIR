@@ -91,7 +91,7 @@ Add nextflow args (anything supported by `nextflow run`):
 )
 @click.option(
     "--output",
-    help="Output directory path for sinclair init & run. Equivalient to nextflow launchDir. Defaults to your current working directory.",
+    help="Output directory path for sinclair init & run. Be sure to run `sinclair init --output <output_dir>` before `sinclair run`. `--output` is equivalent to the nextflow launchDir. Defaults to your current working directory.",
     type=click.Path(file_okay=False, dir_okay=True, writable=True),
     default=pathlib.Path.cwd(),
     show_default=False,
@@ -117,6 +117,8 @@ Add nextflow args (anything supported by `nextflow run`):
 def run(main_path, output, _mode, force_all, **kwargs):
     """
     Run the workflow
+
+    Note: you must first run `sinclair init --output <output_dir>` to initialize the output directory.
 
     docs: https://ccbr.github.io/SINCLAIR
     """
