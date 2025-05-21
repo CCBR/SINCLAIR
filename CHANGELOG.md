@@ -1,6 +1,7 @@
 ## SINCLAIR development version
 
 - Improve help message for `sinclair run`. (#153, @kelly-sovacool)
+  - the default `--mode` is now `slurm`.
 
 ## SINCLAIR 0.3.2
 
