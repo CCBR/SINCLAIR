@@ -31,13 +31,13 @@ Prepare files as described in the (quickstart)[quickstart.md] and the (preparati
 To start a local instance with CellRanger alignment (which is also the default setting):
 
 ```
-bin/sinclair run --mode local --species=<genome> --run_cellranger=Y
+bin/sinclair run --mode local --species <genome> --run_cellranger true
 ```
 
 To start a slurm run:
 
 ```
-bin/sinclair run --mode slurm --species <genome> --run_cellranger Y
+bin/sinclair run --mode slurm --species <genome> --run_cellranger true
 ```
 
 ## Manually adjusting config files
@@ -59,7 +59,7 @@ The configuration file dictates the global information to be used during the pip
 - contrast: path to contrast manifest; example manifest (`contrast_manifest.csv`) is included in assets
 - outdir: path to output dir
 - species: species [options: hg19, mm10]
-- run_cellranger: determines whether to run cell ranger; if "Y" is selected, expects FQ inputs, if "N", expects .h5 inputs [options: "Y", "N"]
+- run_cellranger: determines whether to run cell ranger; if `true` is selected, expects FQ inputs, if `false`, expects .h5 inputs [options: `true`, `false`]
 - vars_to_regress: a comma separated list of any variables to regress during `SCTransform` process; [options: "", "percent.mt,nFeature_RNA,S.Score,G2M.Score,nCount_RNA"]
 
 ### 2.1.2 Base Config
@@ -100,7 +100,7 @@ The following explains each of the command options:
 - `--input`: input_manifest.csv location
 - `--contrast`: contrast_manifest.csv location
 - `--species`: species to be used
-- `--run_cellranger`: whether or not to run cellranger on dataset; IE Y, N
+- `--run_cellranger`: whether or not to run cellranger on dataset; i.e. `true`/`false`
 - args: any additional arguments; IE --stub-run
 
 ## 3.3 Typical Workflow
@@ -122,10 +122,10 @@ A typical command workflow, running the pipeline for a repeated time locally, ru
 nextflow run main.nf -resume \
     \
     -profile biowulf \
-    --run_cellranger Y \
+    --run_cellranger true \
     --input assets/input_manifest.csv \
     --contrast assets/contrast_manifest.csv \
-    --run_cellranger Y \
+    --run_cellranger true \
     --species hg19
 ```
 
@@ -133,12 +133,10 @@ A typical command workflow, running the pipeline in a `dryrun mode`, without run
 
 ```
 nextflow run main.nf \
-    \
     -profile biowulf \
-    --run_cellranger Y \
-    --input assets/input_manifest.csv \
+    --run_cellranger false \
+    --input assets/input_manifest_cellranger.csv \
     --contrast assets/contrast_manifest.csv \
     --species hg19 \
-    --run_cellranger N \
     --stub-run
 ```

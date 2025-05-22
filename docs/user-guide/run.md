@@ -56,8 +56,8 @@ View the full list of pipeline parameters [here](../params.md).
   - `hg38`
   - `mm10`
 - `--run_cellranger` Whether to run CellRanger for alignment. Also indicates which input manifest file to parse
-  - `Y`\*
-  - `N`
+  - `true`
+  - `false`
 
 #### Seurat parameters
 
@@ -97,13 +97,13 @@ View the full list of pipeline parameters [here](../params.md).
 This run will operate on the `slurm` workflow manager, perform CellRanger alignment to the `mm10` mouse genome, and cluster the cells at the specified resolutions:
 
 ```
-sinclair run --mode slurm --run_cellranger Y --species mm10 --seurat_resolution 0.2,0.4,0.6,0.8,1
+sinclair run --mode slurm --run_cellranger true --species mm10 --seurat_resolution 0.2,0.4,0.6,0.8,1
 ```
 
 This run will operate locally, starting from pre-aligned .h5 files generated from CellRanger and take the human `hg38` genome as its cue for downstream cell type annotation, while forcing the run to start from the beginning.
 
 ```
-sinclair run --mode local --run_cellranger N --species hg38 --forceall
+sinclair run --mode local --run_cellranger false --species hg38 --forceall
 ```
 
 Specify [pipeline parameters](../params.md) in the `params.yml` file and show a preview of the pipeline run (without actually running it):
