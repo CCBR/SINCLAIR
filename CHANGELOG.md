@@ -2,6 +2,8 @@
 
 - Improve help message for `sinclair run`. (#153, @kelly-sovacool)
   - the default `--mode` is now `slurm`.
+- The `run_cellranger` parameter is now a boolean set to `true` by default. (#155, @kelly-sovacool)
+  - Set this to `true` if the input is fastq files or `false` if the output if filtered h5 files.
 
 ## SINCLAIR 0.3.2
 
