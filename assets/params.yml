@@ -1,5 +1,5 @@
-input: "${launchDir}/assets/input_manifest_cellranger.csv"
+input: "${launchDir}/assets/input_manifest.csv"
 contrast: "${launchDir}/assets/contrast_manifest.csv"
-outdir: "${launchDir}/output/cellranger"
+outdir: "${launchDir}/output"
 species: hg19
-run_cellranger: false
+run_cellranger: Y
