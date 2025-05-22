@@ -55,13 +55,20 @@ workflow PREPROCESS_EXQC {
                 }
 
         // Run cellranger count
-        CELLRANGER_COUNT (
-            ch_meta,
-            params.genome_dir,
-            params.run_cellranger
-        )
-        // [id, fastq input dir, h5 file]
-        ch_fqdir_h5 = ch_meta.join(CELLRANGER_COUNT.out.h5)
+        if (params.run_cellranger) {
+
+            CELLRANGER_COUNT (
+                ch_meta,
+                params.genome_dir,
+                params.run_cellranger
+            )
+            // [id, fastq input dir, h5 file]
+            ch_fqdir_h5 = ch_meta.join(CELLRANGER_COUNT.out.h5)
+        } else {
+            ch_fqdir_h5 = ch_meta.map { id, inDir ->
+                [id, '', inDir]
+            }
+        }
     emit:
         group_samplesheet   = INPUT_CHECK_GEX.out.group_samplesheet
         ch_fqdir_h5 = ch_fqdir_h5

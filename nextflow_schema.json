@@ -40,6 +40,11 @@
           "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
           "fa_icon": "fas fa-folder-open",
           "default": "output"
+        },
+        "run_cellranger": {
+          "type": "boolean",
+          "description": "whether to run cellranger",
+          "default": true
         }
       }
     },
@@ -52,12 +57,6 @@
         "species": {
           "type": "string",
           "default": "hg19"
-        },
-        "run_cellranger": {
-          "type": "string",
-          "default": "Y",
-          "enum": ["Y", "N"],
-          "description": "whether to run cellranger"
         },
         "vars_to_regress": {
           "type": "string"
@@ -278,13 +277,13 @@
       "$ref": "#/$defs/main_options"
     },
     {
+      "$ref": "#/$defs/institutional_config_options"
+    },
+    {
       "$ref": "#/$defs/generic_options"
     },
     {
       "$ref": "#/$defs/containers"
-    },
-    {
-      "$ref": "#/$defs/institutional_config_options"
     },
     {
       "$ref": "#/$defs/hidden_options"

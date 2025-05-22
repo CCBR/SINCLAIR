@@ -37,7 +37,6 @@ workflow.onComplete {
 workflow {
     LOG()
     validateParameters()
-    //validateParameters(parameters_schema: "${projectDir}/nextflow_schema.json")
     PREPROCESS_EXQC ()
     GEX_EXQC (
         PREPROCESS_EXQC.out.ch_fqdir_h5,

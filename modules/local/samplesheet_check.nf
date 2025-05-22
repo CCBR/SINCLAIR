@@ -17,7 +17,7 @@ process SAMPLESHEET_CHECK {
 
     script:
     """
-    if [[ $run_cellranger == N ]]; then
+    if [[ $run_cellranger == 'false' ]]; then
         check_samplesheet_input_cellranger.py \\
         $samplesheet \\
         $contrast_samplesheet \\
