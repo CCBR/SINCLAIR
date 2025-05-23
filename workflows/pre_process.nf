@@ -63,10 +63,10 @@ workflow PREPROCESS_EXQC {
                 params.run_cellranger
             )
             // [id, fastq input dir, h5 file]
-            ch_fqdir_h5 = ch_meta.join(CELLRANGER_COUNT.out.h5)
+            ch_fqdir_h5 = ch_meta.join(CELLRANGER_COUNT.out.h5) | view
         } else {
             ch_fqdir_h5 = ch_meta.map { id, inDir ->
-                [id, '', inDir]
+                [id, '', file("${inDir}/*.h5", checkIfExists: true)]
             }
         }
     emit:
