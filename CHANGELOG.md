@@ -3,7 +3,10 @@
 - Improve help message for `sinclair run`. (#153, @kelly-sovacool)
   - the default `--mode` is now `slurm`.
 - The `run_cellranger` parameter is now a boolean set to `true` by default. (#155, @kelly-sovacool)
-  - Set this to `true` if the input is fastq files or `false` if the output if filtered h5 files.
+  - Set this to `true` if the input is fastq files or `false` if filtered h5 files.
+- New profiles:
+  - `test_h5` for starting from h5 files. (#155, @kelly-sovacool)
+  - `debug`, which sets `process.scratch` to `false` so intermediate files will be in the workDir. (#155, @kelly-sovacool)
 
 ## SINCLAIR 0.3.2
 
