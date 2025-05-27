@@ -60,6 +60,7 @@
 - LIGER now runs with 50 PCs by default instead of 20 (#109, @wong-nw)
 - Output all R Markdown documents as HTML rather than PDF. (#112, @kelly-sovacool)
 - Make sure values in the contrasts sheet are treated as strings. (#133, @kelly-sovacool)
+- Migrates all intermediate html reports to output directory. (#157, @wong-nw)
 
 ### Documentation improvements
 
