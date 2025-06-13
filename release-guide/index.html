@@ -1,0 +1,32 @@
+<!DOCTYPE html><html class=writer-html5 lang=en> <head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width, initial-scale=1.0"><meta name=author content="CCR Collaborative Bioinformatics Resource"><link rel="shortcut icon" href=../img/favicon.ico><title>Release Guide - SINCLAIR</title><link rel=stylesheet href=../css/theme.css><link rel=stylesheet href=../css/theme_extra.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css><link href=../css/custom.css rel=stylesheet><script>
+        // Current page data
+        var mkdocs_page_name = "Release Guide";
+        var mkdocs_page_input_path = "release-guide.md";
+        var mkdocs_page_url = null;
+      </script><!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]--><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js></script><script>hljs.highlightAll();</script></head> <body class=wy-body-for-nav role=document> <div class=wy-grid-for-nav> <nav data-toggle=wy-nav-shift class="wy-nav-side stickynav"> <div class=wy-side-scroll> <div class=wy-side-nav-search> <a href=.. class="icon icon-home"> SINCLAIR </a><div role=search> <form id=rtd-search-form class=wy-form action=../search.html method=get> <input type=text name=q placeholder="Search docs" aria-label="Search docs" title="Type search term here"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy=affix role=navigation aria-label="Navigation menu"> <ul> <li class=toctree-l1><a class="reference internal" href=..>Background</a> </li> </ul> <ul> <li class=toctree-l1><a href=../user-guide/quickstart/ class="reference internal">Quickstart</a> </li> </ul> <p class=caption><span class=caption-text>Usage</span></p> <ul> <li class=toctree-l1><a href=../user-guide/getting-started/ class="reference internal">1. Getting Started</a> </li> <li class=toctree-l1><a href=../user-guide/preparing-files/ class="reference internal">2. Preparing Files</a> </li> <li class=toctree-l1><a href=../user-guide/run/ class="reference internal">3. Running the Pipeline</a> </li> <li class=toctree-l1><a href=../user-guide/output/ class="reference internal">4. Expected Output</a> </li> <li class=toctree-l1><a href=../user-guide/test-info/ class="reference internal">5. Running Test Data</a> </li> </ul> <p class=caption><span class=caption-text>Analysis</span></p> <ul> <li class=toctree-l1><a href=../user-guide/differentialExpression/ class="reference internal">1. Differential Expression Analysis</a> </li> </ul> <p class=caption><span class=caption-text>FAQ</span></p> <ul> <li class=toctree-l1><a href=../user-guide/troubleshooting/ class="reference internal">Troubleshooting</a> </li> <li class=toctree-l1><a href=../contributing/ class="reference internal">How to contribute</a> </li> <li class=toctree-l1><a href=../user-guide/contributions/ class="reference internal">Contributors</a> </li> </ul> </div> </div> </nav> <section data-toggle=wy-nav-shift class=wy-nav-content-wrap> <nav class=wy-nav-top role=navigation aria-label="Mobile navigation menu"> <i data-toggle=wy-nav-top class="fa fa-bars"></i> <a href=..>SINCLAIR</a> </nav> <div class=wy-nav-content> <div class=rst-content><div role=navigation aria-label="breadcrumbs navigation"> <ul class=wy-breadcrumbs> <li><a href=.. class="icon icon-home" aria-label=Docs></a></li> <li class="breadcrumb-item active">Release Guide</li> <li class=wy-breadcrumbs-aside> <a href=https://github.com/CCBR/SINCLAIR/edit/feature/gex_only/docs/release-guide.md>Edit on CCBR/SINCLAIR</a> </li> </ul> <hr> </div> <div role=main class=document itemscope=itemscope itemtype=http://schema.org/Article> <div class=section itemprop=articleBody> <h1 id=release-guide>Release Guide<a class=headerlink href=#release-guide title="Permanent link">&para;</a></h1> <h2 id=how-to-test-a-pre-release-on-biowulf>How to test a pre-release on biowulf<a class=headerlink href=#how-to-test-a-pre-release-on-biowulf title="Permanent link">&para;</a></h2> <p>Install the development version of sinclair.</p> <div class=highlight><pre><span></span><code><span class=c1># activate the conda env for development</span>
+.<span class=w> </span><span class=s2>&quot;/data/CCBR_Pipeliner/db/PipeDB/Conda/etc/profile.d/conda.sh&quot;</span>
+conda<span class=w> </span>activate<span class=w> </span>py311
+
+<span class=c1># go to the source on biowulf and update</span>
+<span class=nb>cd</span><span class=w> </span>/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev
+git<span class=w> </span>pull
+<span class=c1># optionally switch to different branch if needed</span>
+
+<span class=c1># install the version to a hidden path (e.g. .v0.2.0-dev) in /data/CCBR_Pipeliner/Pipelines/SINCLAIR</span>
+<span class=nb>cd</span><span class=w> </span>..
+pip<span class=w> </span>install<span class=w> </span>./dev<span class=w> </span>-t<span class=w> </span>./.v0.2.0-dev
+<span class=c1># add it to your PATH and PYTHONPATH with:</span>
+<span class=nb>export</span><span class=w> </span><span class=nv>PATH</span><span class=o>=</span><span class=s2>&quot;</span><span class=nv>$PATH</span><span class=s2>:/data/CCBR_Pipeliner/Pipelines/SINCLAIR/.v0.2.0-dev/bin/&quot;</span>
+<span class=nb>export</span><span class=w> </span><span class=nv>PYTHONPATH</span><span class=o>=</span><span class=s2>&quot;</span><span class=nv>$PYTHONPATH</span><span class=s2>:/data/CCBR_Pipeliner/Pipelines/SINCLAIR/.v0.2.0-dev/&quot;</span>
+</code></pre></div> </div> </div><script async src="https://www.googletagmanager.com/gtag/js?id=G-D3SL9V30KL"></script> <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-D3SL9V30KL'); // Replace with your tracking ID
+</script> </div> </div> </section> </div> <div class=rst-versions role=note aria-label=Versions> <span class=rst-current-version data-toggle=rst-current-version> <span> <a href=https://github.com/CCBR/SINCLAIR class="fa fa-code-fork" style="color: #fcfcfc"> CCBR/SINCLAIR</a> </span> </span> </div> <script src=../js/jquery-3.6.0.min.js></script> <script>var base_url = "..";</script> <script src=../js/theme_extra.js></script> <script src=../js/theme.js></script> <script src=../js/custom.js></script> <script src=../search/main.js></script> <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script> </body> </html> 
