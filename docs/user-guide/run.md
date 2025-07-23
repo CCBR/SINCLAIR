@@ -70,58 +70,55 @@ View the full list of pipeline parameters [here](../params.md).
 | `--species`        | Species/genome reference for alignment (optional: also for cell type annotation)   | `hg19`\*<br>`hg38`<br>`mm10`                                                                                     |
 | `--run_cellranger` | Whether to run Cell Ranger for alignment; determines which input manifest to parse | `true`<br>`false`                                                                                                |
 
-
 #### Seurat parameters
 
 The following is a list containing parameters that can be used for downstream Seurat analysis.
 
-
 - vars_to_regress – Optional variables to regress out, as a way of eliminating technical noise:
 
-  - percent.mt: Percentage of mitochondrial reads; high values may indicate dead/stressed cells.
-  - nFeature_RNA: Number of detected features per cell.
-  - S.Score: S-phase cell cycle score.
-  - G2M.Score: G2/M-phase cell cycle score.
-  - nCount_RNA: Total RNA molecule count per cell.
+    - percent.mt: Percentage of mitochondrial reads; high values may indicate dead/stressed cells.
+    - nFeature_RNA: Number of detected features per cell.
+    - S.Score: S-phase cell cycle score.
+    - G2M.Score: G2/M-phase cell cycle score.
+    - nCount_RNA: Total RNA molecule count per cell.
 
 - qc_filtering – Quality control filtering method:
 
-  - miqc: Uses MiQC parameters.
-  - manual: Uses manually specified thresholds.
-  - nCount_RNA_max – Maximum total RNA count allowed per cell (cells above this are removed):
+    - miqc: Uses MiQC parameters.
+    - manual: Uses manually specified thresholds.
+    - nCount_RNA_max – Maximum total RNA count allowed per cell (cells above this are removed):
 
-    - Default: 50000\*
+        - Default: 50000\*
 
-  - nCount_RNA_min – Minimum total RNA count allowed per cell (cells below this are removed):
+    - nCount_RNA_min – Minimum total RNA count allowed per cell (cells below this are removed):
 
-    - Default: 1000\*
+        - Default: 1000\*
 
-  - nFeatures_RNA_max – Maximum number of features (e.g., genes) per cell:
+    - nFeatures_RNA_max – Maximum number of features (e.g., genes) per cell:
 
-    - Default: 5000\*
+        - Default: 5000\*
 
-  - nFeature_RNA_min – Minimum number of features per cell:
+    - nFeature_RNA_min – Minimum number of features per cell:
 
-    - Default: 200\*
+        - Default: 200\*
 
-  - percent_mt_max – Maximum mitochondrial read percentage allowed per cell:
+    - percent_mt_max – Maximum mitochondrial read percentage allowed per cell:
 
-    - Default: 10\*
+        - Default: 10\*
 
-  - percent_mt_min – Minimum mitochondrial read percentage allowed per cell:
-    - Default: 0\*
+    - percent_mt_min – Minimum mitochondrial read percentage allowed per cell:
+        - Default: 0\*
 
 - run_doublet_finder – Boolean flag to run the DoubletFinder tool:
 
-  - Default: true
+    - Default: true
 
-  - seurat_resolution – Comma-separated list of clustering resolutions for Seurat:
+    - seurat_resolution – Comma-separated list of clustering resolutions for Seurat:
 
-    - Default: "0.1,0.2,0.3,0.5,0.6,0.8,1"\*
+        - Default: "0.1,0.2,0.3,0.5,0.6,0.8,1"\*
 
-  - npcs – Number of principal components used in downstream analyses (e.g., UMAP, clustering):
-    - Default: 50\*
-
+    - npcs – Number of principal components used in downstream analyses (e.g., UMAP, clustering):
+        - Default: 50\*
 
 ## Examples
 
