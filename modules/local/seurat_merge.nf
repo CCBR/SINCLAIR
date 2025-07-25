@@ -1,6 +1,6 @@
 process SEURAT_MERGE {
     tag "${gid}"
-    label 'process_high'
+    label 'process_higher'
 
     input:
     tuple val(gid), path(rdsFiles)
