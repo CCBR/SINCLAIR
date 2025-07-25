@@ -1,5 +1,6 @@
 process CELLRANGER_COUNT {
     tag "${id}"
+    label 'process_high'
 
     input:
     tuple val(id), val(inDir)
