@@ -1,6 +1,6 @@
 ## SINCLAIR development version
 
-- Improve error messages when checking the samplesheet - report line numbers. (#181, @kelly-sovacool)
+- Improve error messages when checking the sample sheet and contrast sheet. (#181, #182, @kelly-sovacool)
 
 ## SINCLAIR 0.3.3
 
