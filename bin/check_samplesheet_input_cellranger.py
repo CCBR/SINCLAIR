@@ -38,8 +38,8 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
+def print_error(error, context="Line", context_str="", sheet="samplesheet"):
+    error_str = f"ERROR: Please check {sheet} -> {error}"
     if context:
         error_str += f"\n{context.strip()}"
         if context_str:
@@ -226,6 +226,12 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         ## Check sample entries
         for line_num, line in enumerate(fin):
             line_num += 1
+
+            # If it's a blank line, next
+            if len(line.strip()) == 0:
+                print("Skipping blank line")
+                continue
+
             lspl = [x.strip().strip('"') for x in line.strip().split(",")]
 
             # Check valid number of columns per row
@@ -237,6 +243,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                     ),
                     f"Line {line_num}",
                     line,
+                    sheet="contrast sheet",
                 )
 
             for cid in lspl:
@@ -245,6 +252,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                         "CONTRAST entry is not listed in the sample manifest. Check names!",
                         f"Line {line_num}",
                         line,
+                        sheet="contrast sheet",
                     )
 
         ###################################################################################################
