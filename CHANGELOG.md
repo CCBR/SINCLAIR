@@ -1,5 +1,7 @@
 ## SINCLAIR development version
 
+- Rename 'output' directory to 'results' for the nextflow workflow. (#186, @kelly-sovacool)
+
 ## SINCLAIR 0.3.4
 
 - Improve error messages when checking the sample sheet and contrast sheet. (#181, #182, @kelly-sovacool)
