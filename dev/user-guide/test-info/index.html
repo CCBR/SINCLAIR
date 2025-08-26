@@ -1,12 +1,187 @@
-<!DOCTYPE html><html class=writer-html5 lang=en> <head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width, initial-scale=1.0"><meta name=author content="CCR Collaborative Bioinformatics Resource"><link rel="shortcut icon" href=../../img/favicon.ico><title>5. Running Test Data - SINCLAIR</title><link rel=stylesheet href=../../css/theme.css><link rel=stylesheet href=../../css/theme_extra.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css><link href=../../css/custom.css rel=stylesheet><link href=../../css/version-select.css rel=stylesheet><script>
+<!DOCTYPE html><html class=writer-html5 lang=en> <head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width, initial-scale=1.0"><meta name=author content="CCR Collaborative Bioinformatics Resource"><link rel="shortcut icon" href=../../img/favicon.ico><title>Running Test Data - SINCLAIR</title><link rel=stylesheet href=../../css/theme.css><link rel=stylesheet href=../../css/theme_extra.css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css><link href=../../css/custom.css rel=stylesheet><link href=../../css/version-select.css rel=stylesheet><script>
         // Current page data
-        var mkdocs_page_name = "5. Running Test Data";
+        var mkdocs_page_name = "Running Test Data";
         var mkdocs_page_input_path = "user-guide/test-info.md";
         var mkdocs_page_url = null;
       </script><!--[if lt IE 9]>
       <script src="../../js/html5shiv.min.js"></script>
-    <![endif]--><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js></script><script>hljs.highlightAll();</script></head> <body class=wy-body-for-nav role=document> <div class=wy-grid-for-nav> <nav data-toggle=wy-nav-shift class="wy-nav-side stickynav"> <div class=wy-side-scroll> <div class=wy-side-nav-search> <a href=../.. class="icon icon-home"> SINCLAIR </a><div role=search> <form id=rtd-search-form class=wy-form action=../../search.html method=get> <input type=text name=q placeholder="Search docs" aria-label="Search docs" title="Type search term here"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy=affix role=navigation aria-label="Navigation menu"> <ul> <li class=toctree-l1><a class="reference internal" href=../..>Background</a> </li> </ul> <ul> <li class=toctree-l1><a href=../quickstart/ class="reference internal">Quickstart</a> </li> </ul> <p class=caption><span class=caption-text>Usage</span></p> <ul class=current> <li class=toctree-l1><a href=../getting-started/ class="reference internal">1. Getting Started</a> </li> <li class=toctree-l1><a href=../preparing-files/ class="reference internal">2. Preparing Files</a> </li> <li class=toctree-l1><a href=../run/ class="reference internal">3. Running the Pipeline</a> </li> <li class=toctree-l1><a href=../output/ class="reference internal">4. Expected Output</a> </li> <li class="toctree-l1 current"><a class="reference internal current" href=#>5. Running Test Data</a> <ul class=current> </ul> </li> </ul> <p class=caption><span class=caption-text>Analysis</span></p> <ul> <li class=toctree-l1><a href=../differentialExpression/ class="reference internal">1. Differential Expression Analysis</a> </li> </ul> <p class=caption><span class=caption-text>FAQ</span></p> <ul> <li class=toctree-l1><a href=../troubleshooting/ class="reference internal">Troubleshooting</a> </li> <li class=toctree-l1><a href=../../contributing/ class="reference internal">How to contribute</a> </li> <li class=toctree-l1><a href=../contributions/ class="reference internal">Contributors</a> </li> </ul> </div> </div> </nav> <section data-toggle=wy-nav-shift class=wy-nav-content-wrap> <nav class=wy-nav-top role=navigation aria-label="Mobile navigation menu"> <i data-toggle=wy-nav-top class="fa fa-bars"></i> <a href=../..>SINCLAIR</a> </nav> <div class=wy-nav-content> <div class=rst-content><div role=navigation aria-label="breadcrumbs navigation"> <ul class=wy-breadcrumbs> <li><a href=../.. class="icon icon-home" aria-label=Docs></a></li> <li class=breadcrumb-item>Usage</li> <li class="breadcrumb-item active">5. Running Test Data</li> <li class=wy-breadcrumbs-aside> <a href=https://github.com/CCBR/SINCLAIR/edit/feature/gex_only/docs/user-guide/test-info.md>Edit on CCBR/SINCLAIR</a> </li> </ul> <hr> </div> <div role=main class=document itemscope=itemscope itemtype=http://schema.org/Article> <div class=section itemprop=articleBody> <h1 id=setting-up-a-test-run>Setting up a test run<a class=headerlink href=#setting-up-a-test-run title="Permanent link">&para;</a></h1> <div class=highlight><pre><span></span><code>sinclair run --mode slurm -profile test
-</code></pre></div> <h1 id=about-the-data>About the data<a class=headerlink href=#about-the-data title="Permanent link">&para;</a></h1> <p><strong>FILE:</strong> WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs.tar</p> <p><strong>TYPE:</strong> GEX</p> <p><strong>NAME:</strong> Whole Blood RBC Lysis for PBMCs and Neutrophils, Granulocytes, 3'</p> <p><strong>PRODUCT:</strong> Single Cell Gene Expression Dataset by Cell Ranger 6.1.0</p> <h2 id=info><strong>INFO:</strong><a class=headerlink href=#info title="Permanent link">&para;</a></h2> <p><strong>Donor Information:</strong> healthy female.</p> <p><strong>Isolation protocol:</strong> CG000392 RevA: Isolation of Leukocytes, Bone Marrow and Peripheral Blood Mononuclear Cells for Single Cell RNA Sequencing - Whole Blood Lysis for Granuloctyes track.</p> <p>Whole transcriptome/Gene Expression libraries were generated as described in the Chromium Next GEM Single Cell 3' Reagent Kits v3.1 (Dual Index) User Guide (CG000204 Rev D).</p> <p><strong>TUTORIAL:</strong> https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/tutorials/neutrophils</p> <p><strong>SOURCE:</strong> https://www.10xgenomics.com/resources/datasets/whole-blood-rbc-lysis-for-pbmcs-neutrophils-granulocytes-3-3-1-standard</p> <h1 id=sample-set-up-and-files>Sample set up and files<a class=headerlink href=#sample-set-up-and-files title="Permanent link">&para;</a></h1> <h2 id=wb_1>WB_1<a class=headerlink href=#wb_1 title="Permanent link">&para;</a></h2> <ul> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_I1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_I2_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_R1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_R2_001.fastq.gz</li> </ul> <h2 id=wb_2>WB_2<a class=headerlink href=#wb_2 title="Permanent link">&para;</a></h2> <ul> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_I1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_I2_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_R1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_R2_001.fastq.gz</li> </ul> <h2 id=wb_3-and-wb_4-are-copies>WB_3 and WB_4 are copies<a class=headerlink href=#wb_3-and-wb_4-are-copies title="Permanent link">&para;</a></h2> <ul> <li>WB_1 &rarr; WB_3</li> <li>WB_2 &rarr; WB_4</li> </ul> <h2 id=samples-were-then-subsampled-with-a-set-seed>samples were then subsampled with a set seed<a class=headerlink href=#samples-were-then-subsampled-with-a-set-seed title="Permanent link">&para;</a></h2> <ul> <li>WB_1 &rarr; sample1,sample2 &rarr; s100</li> <li>WB_2 &rarr; sample3,sample4 &rarr; s101</li> <li>WB_3 &rarr; sample5,sample6 &rarr; s102</li> <li>WB_4 &rarr; sample7,sample8 &rarr; s103</li> </ul> <h2 id=grouping-tests-should-be>grouping tests should be<a class=headerlink href=#grouping-tests-should-be title="Permanent link">&para;</a></h2> <ul> <li>group1,group2</li> <li>group1,group2,group3</li> </ul> </div> </div><script async src="https://www.googletagmanager.com/gtag/js?id=G-D3SL9V30KL"></script> <script>
+    <![endif]--><script src=https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js></script><script>hljs.highlightAll();</script></head> <body class=wy-body-for-nav role=document> <div class=wy-grid-for-nav> <nav data-toggle=wy-nav-shift class="wy-nav-side stickynav"> <div class=wy-side-scroll> <div class=wy-side-nav-search> <a href=../.. class="icon icon-home"> SINCLAIR </a><div role=search> <form id=rtd-search-form class=wy-form action=../../search.html method=get> <input type=text name=q placeholder="Search docs" aria-label="Search docs" title="Type search term here"> </form> </div> </div> <div class="wy-menu wy-menu-vertical" data-spy=affix role=navigation aria-label="Navigation menu"> <ul> <li class=toctree-l1><a class="reference internal" href=../..>Background</a> </li> </ul> <ul> <li class=toctree-l1><a href=../quickstart/ class="reference internal">Quickstart</a> </li> </ul> <ul> <li class=toctree-l1><a href=../../params/ class="reference internal">Parameters</a> </li> </ul> <p class=caption><span class=caption-text>Usage</span></p> <ul class=current> <li class=toctree-l1><a href=../getting-started/ class="reference internal">Getting Started</a> </li> <li class=toctree-l1><a href=../preparing-files/ class="reference internal">Preparing Files</a> </li> <li class=toctree-l1><a href=../run/ class="reference internal">Running Pipeline</a> </li> <li class=toctree-l1><a href=../output/ class="reference internal">Expected Output</a> </li> <li class="toctree-l1 current"><a class="reference internal current" href=#>Running Test Data</a> <ul class=current> <li class=toctree-l2><a class="reference internal" href=#the-basics>The Basics</a> </li> <li class=toctree-l2><a class="reference internal" href=#about-the-data>About the data</a> </li> <li class=toctree-l2><a class="reference internal" href=#sample-design-and-arrangement>Sample Design and Arrangement</a> <ul> <li class=toctree-l3><a class="reference internal" href=#wb_1>WB_1</a> </li> <li class=toctree-l3><a class="reference internal" href=#wb_2>WB_2</a> </li> <li class=toctree-l3><a class="reference internal" href=#wb_3-and-wb_4-simulated-replicates>WB_3 and WB_4 - Simulated Replicates</a> </li> <li class=toctree-l3><a class="reference internal" href=#subsampling-details>Subsampling Details</a> </li> </ul> </li> <li class=toctree-l2><a class="reference internal" href=#expected-output>Expected Output</a> <ul> <li class=toctree-l3><a class="reference internal" href=#pre-processed-files>Pre-processed files</a> </li> <li class=toctree-l3><a class="reference internal" href=#processed-and-filtered-sample-files>Processed and filtered sample files</a> </li> <li class=toctree-l3><a class="reference internal" href=#combined-and-batch-corrected-files>Combined and batch corrected files</a> <ul> <li class=toctree-l4><a class="reference internal" href=#combined-sample-file>Combined sample file</a> </li> <li class=toctree-l4><a class="reference internal" href=#batch-corrected-files>Batch corrected files</a> </li> <li class=toctree-l4><a class="reference internal" href=#sample-combination-and-batch-correction-report>Sample combination and batch correction report</a> </li> </ul> </li> </ul> </li> </ul> </li> </ul> <p class=caption><span class=caption-text>Analysis</span></p> <ul> <li class=toctree-l1><a href=../differentialExpression/ class="reference internal">Differential Expression Analysis</a> </li> </ul> <ul> <li class=toctree-l1><a href=../advanced-usage/ class="reference internal">Advanced Usage</a> </li> </ul> <p class=caption><span class=caption-text>FAQ</span></p> <ul> <li class=toctree-l1><a href=../troubleshooting/ class="reference internal">Troubleshooting</a> </li> <li class=toctree-l1><a href=../../contributing/ class="reference internal">How to contribute</a> </li> <li class=toctree-l1><a href=../contributions/ class="reference internal">Contributors</a> </li> </ul> </div> </div> </nav> <section data-toggle=wy-nav-shift class=wy-nav-content-wrap> <nav class=wy-nav-top role=navigation aria-label="Mobile navigation menu"> <i data-toggle=wy-nav-top class="fa fa-bars"></i> <a href=../..>SINCLAIR</a> </nav> <div class=wy-nav-content> <div class=rst-content><div role=navigation aria-label="breadcrumbs navigation"> <ul class=wy-breadcrumbs> <li><a href=../.. class="icon icon-home" aria-label=Docs></a></li> <li class=breadcrumb-item>Usage</li> <li class="breadcrumb-item active">Running Test Data</li> <li class=wy-breadcrumbs-aside> <a href=https://github.com/CCBR/SINCLAIR/edit/feature/gex_only/docs/user-guide/test-info.md>Edit on CCBR/SINCLAIR</a> </li> </ul> <hr> </div> <div role=main class=document itemscope=itemscope itemtype=http://schema.org/Article> <div class=section itemprop=articleBody> <h1 id=setting-up-a-test-run>Setting up a test run<a class=headerlink href=#setting-up-a-test-run title="Permanent link">&para;</a></h1> <h2 id=the-basics>The Basics<a class=headerlink href=#the-basics title="Permanent link">&para;</a></h2> <p>A test run of the pipeline can be initiated through the following command:</p> <div class=highlight><pre><span></span><code>sinclair run --mode slurm -profile test
+</code></pre></div> <p>This profile will automatically use the <code>test</code> sample and contrasts manifests, which are the default designs present in the <code>assets</code> directory.</p> <div class=highlight><pre><span></span><code>assets/input_manifest.csv
+
+masterID,uniqueID,groupID,dataType,input_dir
+WB_Lysis_1,sample1,group1,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample1
+WB_Lysis_1,sample2,group1,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample2
+WB_Lysis_2,sample3,group2,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample3
+WB_Lysis_2,sample4,group2,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample4
+WB_Lysis_3,sample5,group3,gex,/data/CCBR_Pipeliner/testdata/SINCLAIR/WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs/sample5
+</code></pre></div> <div class=highlight><pre><span></span><code>assets/contrast_manifest.csv
+
+contrast1,contrast2,contrast3
+group1,group2
+group1,group2,group3
+</code></pre></div> <p>This run will have 5 samples, and will run 2 separate sets of contrasts. The first contrast, <code>group1-group2</code>, will contain samples 1 through 4, while the second contrast, <code>group1-group2-group3</code>, will contain all 5 samples, as indicated by the <code>groupID</code> variable in the <code>sample_manifest.csv</code>. The contrasts are primarily used for sample filtering, in the event of multiple contrasts that are not fully inclusive of all the data points.</p> <p>Upon launching the test run, the following output will be generated in the command line window:</p> <div class=highlight><pre><span></span><code>[&lt;user&gt;@cn0034 output_directory]$ sinclair run -profile test
+[2025:08:04 16:12:26] --------------------
+[2025:08:04 16:12:26] | Output Directory |
+[2025:08:04 16:12:26] --------------------
+
+/path/to/output/directory
+[2025:08:04 16:12:26] --------------------
+[2025:08:04 16:12:26] | Pipeline Preview |
+[2025:08:04 16:12:26] --------------------
+
+bash -c &quot;module load nextflow &amp;&amp; nextflow run /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/main.nf -profile biowulf,slurm,test -resume  -preview&quot;
+[+] Loading java 23.0.2  ...
+[+] Loading singularity  4.2.2  on cn0034
+[+] Loading nextflow  25.04.2
+Nextflow 25.04.6 is available - Please consider updating your version to it
+
+ N E X T F L O W   ~  version 25.04.2
+
+WARN: It appears you have never run this project before -- Option `-resume` is ignored
+Launching `/data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/main.nf` [angry_williams] DSL2 - revision: c921f3551d
+
+SINCLAIR 0.3.3
+
+===================================
+cmd line     : nextflow run /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/main.nf -profile biowulf,slurm,test -resume -preview
+start time   : 2025-08-04T16:12:30.921987287-04:00
+NF outdir    : /path/to/output/directory/output/tests
+
+Input/output options
+  input                     : /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/assets/input_manifest.csv
+  contrast                  : /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/assets/contrast_manifest.csv
+  outdir                    : /vf/users/wongnw/sandbox/sinclair_pipe8_202508/output/tests
+
+Main options
+  species                   : hg38
+  qc_filtering              : miqc
+  genome_dir                : /data/CCBR_Pipeliner/db/PipeDB/cellranger_ref/hg38
+
+Institutional config options
+  config_profile_name       : Test profile starting from fastq files
+  config_profile_description: Minimal test dataset to check pipeline function
+  config_profile_contact    : staff@hpc.nih.gov
+  config_profile_url        : https://hpc.nih.gov/apps/nextflow.html
+
+Generic options
+  tracedir                  : /path/to/output/directory/output/pipeline_info
+  max_memory                : 224 GB
+  max_cpus                  : 32
+  max_time                  : 72 h
+
+Core Nextflow options
+  runName                   : angry_williams
+  containerEngine           : singularity
+  launchDir                 : /path/to/output/directory
+  workDir                   : /path/to/output/directory/work
+  projectDir                : /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair
+  userName                  : wongnw
+  profile                   : biowulf,slurm,test
+  configFiles               : /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/nextflow.config, /path/to/output/directory/nextflow.config
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+------------------------------------------------------
+[-        ] process &gt; PREPROCESS_EXQC:INPUT_CHECK_GEX:SAMPLESHEET_CHECK -
+[-        ] process &gt; PREPROCESS_EXQC:CELLRANGER_COUNT                  -
+[-        ] process &gt; GEX_EXQC:SEURAT_PREPROCESS                        -
+[-        ] process &gt; GEX_EXQC:SEURAT_MERGE                             -
+[-        ] process &gt; GEX_EXQC:BATCH_CORRECT_HARMONY                    -
+[-        ] process &gt; GEX_EXQC:BATCH_CORRECT_RPCA                       -
+[-        ] process &gt; GEX_EXQC:BATCH_CORRECT_CCA                        -
+[-        ] process &gt; GEX_EXQC:BATCH_CORRECT_LIGER                      -
+[-        ] process &gt; GEX_EXQC:BATCH_CORRECT_INTEGRATION                -
+
+[2025:08:04 16:12:33] -------------------
+[2025:08:04 16:12:33] | Slurm batch job |
+[2025:08:04 16:12:33] -------------------
+
+sbatch submit_slurm.sh
+[2025:08:04 16:12:33] --------------------
+[2025:08:04 16:12:33] | Nextflow command |
+[2025:08:04 16:12:33] --------------------
+
+nextflow run /data/CCBR_Pipeliner/Pipelines/SINCLAIR/v0.3/sinclair/main.nf -profile biowulf,slurm,test -resume
+64401687
+</code></pre></div> <h2 id=about-the-data>About the data<a class=headerlink href=#about-the-data title="Permanent link">&para;</a></h2> <p><strong><em>Overview</em></strong>: The original dataset was downloaded from 10x Genomics in FASTQ format and unpacked from WB_Lysis_Granulocytes_3p_Introns_8kCells_fastqs.tar. This dataset was taken from a single sample and run on two sequencing lanes.</p> <p><strong>TUTORIAL:</strong> <a href=https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/tutorials/neutrophils>https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/tutorials/neutrophils</a></p> <p><strong>SOURCE:</strong> <a href=https://www.10xgenomics.com/resources/datasets/whole-blood-rbc-lysis-for-pbmcs-neutrophils-granulocytes-3-3-1-standard>https://www.10xgenomics.com/resources/datasets/whole-blood-rbc-lysis-for-pbmcs-neutrophils-granulocytes-3-3-1-standard</a></p> <p><strong>Species:</strong> <em>Homo sapiens</em></p> <p><strong>Genome Reference:</strong> Human genome GRCh38</p> <p><strong>Data Type:</strong> Single-cell gene expression (GEX)</p> <p><strong>Sequencing Platform:</strong> 10x Genomics Chromium, 3' v3.1 chemistry</p> <p><strong>Analysis Software</strong> Cell Ranger v6.1.0</p> <p><strong>Donor Information:</strong> healthy female</p> <p><strong>Isolation protocol:</strong> CG000392 RevA: Isolation of Leukocytes, Bone Marrow and Peripheral Blood Mononuclear Cells for Single Cell RNA Sequencing - Whole Blood Lysis for Granuloctyes track.</p> <p>Whole transcriptome/Gene Expression libraries were generated as described in the Chromium Next GEM Single Cell 3' Reagent Kits v3.1 (Dual Index) User Guide (CG000204 Rev D).</p> <h2 id=sample-design-and-arrangement>Sample Design and Arrangement<a class=headerlink href=#sample-design-and-arrangement title="Permanent link">&para;</a></h2> <p>The two lanes have been treated as separate replicates. Each replicate was then subsampled to produce leaner datasets for testing.</p> <h3 id=wb_1><em>WB_1</em><a class=headerlink href=#wb_1 title="Permanent link">&para;</a></h3> <ul> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_I1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_I2_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_R1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L001_R2_001.fastq.gz</li> </ul> <h3 id=wb_2><em>WB_2</em><a class=headerlink href=#wb_2 title="Permanent link">&para;</a></h3> <ul> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_I1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_I2_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_R1_001.fastq.gz</li> <li>WB_Lysis_Granulocytes_3p_Introns_8kCells_S1_L002_R2_001.fastq.gz</li> </ul> <h3 id=wb_3-and-wb_4-simulated-replicates>WB_3 and WB_4 - Simulated Replicates<a class=headerlink href=#wb_3-and-wb_4-simulated-replicates title="Permanent link">&para;</a></h3> <p>To simulate technical and biological replicates, and to assess the effects of clustering, batch correction, and downstream steps (e.g. Differential Gene Expression), WB_3 and WB_4 samples were copied from WB_1 and WB_2 respectively.</p> <ul> <li>WB_1 &rarr; WB_3</li> <li>WB_2 &rarr; WB_4</li> </ul> <h3 id=subsampling-details>Subsampling Details<a class=headerlink href=#subsampling-details title="Permanent link">&para;</a></h3> <p>Each group was further downsampled to make the dataset lightweight and suitable for rapid testing.</p> <ul> <li>WB_1 &rarr; sample1,sample2</li> <li>WB_2 &rarr; sample3,sample4</li> <li>WB_3 &rarr; sample5</li> </ul> <h2 id=expected-output>Expected Output<a class=headerlink href=#expected-output title="Permanent link">&para;</a></h2> <p>The SINCLAIR test run will produce the following structure in the directory:</p> <div class=highlight><pre><span></span><code>.
+├── assets
+│   └── &lt;files&gt;
+├── conf
+│   └── &lt;files&gt;
+├── log
+│   └── &lt;files&gt;
+├── nextflow.config
+├── results
+│   ├── pipeline_info
+│   │   ├── execution_report_2025-07-21_14-58-51.html
+│   │   ├── execution_report_2025-07-21_15-00-18.html
+│   │   ├── execution_timeline_2025-07-21_14-58-51.html
+│   │   ├── execution_timeline_2025-07-21_15-00-18.html
+│   │   ├── execution_trace_2025-07-21_14-58-34.txt
+│   │   ├── execution_trace_2025-07-21_14-58-51.txt
+│   │   ├── execution_trace_2025-07-21_15-00-18.txt
+│   │   ├── pipeline_dag_2025-07-21_14-58-51.svg
+│   │   └── pipeline_dag_2025-07-21_15-00-18.svg
+│   └── tests
+│       ├── batch_correct
+│       │   ├── group1-group2_batch_correction_cca.html
+│       │   ├── group1-group2_batch_correction_cca.rds
+│       │   ├── group1-group2_batch_correction_harmony.html
+│       │   ├── group1-group2_batch_correction_harmony.rds
+│       │   ├── group1-group2_batch_correction_integration.html
+│       │   ├── group1-group2_batch_correction_liger.html
+│       │   ├── group1-group2_batch_correction_liger.rds
+│       │   ├── group1-group2_batch_correction_rpca.html
+│       │   ├── group1-group2_batch_correction_rpca.rds
+│       │   ├── group1-group2-group3_batch_correction_cca.html
+│       │   ├── group1-group2-group3_batch_correction_cca.rds
+│       │   ├── group1-group2-group3_batch_correction_harmony.html
+│       │   ├── group1-group2-group3_batch_correction_harmony.rds
+│       │   ├── group1-group2-group3_batch_correction_integration.html
+│       │   ├── group1-group2-group3_batch_correction_liger.html
+│       │   ├── group1-group2-group3_batch_correction_liger.rds
+│       │   ├── group1-group2-group3_batch_correction_rpca.html
+│       │   └── group1-group2-group3_batch_correction_rpca.rds
+│       ├── cellranger_counts
+│       │   ├── sample1
+│       │   │   └── outs
+│       │   │       └── filtered_feature_bc_matrix.h5
+│       │   ├── sample2
+│       │   │   └── outs
+│       │   │       └── filtered_feature_bc_matrix.h5
+│       │   ├── sample3
+│       │   │   └── outs
+│       │   │       └── filtered_feature_bc_matrix.h5
+│       │   ├── sample4
+│       │   │   └── outs
+│       │   │       └── filtered_feature_bc_matrix.h5
+│       │   └── sample5
+│       │       └── outs
+│       │           └── filtered_feature_bc_matrix.h5
+│       ├── samplesheets
+│       │   ├── project_contrast_samplesheet.csv
+│       │   ├── project_gex_samplesheet.csv
+│       │   └── project_groups_samplesheet.csv
+│       └── seurat
+│           ├── merge
+│           │   ├── group1-group2-group3_seurat_merged.html
+│           │   ├── group1-group2-group3_seurat_merged.rds
+│           │   ├── group1-group2_seurat_merged.html
+│           │   └── group1-group2_seurat_merged.rds
+│           └── preprocess
+│               ├── sample1_seurat_preprocess.html
+│               ├── sample1_seurat_preprocess.rds
+│               ├── sample2_seurat_preprocess.html
+│               ├── sample2_seurat_preprocess.rds
+│               ├── sample3_seurat_preprocess.html
+│               ├── sample3_seurat_preprocess.rds
+│               ├── sample4_seurat_preprocess.html
+│               ├── sample4_seurat_preprocess.rds
+│               ├── sample5_seurat_preprocess.html
+│               └── sample5_seurat_preprocess.rds
+├── submit_slurm.sh
+└── work
+    └── &lt;files&gt;
+</code></pre></div> <p>The relevant results are found the <code>test</code> subdirectory. For live data, the directories will all exist directly within the <code>results</code> directory. If debugging is required, all intermediate files will be in the <code>work</code> directory.</p> <h3 id=pre-processed-files>Pre-processed files<a class=headerlink href=#pre-processed-files title="Permanent link">&para;</a></h3> <p><strong>Directory</strong>: <code>cellranger_counts</code></p> <p>The default <code>test</code> profile aligns the samples to the reference genome using the <a href=https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/running-pipelines/cr-gex-count#cr-count-gex>CellRanger software</a>. The <a href=https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-gex-overview>results</a> of the CellRanger count function are extensive, but for the purpose of data management, the only files saved are the filtered feature count matrix. These can be found in the <code>cellranger_counts</code> directory, and have the extension <code>.h5</code>, indicating that these files are compressed in <a href=https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-h5-matrices>HDF5</a> format.</p> <h3 id=processed-and-filtered-sample-files>Processed and filtered sample files<a class=headerlink href=#processed-and-filtered-sample-files title="Permanent link">&para;</a></h3> <p><strong>Directory:</strong> <code>seurat/preprocess</code></p> <p>Each sample undergoes an initial filtering and pre-processing step. Each sample undergoes the following quality controls and annotations:</p> <ul> <li>Basic statistics: Each sample has preliminary QC statistics determined, such as the number of reads per cell, number of unique gene sequences per cell, and mitochondrial read count fraction.</li> <li>Low cell quality filtering: Runs on the basis of <a href=https://www.bioconductor.org/packages/release/bioc/html/miQC.html>miQC</a>, which filters cells based on the ratio of reads to mitochondrial fraction.</li> <li>Preliminary UMAP creation: Generates a UMAP dimensional reduction for visualization</li> <li>Initial cell type annotation: Uses the <a href=https://bioconductor.org/packages/release/bioc/html/SingleR.html>SingleR</a> tool to annotate cells independently against species-specific databases.</li> <li>Doublet identification and removal: Uses the <a href=https://github.com/chris-mcginnis-ucsf/DoubletFinder>DoubletFinder</a> tool to identify and remove doublets.</li> </ul> <p>For each sample, this step produces a <code>.rds.</code> (R data structure) file, which can be imported into an R environment using the <code>readRDS("xxx.rds")</code> function for further analysis, and a <code>.html</code> quality control</p> <h3 id=combined-and-batch-corrected-files>Combined and batch corrected files<a class=headerlink href=#combined-and-batch-corrected-files title="Permanent link">&para;</a></h3> <p><strong>Directories:</strong> <code>seurat/merge</code> and <code>batch_correct</code></p> <h4 id=combined-sample-file>Combined sample file<a class=headerlink href=#combined-sample-file title="Permanent link">&para;</a></h4> <p>When combining samples, the two processes, as labeled by the Seurat team, are <em>merge</em> and <em>integrate</em>. In more common parlance, these terms are closer to <em>sample combination</em> and <em>batch correction</em>. The combined sample file is in the <code>seurat/merge</code> directory, and for each contrast run, contains all the cells of the combined samples. The cell identities are automatically appended with a numerical identifier to ensure uniqueness across samples. Here, the cell counts for each sample are all present, with no additional modifications beyond principal components calculation and UMAP projection.</p> <p>The combined sample file for each contrast (i.e. group1-group2 and group1-group2-group3), as designated in <code>contrast_manifest.csv</code>, is present as <code>seurat/merge/&lt;contrast&gt;_seurat_merged.rds</code>. A <code>.html</code> run report for each contrast is present as well.</p> <h4 id=batch-corrected-files>Batch corrected files<a class=headerlink href=#batch-corrected-files title="Permanent link">&para;</a></h4> <p>The batch corrected files are in the <code>batch_correct</code> directory. Each of the following batch correction methods are run for each contrast:</p> <ul> <li> <p><a href=https://satijalab.org/seurat/articles/integration_introduction>Canonical Correlation Analysis (CCA)</a>: Uses the Seurat <code>integrate</code> function</p> </li> <li> <p><a href=https://cran.r-project.org/web/packages/harmony/index.html>Harmony</a>: Uses the Harmony correction method</p> </li> <li> <p><a href=https://github.com/welch-lab/liger>LIGER</a>: Linked Inference of Genomic Experimental Relationships</p> </li> <li> <p><a href=https://satijalab.org/seurat/articles/integration_rpca>Reciprocal PCA (RPCA)</a>: Uses RPCA from Seurat</p> </li> </ul> <p>As with the <code>merged</code> directory, the batch corrected files are generated for each contrast, namely the <code>.rds</code> files and the <code>.html</code> output files</p> <h4 id=sample-combination-and-batch-correction-report>Sample combination and batch correction report<a class=headerlink href=#sample-combination-and-batch-correction-report title="Permanent link">&para;</a></h4> <p>For comparative purposes, an integration report is included for each contrast. For the 4-sample 2-group contrast, the file is available for viewing <a href=./test-outputs/group1_group_2_batch_correction_integration.html>here</a>, while the 5-sample 3-group contrast is available <a href=../test-outputs/group1-group2-group3_batch_correction_integration.html>here</a>. Each report contains the sections described below; example images are collected from the 4-sample 2-group contrast.</p> <h5 id=umap-plots>UMAP plots<a class=headerlink href=#umap-plots title="Permanent link">&para;</a></h5> <p>Each batch correction method has undergone principal component analysis and uniform manifold approximation and projection (UMAP) for visualization. These plots can be colored by different metadata categories. This report includes coloring by sample, group identity, and preliminary cell type annotation.</p> <p><img alt="Cells colored by sample" src=../../img/test_sample_umap.png></p> <p><em>Cells colored by sample</em></p> <p><img alt="Cells colored by group" src=../../img/test_group_umap.png></p> <p><em>Cells colored by group identity</em></p> <p><img alt="Cells colored by annotation" src=../../img/test_annot_umap.png></p> <p><em>Cells colored by annotation</em></p> <p>The tab for cell annotation also includes a table of cell counts matching the annotation used.</p> <h5 id=clustering-and-silhouette-scores>Clustering and silhouette scores<a class=headerlink href=#clustering-and-silhouette-scores title="Permanent link">&para;</a></h5> <p>Clustering is used to potentially identify and classify similar cells, based on their "distance" from each other (i.e. similarity in gene expression and principal components). For this process, we have utilized the clustering method called the slow local moving algorithm, as made available in Seurat. This method uses a parameter called <code>resolution</code> to indicate how wide of a net to cast when clustering cells. Smaller resolutions will produce fewer and larger clusters, with the risk being that some genuinely disparate clusters might be bundled together. Comparatively, larger resolutions will produce more abundant smaller clusters, with the tradeoff being that some clusters may be unnecessarily separated. As such, the balance needs to be struck where the clusters are reasonably well-defined without breaking up clusters internally.</p> <p><img alt="Clustering for RPCA at resolution 0.1" src=../../img/test_cluster.png></p> <p><em>Example cluster plot for RPCA at resolution 0.1</em></p> <p>For each cluster resolution created, the report will produce silhouette scores to provide a categorical evaluation of the quality of the clustering. The silhouette score is a metric that evaluates the similarity of cells within each cluster and compares the overall similarity to cells outside the cluster. Each cluster receives a score, and a positive average silhouette score indicates that the clusters are more desirable due to being more condensed and self-contained.</p> <p><img alt="Silhouette score for RPCA clustering at resolution 0.1" src=../../img/test_silhouette.png></p> <p><em>Example silhouette score plot for RPCA clustering at resolution 0.1</em></p> </div> </div><script async src="https://www.googletagmanager.com/gtag/js?id=G-D3SL9V30KL"></script> <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
