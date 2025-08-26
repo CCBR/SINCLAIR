@@ -73,14 +73,16 @@ markdown_extensions:
 nav:
   - Background: index.md
   - Quickstart: user-guide/quickstart.md
+  - Parameters: params.md
   - Usage:
-      - 1. Getting Started: user-guide/getting-started.md
-      - 2. Preparing Files: user-guide/preparing-files.md
-      - 3. Running the Pipeline: user-guide/run.md
-      - 4. Expected Output: user-guide/output.md
-      - 5. Running Test Data: user-guide/test-info.md
+      - Getting Started: user-guide/getting-started.md
+      - Preparing Files: user-guide/preparing-files.md
+      - Running Pipeline: user-guide/run.md
+      - Expected Output: user-guide/output.md
+      - Running Test Data: user-guide/test-info.md
   - Analysis:
-      - 1. Differential Expression Analysis: user-guide/differentialExpression.md
+      - Differential Expression Analysis: user-guide/differentialExpression.md
+  - Advanced Usage: user-guide/advanced-usage.md
   - FAQ:
       - Troubleshooting: user-guide/troubleshooting.md
       - How to contribute: contributing.md

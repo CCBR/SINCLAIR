@@ -2,6 +2,20 @@
 
 - Fix samplesheet check to allow multi-digit sample IDs. (#189, @kelly-sovacool)
 
+### Documentation updates
+
+- Major improvements to the docs website. (#160, @bianjh-cloud)
+- Fix rendering of bulleted lists in docs website. (#164, @kelly-sovacool)
+- Documentation for test data outputs updated. (#174, @wong-nw)
+- Minor documentation improvements (#175, @wong-nw)
+- Update `test-info.md` to reflect change in directory naming (#190, @wong-nw)
+
+### Other minor changes
+
+- Re-ordering of batch correction report. (#174 @wong-nw)
+- Rename 'output' directory to 'results' for the nextflow workflow. (#186, @kelly-sovacool)
+
+
 ## SINCLAIR 0.3.4
 
 - Improve error messages when checking the sample sheet and contrast sheet. (#181, #182, @kelly-sovacool)
@@ -9,12 +23,12 @@
 ## SINCLAIR 0.3.3
 
 - Improve help message for `sinclair run`. (#153, @kelly-sovacool)
-  - the default `--mode` is now `slurm`.
+    - the default `--mode` is now `slurm`.
 - The `run_cellranger` parameter is now a boolean set to `true` by default. (#155, @kelly-sovacool)
-  - Set this to `true` if the input is fastq files or `false` if filtered h5 files.
+    - Set this to `true` if the input is fastq files or `false` if filtered h5 files.
 - New profiles:
-  - `test_h5` for starting from h5 files. (#155, @kelly-sovacool)
-  - `debug`, which sets `process.scratch` to `false` so intermediate files will be in the workDir. (#155, @kelly-sovacool)
+    - `test_h5` for starting from h5 files. (#155, @kelly-sovacool)
+    - `debug`, which sets `process.scratch` to `false` so intermediate files will be in the workDir. (#155, @kelly-sovacool)
 - Fix file paths for environments and repos on biowulf. (#162, @wong-nw)
 
 ## SINCLAIR 0.3.2
@@ -36,20 +50,20 @@
 
 - Allows users to determine what variables to regress out. (#55, @slsevilla)
 - Overhaul the CLI to use python rather than bash, which introduces **breaking changes** (#61, @kelly-sovacool).
-  - Create a script (`bin/sinclair`) to provide an interface to the CLI that works out-of-the-box without the need to install the python package with pip. (#80, @kelly-sovacool)
+    - Create a script (`bin/sinclair`) to provide an interface to the CLI that works out-of-the-box without the need to install the python package with pip. (#80, @kelly-sovacool)
 - Use `nextflow run -resume` by default, or turn it off with `sinclair run --forceall`. (#110, @kelly-sovacool)
 - Add `--output` argument for `sinclair init` and `sinclair run`. (#110, @kelly-sovacool)
-  - If not provided, commands are run in the current working directory.
-  - This is equivalent to the nextflow `$launchDir` constant.
+    - If not provided, commands are run in the current working directory.
+    - This is equivalent to the nextflow `$launchDir` constant.
 - Set the `publish_dir_mode` nextflow option to `link` by default. (#110, @kelly-sovacool)
 - Set the `process.cache` nextflow option to `deep` by default rather than lenient on biowulf. (#110, @kelly-sovacool)
 - Before launching the pipeline run:
-  - The nextflow preview is printed. (#117, @kelly-sovacool)
-  - The nextflow parameters are validated. (#127, @kelly-sovacool)
+    - The nextflow preview is printed. (#117, @kelly-sovacool)
+    - The nextflow parameters are validated. (#127, @kelly-sovacool)
 - Default parameters changed: (#142, @wong-nw)
-  - variables to regress is `null`
-  - species is "hg38"
-  - filtering method is "miqc"
+    - variables to regress is `null`
+    - species is "hg38"
+    - filtering method is "miqc"
 
 ### Bug fixes
 
@@ -62,10 +76,10 @@
 - Use same number of PCs for merged object clustering as for integration. (#85, @epehrsson)
 - Add LIGER UMAP to integration report. (#85, @epehrsson)
 - Set all default parameters in `nextflow.config`. (#85, @epehrsson)
-  - Previously, some parameters were set in `conf/process_params.config`, but we found this confusing, so we consolidated them to the main `nextflow.config` file.
+    - Previously, some parameters were set in `conf/process_params.config`, but we found this confusing, so we consolidated them to the main `nextflow.config` file.
 - Allow sample IDs to contain hyphens. (#94, @wong-nw)
 - Disable SCVI batch correction. (#109, @wong-nw)
-  - This feature is on hold until a later release.
+    - This feature is on hold until a later release.
 - LIGER now runs with 50 PCs by default instead of 20 (#109, @wong-nw)
 - Output all R Markdown documents as HTML rather than PDF. (#112, @kelly-sovacool)
 - Make sure values in the contrasts sheet are treated as strings. (#133, @kelly-sovacool)

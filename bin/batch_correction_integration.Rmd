@@ -166,6 +166,83 @@ DT::datatable(as.data.frame.matrix(cbind(table(so_merged$annot,
           colnames=c(unique(so_merged$Sample),"Total"))
 ```
 
+
+## Clustering {.tabset}
+
+### RPCA
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+method="rpca"
+files <- list.files(path = tmp_images,
+                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
+                    full.names = TRUE)
+if(length(files)>0){
+  knitr::include_graphics(files)
+} else{
+  print(paste0("Batch correction method was not included:",method))
+}
+```
+
+### ccaIntegrated
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+method="int"
+files <- list.files(path = tmp_images,
+                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
+                    full.names = TRUE)
+if(length(files)>0){
+  knitr::include_graphics(files)
+} else{
+  print(paste0("Batch correction method was not included:",method))
+}
+```
+
+### Harmony
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+method="harmony"
+files <- list.files(path = tmp_images,
+                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
+                    full.names = TRUE)
+if(length(files)>0){
+  knitr::include_graphics(files)
+} else{
+  print(paste0("Batch correction method was not included:",method))
+}
+```
+
+<!-- COMMENT OUT SCVI CHUNK FOR LATER RELEASE
+
+### scvi
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+method="scvi"
+files <- list.files(path = tmp_images,
+                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
+                    full.names = TRUE)
+if(length(files)>0){
+  knitr::include_graphics(files)
+} else{
+  print(paste0("Batch correction method was not included:",method))
+}
+```
+
+-->
+
+### liger
+
+```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+method="liger"
+files <- list.files(path = tmp_images,
+                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
+                    full.names = TRUE)
+if(length(files)>0){
+  knitr::include_graphics(files)
+} else{
+  print(paste0("Batch correction method was not included:",method))
+}
+```
+
 ## Silhouette scores  {.tabset}
 
 ```{r silhouetteImages,   message=FALSE, echo=FALSE, include=FALSE}
@@ -364,83 +441,6 @@ if(length(files)>0){
 method="liger"
 files <- list.files(path = tmp_images,
                     pattern = paste0("silhouette_",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
-  knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
-}
-```
-
-
-## Clustering {.tabset}
-
-### RPCA
-
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="rpca"
-files <- list.files(path = tmp_images,
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
-  knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
-}
-```
-
-### ccaIntegrated
-
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="int"
-files <- list.files(path = tmp_images,
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
-  knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
-}
-```
-
-### Harmony
-
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="harmony"
-files <- list.files(path = tmp_images,
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
-  knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
-}
-```
-
-<!-- COMMENT OUT SCVI CHUNK FOR LATER RELEASE
-
-### scvi
-
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="scvi"
-files <- list.files(path = tmp_images,
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
-                    full.names = TRUE)
-if(length(files)>0){
-  knitr::include_graphics(files)
-} else{
-  print(paste0("Batch correction method was not included:",method))
-}
-```
-
--->
-
-### liger
-
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
-method="liger"
-files <- list.files(path = tmp_images,
-                    pattern = paste0("clusters_.*",method,"*.*[.]png"),
                     full.names = TRUE)
 if(length(files)>0){
   knitr::include_graphics(files)

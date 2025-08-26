@@ -1,5 +1,15 @@
 # Advanced Usage
 
+## Setup Dependencies
+
+scRNA has several dependencies listed below. These dependencies can be installed by a sysadmin. All dependencies will be automatically loaded if running from Biowulf.
+
+- nextflow: "nextflow/23.04.1"
+- cellranger "cellranger:7.1.0"
+- R: "R/4.3"
+
+Docker containers to run the pipeline are currently in development.
+
 ## Loading and Running an Installation from GitHub
 
 ### Installation
@@ -42,7 +52,7 @@ bin/sinclair run --mode slurm --species <genome> --run_cellranger true
 
 ## Manually adjusting config files
 
-## 2.1 Configs
+### Configs
 
 The configuration files control parameters and software of the pipeline. These files are listed below:
 
@@ -51,7 +61,7 @@ The configuration files control parameters and software of the pipeline. These f
 - conf/modules.config
 - conf/Rpack.config
 
-### 2.1.1 NextFlow Config
+### NextFlow Config
 
 The configuration file dictates the global information to be used during the pipeline. Users can alter the default values, as needed. View the full list of parameters [here](../params.md).
 
@@ -62,11 +72,11 @@ The configuration file dictates the global information to be used during the pip
 - run_cellranger: determines whether to run cell ranger; if `true` is selected, expects FQ inputs, if `false`, expects .h5 inputs [options: `true`, `false`]
 - vars_to_regress: a comma separated list of any variables to regress during `SCTransform` process; [options: "", "percent.mt,nFeature_RNA,S.Score,G2M.Score,nCount_RNA"]
 
-### 2.1.2 Base Config
+### Base Config
 
 The configuration file dictates submission to Biowulf HPC. There are two different ways to control these parameters - first, to control the default settings, and second, to create or edit individual rules. These parameters should be edited with caution, after significant testing.
 
-### 2.1.3 Modules Config
+### Modules Config
 
 The configuration file dictates process-specific processing parameters, including:
 
@@ -74,7 +84,7 @@ The configuration file dictates process-specific processing parameters, includin
 - output location and file names
 - additional arguments to be passed to the process
 
-### 2.1.4 R Package Config
+### R Package Config
 
 The configuration file dictates which R libraries, and which versions, are loaded into the accompanying R script
 
@@ -91,7 +101,7 @@ nextflow run main.nf \
     -params-file assets/params.yml
 ```
 
-## 3.2 Commands explained
+## Commands explained
 
 The following explains each of the command options:
 
@@ -103,7 +113,7 @@ The following explains each of the command options:
 - `--run_cellranger`: whether or not to run cellranger on dataset; i.e. `true`/`false`
 - args: any additional arguments; IE --stub-run
 
-## 3.3 Typical Workflow
+## Typical Workflow
 
 A typical command workflow, running the pipeline for the first time locally, is as follows:
 

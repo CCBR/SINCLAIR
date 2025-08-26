@@ -14,9 +14,15 @@ Idents(seuratObject) = "SCT_snn_res.0.8"
 
 The identities are not limited to the clusters; these can be set to any categorical variable in the metadata, including cell types that have been determined by SingleR or classified by the user, cell cycle phase (G1/G2M/S), or experimental group.
 
+A way to check the available identities you can set is by looking at the Seurat object's metadata columns:
+
+```
+colnames(seuratObject@meta.data)
+```
+
 ## Preparing the Seurat object for differential expression with `PrepSCTFindMarkers`
 
-After defining the object identities, Seurat requires that when when running differential expression on the SCT assay, the object needs to be prepared with the `PrepSCTFindMarkers` function:
+After defining the object identities and before running differential expression analysis, run the `PrepSCTFindMarkers` function:
 
 ```
 seuratObject = PrepSCTFindMarkers(seuratObject)

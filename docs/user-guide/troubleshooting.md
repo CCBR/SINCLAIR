@@ -2,20 +2,32 @@
 
 ## Recommended steps to troubleshoot the pipeline
 
-### Email
+## Email
 
 Check your email for an email regarding pipeline failure. You will receive an email from slurm@biowulf.nih.gov with the subject: Slurm Job_id=[#] Name=CARLISLE Failed, Run time [time], FAILED, ExitCode 1
 
 ### Review the log files
 
-Review the logs in two ways:
+You can check logs in two ways to diagnose workflow errors:
 
-1. Review the master slurm file: This file will be found in the `/path/to/results/dir/` and titled `slurm-[jobid].out`. Reviewing this file will tell you what rule errored, and for any local SLURM jobs, provide error details
-2. Review the individual rule log files: After reviewing the master slurm-file, review the specific rules that failed within the `/path/to/results/dir/logs/`. Each rule will include a `.err` and `.out` file, with the following formatting: `{rulename}.{masterjobID}.{individualruleID}.{wildcards from the rule}.{out or err}`
+Master SLURM Log File
+Located in /path/to/results/dir/ and named slurm-[jobid].out, this file summarizes the overall workflow run. It identifies which rule failed and provides error details for any jobs executed locally via SLURM.
+
+Individual Rule Log Files
+After identifying the failed rule(s) from the master SLURM log, examine the corresponding log files in /path/to/results/dir/logs/.
 
 ### Restart the run
 
-After addressing the issue, unlock the output directory, perform another dry-run and check the status of the pipeline, then resubmit to the cluster.
+Each file follows this naming convention:
+
+{rulename}.{masterjobID}.{individualruleID}.{wildcards}.{out or err}`
+
+.out files capture standard output
+.err files capture standard error messages
+
+Once you have identified and addressed the issue, you may resume the SINCLAIR run.
+
+Unlock the output directory, perform another dry-run, and check the status of the pipeline, then resubmit to the cluster.
 
 ```
 sinclair run \
