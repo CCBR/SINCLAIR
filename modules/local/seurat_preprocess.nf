@@ -1,6 +1,6 @@
 process SEURAT_PREPROCESS {
     tag "${id}"
-    label 'process_medium'
+    label 'process_high'
 
     input:
     tuple val(id), val(inDir), path(h5)
