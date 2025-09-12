@@ -52,7 +52,7 @@ def check_files(fileid, context):
     ## [Sample Name]_S[Sample Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
     # create sample list - will check all samples are the same name
     sample_list = list()
-    sampleID = re.split("_S.", fileid)[0]
+    sampleID = re.split("_S.*", fileid)[0]
     sample_list.append(sampleID)
 
     # check S1_L00 is within file
