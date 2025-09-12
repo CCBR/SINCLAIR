@@ -1,5 +1,7 @@
 ## SINCLAIR development version
 
+- New parameter `save_cellranger_extra_files` to control whether to save extra cellranger output files (bam, bai, cloupe) in addition to h5 files. Default is `false` to save space. (#195, @kelly-sovacool)
+
 ### Documentation updates
 
 - Major improvements to the docs website. (#160, @bianjh-cloud)
