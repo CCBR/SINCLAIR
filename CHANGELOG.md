@@ -1,5 +1,7 @@
 ## SINCLAIR development version
 
+- New `largemem` profile for memory-intensive processes. (#196, @kelly-sovacool)
+
 ### Documentation updates
 
 - Major improvements to the docs website. (#160, @bianjh-cloud)
