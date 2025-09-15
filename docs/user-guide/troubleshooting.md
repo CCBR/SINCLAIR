@@ -31,18 +31,26 @@ Unlock the output directory, perform another dry-run, and check the status of th
 
 ```
 sinclair run \
-    -profile biowulf \
-    --input assets/input_manifest.csv \
-    --contrast assets/contrast_manifest.csv \
     --output /data/$USER/scRNA_test \
     -params-file assets/params.yml
 ```
 
 ## If a process runs out of resources
 
+You can run sinclair with the `largemem` profile to allocate more memory and use the `largemem` slurm partition for resource-intensive processes.
+
+```sh
+sinclair run \
+    -profile largemem \
+    --output /data/$USER/scRNA_test \
+    -params-file assets/params.yml
+```
+
+### Custom resources
+
 You can change the resources allocated to processes by changing them in `conf/base.config`.
 
-Here is an alternate version of the `process_high` label that allocates more resources and uses the `largemem` partition:
+Here is an alternate version of the `process_high` label that allocates more resources and uses the `largemem` slurm partition:
 
 ```
     withLabel:process_high {
