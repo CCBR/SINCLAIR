@@ -76,16 +76,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       nf_test_files: ${{ steps.list.outputs.components }}
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: List nf-test files
         id: list
-        uses: adamrtalbot/detect-nf-test-changes@v0.0.2
+        uses: adamrtalbot/detect-nf-test-changes@v0.0.6
         with:
           head: ${{ github.sha }}
-          base: origin/${{ github.base_ref }}
+          base: ${{ github.base_ref }}
           include: .github/include.yml
       - name: print list of nf-test files
         run: |

@@ -10,27 +10,28 @@ Define where the pipeline should find input data and save output data.
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------- | -------- | ------ |
 | `input`          | Path to CSV file containing information about the samples in the experiment. <details><summary>Help</summary><small>You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row.</small></details> | `string`  | assets/input_manifest.csv    | True     |        |
 | `contrast`       | Path to CSV file with contrast specification                                                                                                                                                                                                                                                                                                                                     | `string`  | assets/contrast_manifest.csv | True     |        |
-| `outdir`         | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.                                                                                                                                                                                                                                                         | `string`  | output                       | True     |        |
+| `outdir`         | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.                                                                                                                                                                                                                                                         | `string`  | results                      | True     |        |
 | `run_cellranger` | whether to run cellranger                                                                                                                                                                                                                                                                                                                                                        | `boolean` | True                         |          |        |
 
 ## Main options
 
-| Parameter            | Description                                                                             | Type      | Default                   | Required | Hidden |
-| -------------------- | --------------------------------------------------------------------------------------- | --------- | ------------------------- | -------- | ------ |
-| `species`            |                                                                                         | `string`  | hg19                      |          |        |
-| `vars_to_regress`    |                                                                                         | `string`  |                           |          |        |
-| `qc_filtering`       |                                                                                         | `string`  | manual                    |          |        |
-| `nCount_RNA_max`     |                                                                                         | `integer` | 500000                    |          |        |
-| `nCount_RNA_min`     |                                                                                         | `integer` | 1000                      |          |        |
-| `nFeature_RNA_max`   |                                                                                         | `integer` | 5000                      |          |        |
-| `nFeature_RNA_min`   |                                                                                         | `integer` | 200                       |          |        |
-| `percent_mt_max`     |                                                                                         | `integer` | 10                        |          |        |
-| `percent_mt_min`     |                                                                                         | `integer` | 0                         |          |        |
-| `run_doublet_finder` |                                                                                         | `string`  | Y                         |          |        |
-| `seurat_resolution`  |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
-| `npcs`               |                                                                                         | `integer` | 50                        |          |        |
-| `resolution_list`    |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
-| `genome_dir`         | Path to the genome references. Overridden by platform configs, e.g. conf/biowulf.config | `string`  |                           |          |        |
+| Parameter                     | Description                                                                             | Type      | Default                   | Required | Hidden |
+| ----------------------------- | --------------------------------------------------------------------------------------- | --------- | ------------------------- | -------- | ------ |
+| `species`                     |                                                                                         | `string`  | hg19                      |          |        |
+| `vars_to_regress`             |                                                                                         | `string`  |                           |          |        |
+| `qc_filtering`                |                                                                                         | `string`  | manual                    |          |        |
+| `nCount_RNA_max`              |                                                                                         | `integer` | 500000                    |          |        |
+| `nCount_RNA_min`              |                                                                                         | `integer` | 1000                      |          |        |
+| `nFeature_RNA_max`            |                                                                                         | `integer` | 5000                      |          |        |
+| `nFeature_RNA_min`            |                                                                                         | `integer` | 200                       |          |        |
+| `percent_mt_max`              |                                                                                         | `integer` | 10                        |          |        |
+| `percent_mt_min`              |                                                                                         | `integer` | 0                         |          |        |
+| `run_doublet_finder`          |                                                                                         | `string`  | Y                         |          |        |
+| `seurat_resolution`           |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
+| `npcs`                        |                                                                                         | `integer` | 50                        |          |        |
+| `resolution_list`             |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
+| `save_cellranger_extra_files` | Whether to save extra cellranger files (bam, bai, cloupe) in addition to h5 files       | `boolean` | False                     |          |        |
+| `genome_dir`                  | Path to the genome references. Overridden by platform configs, e.g. conf/biowulf.config | `string`  |                           |          |        |
 
 ## Institutional config options
 

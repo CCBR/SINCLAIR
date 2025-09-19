@@ -60,7 +60,7 @@ workflow PREPROCESS_EXQC {
             CELLRANGER_COUNT (
                 ch_meta,
                 params.genome_dir,
-                params.run_cellranger
+                params.save_cellranger_extra_files
             )
             // [id, fastq input dir, h5 file]
             ch_fqdir_h5 = ch_meta.join(CELLRANGER_COUNT.out.h5)
