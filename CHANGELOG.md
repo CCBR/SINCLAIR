@@ -1,5 +1,7 @@
 ## SINCLAIR development version
 
+- Set main job memory to 2 GB for slurm mode. (#205, @kelly-sovacool)
+
 ## SINCLAIR 0.3.5
 
 - Fix samplesheet check to allow multi-digit sample IDs. (#189, @kelly-sovacool)
