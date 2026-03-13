@@ -70,7 +70,7 @@ Matrix Market Exchange (.mtx) files can also be used to store sparse matrices of
 
 For example, a matrix containing 20000 genes across 5000 barcoded cells, with 10000 non-zero entries can be represented in a mtx file like:
 
-**Matrix dimensions:** 20000 rows × 5000 columns  
+**Matrix dimensions:** 20000 rows × 5000 columns
 **Non-zero entries:** 10000
 
 | Row | Column | Value |

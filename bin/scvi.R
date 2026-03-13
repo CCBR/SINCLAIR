@@ -1,4 +1,4 @@
-.libPaths( c("/data/CCBR_Pipeliner/db/PipeDB/scrna5",.libPaths()))
+.libPaths(c("/data/CCBR_Pipeliner/db/PipeDB/scrna5", .libPaths()))
 
 
 library(Seurat)
@@ -18,13 +18,12 @@ args <- commandArgs(trailingOnly = T)
 
 
 so <- as.character(args[1])
-outDirSeurat = as.character(args[2])
-ref = as.character(args[3])
-pcs = as.character(args[4])
-resolutions = as.character(strsplit(gsub(",+",",",as.character(args[5])),split=",")[[1]])
-resolutions = as.numeric(resolutions)
-so = readRDS(so)
+outDirSeurat <- as.character(args[2])
+ref <- as.character(args[3])
+pcs <- as.character(args[4])
+resolutions <- as.character(strsplit(gsub(",+", ",", as.character(args[5])), split = ",")[[1]])
+resolutions <- as.numeric(resolutions)
+so <- readRDS(so)
 
 
-
-saveRDS(so,outDirSeurat)
+saveRDS(so, outDirSeurat)

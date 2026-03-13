@@ -4,13 +4,13 @@ library(GenomeInfoDb)
 
 args <- commandArgs(trailingOnly = T)
 
-so = readRDS(as.character(args[1]))
-counts = Read10X_h5(as.character(args[2]))
-fragpath = as.character(args[3])
-annotation = readRDS("atachg38Annot.rds")
+so <- readRDS(as.character(args[1]))
+counts <- Read10X_h5(as.character(args[2]))
+fragpath <- as.character(args[3])
+annotation <- readRDS("atachg38Annot.rds")
 
 
-counts$Peaks = counts$Peaks[,colnames(so)]
+counts$Peaks <- counts$Peaks[, colnames(so)]
 
 # create ATAC assay and add it to the object
 so[["ATAC"]] <- CreateChromatinAssay(
@@ -25,16 +25,13 @@ so <- NucleosomeSignal(so)
 so <- TSSEnrichment(so)
 
 
-
-
-
 # filter out low quality cells
 so <- subset(
   x = so,
   subset = nCount_ATAC < 100000 &
- #   nCount_RNA < 25000 &
+    #   nCount_RNA < 25000 &
     nCount_ATAC > 1000 &
- #   nCount_RNA > 1000 &
+    #   nCount_RNA > 1000 &
     nucleosome_signal < 2 &
     TSS.enrichment > 1
 )
@@ -73,4 +70,4 @@ so <- FindMultiModalNeighbors(
   modality.weight.name = "RNA.weight",
   verbose = TRUE
 )
-saveRDS(so,paste0("atacSoup/",as.character(args[1])))
+saveRDS(so, paste0("atacSoup/", as.character(args[1])))
