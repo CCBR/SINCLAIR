@@ -25,10 +25,12 @@ repos:
       - id: codespell
         # https://github.com/codespell-project/codespell/issues/1498
   # Python formatting
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.3.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.5
     hooks:
-      - id: black
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
   # R formatting
   - repo: https://github.com/lorenzwalthert/precommit
     rev: v0.4.3.9021
