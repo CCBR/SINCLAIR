@@ -11,16 +11,11 @@
 
 from collections import defaultdict
 import os
-import sys
-import errno
 import argparse
-import gzip
 import re
 from os import listdir
 from os.path import isfile, join
-import json
 import pandas as pd
-import numpy as np
 
 
 def parse_args(args=None):
@@ -76,7 +71,7 @@ def check_files(fileid, context):
 
     accepted_read_type = ["R1", "R2", "I1", "I2"]
     read_type = postID.split("_")[1]
-    if not read_type in accepted_read_type:
+    if read_type not in accepted_read_type:
         print_error(
             "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type,
             context,
