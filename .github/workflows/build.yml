@@ -95,7 +95,7 @@ jobs:
         uses: adamrtalbot/detect-nf-test-changes@v0.0.6
         with:
           head: ${{ github.sha }}
-          base: ${{ github.base_ref }}
+          base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
       - name: print list of nf-test files
         run: |
