@@ -32,10 +32,10 @@ repos:
         args: [--fix]
       - id: ruff-format
   # R formatting
-  - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.3.9021
+  - repo: https://github.com/posit-dev/air-pre-commit
+    rev: 0.8.2
     hooks:
-      - id: style-files
+      - id: air-format
   # general linting
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v4.0.0-alpha.8"
