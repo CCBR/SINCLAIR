@@ -33,9 +33,9 @@ def test_preview():
             f"./bin/sinclair init --output {tmp_dir} && ./bin/sinclair run --output {tmp_dir} --mode local -preview"
         )
     cmd_line = {
-        l.split(":")[0].strip(): l.split(":")[1].strip()
-        for l in output.split("\n")
-        if ":" in l
+        line.split(":")[0].strip(): line.split(":")[1].strip()
+        for line in output.split("\n")
+        if ":" in line
     }["cmd line"]
     assert all(["-preview" in cmd_line, "-resume" in cmd_line])
 
@@ -49,16 +49,15 @@ def test_forceall():
         check=True,
     ).stdout
     cmd_line = {
-        l.split(":")[0].strip(): l.split(":")[1].strip()
-        for l in output.split("\n")
-        if ":" in l
+        line.split(":")[0].strip(): line.split(":")[1].strip()
+        for line in output.split("\n")
+        if ":" in line
     }["cmd line"]
     assert "-preview" in cmd_line and "-resume" not in cmd_line
 
 
 def test_init():
     with tempfile.TemporaryDirectory() as tmp_dir:
-        output = shell_run(f"./bin/sinclair init --output {tmp_dir}")
         outdir = pathlib.Path(tmp_dir)
         assertions = [(outdir / "nextflow.config").exists(), (outdir / "log").exists()]
     assert all(assertions)
@@ -68,7 +67,7 @@ def test_init_default():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as tmp_dir:
         os.chdir(tmp_dir)
-        output = shell_run(f"{cwd}/bin/sinclair init")
+
         outdir = pathlib.Path(tmp_dir)
         assertions = [(outdir / "nextflow.config").exists(), (outdir / "log").exists()]
 
@@ -77,7 +76,7 @@ def test_init_default():
 
 
 def test_run_no_init():
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         with tempfile.TemporaryDirectory() as tmp_dir:
             output = shell_run(
                 f"./bin/sinclair run --output {tmp_dir} --mode local",
