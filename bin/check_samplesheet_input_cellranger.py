@@ -11,16 +11,10 @@
 
 from collections import defaultdict
 import os
-import sys
-import errno
 import argparse
-import gzip
-import re
 from os import listdir
 from os.path import isfile, join
-import json
 import pandas as pd
-import numpy as np
 
 
 def parse_args(args=None):
