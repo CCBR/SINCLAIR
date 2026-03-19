@@ -11,14 +11,27 @@ scRNA_handle_packages <- function(pkg_df) {
     need_install <- pkg[!(pkg %in% installed.packages()[, "Package"])]
     if (length(need_install) != 0) {
       print(paste0("Installing: ", pkg))
-      if (source == "bc") BiocManager::install(pkg, ask = FALSE, update = FALSE)
+      if (source == "bc") {
+        BiocManager::install(pkg, ask = FALSE, update = FALSE)
+      }
       if (source == "cr") {
-        install.packages(pkg,
-          version = version, repos = "http://cran.us.r-project.org",
-          local = FALSE, ask = FALSE, update = FALSE
+        install.packages(
+          pkg,
+          version = version,
+          repos = "http://cran.us.r-project.org",
+          local = FALSE,
+          ask = FALSE,
+          update = FALSE
         )
       }
-      if (source == "gh") remotes::install_github(gh_name, version = version, local = FALSE, update = FALSE)
+      if (source == "gh") {
+        remotes::install_github(
+          gh_name,
+          version = version,
+          local = FALSE,
+          update = FALSE
+        )
+      }
     }
 
     print(paste0("Loading: ", pkg))
@@ -46,7 +59,12 @@ SEURAT_CLUSTERING <- function(so_in, npcs_in) {
 CONVERT_TO_HUMAN_GENELIST <- function(gns) {
   egs <- mapIds(org.Hs.eg.db, gns, "ENTREZID", "SYMBOL")
   mapped <- select(Orthology.eg.db, egs, "Mus.musculus", "Homo.sapiens")
-  mapped$MUS <- mapIds(org.Mm.eg.db, as.character(mapped$Mus.musculus), "SYMBOL", "ENTREZID")
+  mapped$MUS <- mapIds(
+    org.Mm.eg.db,
+    as.character(mapped$Mus.musculus),
+    "SYMBOL",
+    "ENTREZID"
+  )
   return(as.character(unlist(mapped$MUS)))
 }
 
@@ -63,13 +81,15 @@ MAIN_PROCESS_SO <- function(so_in, species, npcs_in) {
   }
 
   # process
-  so_1 <- NormalizeData(so_in,
+  so_1 <- NormalizeData(
+    so_in,
     normalization.method = "LogNormalize",
     scale.factor = 10000,
     assay = "RNA"
   )
   so_2 <- ScaleData(so_1, assay = "RNA")
-  so_3 <- CellCycleScoring(so_2,
+  so_3 <- CellCycleScoring(
+    so_2,
     s.features = s.genes,
     g2m.features = g2m.genes,
     set.ident = TRUE
@@ -92,26 +112,60 @@ RUN_SINGLEr <- function(obj, refFile, fineORmain) {
 
 MAIN_SINGLER <- function(so_in, species) {
   if (species == "hg38" || species == "hg19") {
-    so_in$HPCA_main <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.main")
-    so_in$HPCA <- RUN_SINGLEr(so_in, celldex::HumanPrimaryCellAtlasData(), "label.fine")
-    so_in$BP_encode_main <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.main")
-    so_in$BP_encode <- RUN_SINGLEr(so_in, celldex::BlueprintEncodeData(), "label.fine")
-    so_in$monaco_main <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.main")
-    so_in$monaco <- RUN_SINGLEr(so_in, celldex::MonacoImmuneData(), "label.fine")
+    so_in$HPCA_main <- RUN_SINGLEr(
+      so_in,
+      celldex::HumanPrimaryCellAtlasData(),
+      "label.main"
+    )
+    so_in$HPCA <- RUN_SINGLEr(
+      so_in,
+      celldex::HumanPrimaryCellAtlasData(),
+      "label.fine"
+    )
+    so_in$BP_encode_main <- RUN_SINGLEr(
+      so_in,
+      celldex::BlueprintEncodeData(),
+      "label.main"
+    )
+    so_in$BP_encode <- RUN_SINGLEr(
+      so_in,
+      celldex::BlueprintEncodeData(),
+      "label.fine"
+    )
+    so_in$monaco_main <- RUN_SINGLEr(
+      so_in,
+      celldex::MonacoImmuneData(),
+      "label.main"
+    )
+    so_in$monaco <- RUN_SINGLEr(
+      so_in,
+      celldex::MonacoImmuneData(),
+      "label.fine"
+    )
     so_in$immu_cell_exp_main <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
+      so_in,
+      celldex::DatabaseImmuneCellExpressionData(),
       "label.main"
     )
     so_in$immu_cell_exp <- RUN_SINGLEr(
-      so_in, celldex::DatabaseImmuneCellExpressionData(),
+      so_in,
+      celldex::DatabaseImmuneCellExpressionData(),
       "label.fine"
     )
     so_in$annot <- so_in$HPCA_main
   } else if (species == "mm10") {
     so_in$immgen_main <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.main")
     so_in$immgen <- RUN_SINGLEr(so_in, celldex::ImmGenData(), "label.fine")
-    so_in$mouseRNAseq_main <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.main")
-    so_in$mouseRNAseq <- RUN_SINGLEr(so_in, celldex::MouseRNAseqData(), "label.fine")
+    so_in$mouseRNAseq_main <- RUN_SINGLEr(
+      so_in,
+      celldex::MouseRNAseqData(),
+      "label.main"
+    )
+    so_in$mouseRNAseq <- RUN_SINGLEr(
+      so_in,
+      celldex::MouseRNAseqData(),
+      "label.fine"
+    )
     so_in$annot <- so_in$immgen_main
   }
   return(so_in)
@@ -133,20 +187,31 @@ MAIN_DOUBLETS <- function(so_in, run_doublet_finder) {
     nExp_poi.adj <- round(nExp_poi * (1 - homotypic.prop))
 
     ## Run DoubletFinder with varying classification stringencies
-    dfso <- doubletFinder_v3(so_in,
-      pN = 0.25, pK = 0.09,
+    dfso <- doubletFinder_v3(
+      so_in,
+      pN = 0.25,
+      pK = 0.09,
       nExp = nExp_poi,
-      reuse.pANN = FALSE, PCs = 1:10, sct = T
+      reuse.pANN = FALSE,
+      PCs = 1:10,
+      sct = T
     )
 
     pAAN <- tail(names(dfso@meta.data), 2)[1]
-    dfso <- doubletFinder_v3(dfso,
-      pN = 0.25, pK = 0.09,
+    dfso <- doubletFinder_v3(
+      dfso,
+      pN = 0.25,
+      pK = 0.09,
       nExp = nExp_poi.adj,
-      reuse.pANN = pAAN, PCs = 1:10, sct = T
+      reuse.pANN = pAAN,
+      PCs = 1:10,
+      sct = T
     )
     so_in$DF_hi.lo <- dfso[[tail(names(dfso@meta.data), 1)]]
-    so_in <- subset(so_in, cells = names(so_in$DF_hi.lo)[so_in$DF_hi.lo == "Singlet"])
+    so_in <- subset(
+      so_in,
+      cells = names(so_in$DF_hi.lo)[so_in$DF_hi.lo == "Singlet"]
+    )
   }
 
   return(so_in)
@@ -170,7 +235,16 @@ RUN_SINGLEr_AVERAGE <- function(obj, refFile, fineORmain) {
   return(annotVect)
 }
 
-MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_in, reduction_in, v_list = NULL, conda_env = "") {
+MAIN_BATCH_CORRECTION <- function(
+  so_in,
+  npcs,
+  species,
+  resolution_list,
+  method_in,
+  reduction_in,
+  v_list = NULL,
+  conda_env = ""
+) {
   # set assay to RNA to avoid double transform/norm
   DefaultAssay(so_in) <- "RNA"
 
@@ -187,9 +261,11 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
     so_pca <- RunPCA(so_scaled)
 
     so_integrate <- IntegrateLayers(
-      object = so_pca, method = scVIIntegration,
+      object = so_pca,
+      method = scVIIntegration,
       new.reduction = "integrated.scvi",
-      conda_env = conda_path, dims = 1:npcs
+      conda_env = conda_path,
+      dims = 1:npcs
     )
   } else if (method_in == "LIGER") {
     print("--running LIGER")
@@ -210,9 +286,11 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
     so_pca <- RunPCA(so_transform)
 
     so_integrate <- IntegrateLayers(
-      object = so_pca, method = get(method_in),
+      object = so_pca,
+      method = get(method_in),
       normalization.method = "SCT",
-      verbose = F, new.reduction = reduction_in
+      verbose = F,
+      new.reduction = reduction_in
     )
   }
 
@@ -227,19 +305,67 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
 
   # relabel
   if (species == "hg38" || species == "hg19") {
-    so$clustAnnot_HPCA_main <- RUN_SINGLEr_AVERAGE(so, celldex::HumanPrimaryCellAtlasData(), "label.main")
-    so$clustAnnot_HPCA <- RUN_SINGLEr_AVERAGE(so, celldex::HumanPrimaryCellAtlasData(), "label.fine")
-    so$clustAnnot_BP_encode_main <- RUN_SINGLEr_AVERAGE(so, celldex::BlueprintEncodeData(), "label.main")
-    so$clustAnnot_BP_encode <- RUN_SINGLEr_AVERAGE(so, celldex::BlueprintEncodeData(), "label.fine")
-    so$clustAnnot_monaco_main <- RUN_SINGLEr_AVERAGE(so, celldex::MonacoImmuneData(), "label.main")
-    so$clustAnnot_monaco <- RUN_SINGLEr_AVERAGE(so, celldex::MonacoImmuneData(), "label.fine")
-    so$clustAnnot_immu_cell_exp_main <- RUN_SINGLEr_AVERAGE(so, celldex::DatabaseImmuneCellExpressionData(), "label.main")
-    so$clustAnnot_immu_cell_exp <- RUN_SINGLEr_AVERAGE(so, celldex::DatabaseImmuneCellExpressionData(), "label.fine")
+    so$clustAnnot_HPCA_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::HumanPrimaryCellAtlasData(),
+      "label.main"
+    )
+    so$clustAnnot_HPCA <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::HumanPrimaryCellAtlasData(),
+      "label.fine"
+    )
+    so$clustAnnot_BP_encode_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::BlueprintEncodeData(),
+      "label.main"
+    )
+    so$clustAnnot_BP_encode <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::BlueprintEncodeData(),
+      "label.fine"
+    )
+    so$clustAnnot_monaco_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::MonacoImmuneData(),
+      "label.main"
+    )
+    so$clustAnnot_monaco <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::MonacoImmuneData(),
+      "label.fine"
+    )
+    so$clustAnnot_immu_cell_exp_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::DatabaseImmuneCellExpressionData(),
+      "label.main"
+    )
+    so$clustAnnot_immu_cell_exp <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::DatabaseImmuneCellExpressionData(),
+      "label.fine"
+    )
   } else if (species == "mm10") {
-    so$clustAnnot_immgen_main <- RUN_SINGLEr_AVERAGE(so, celldex::ImmGenData(), "label.main")
-    so$clustAnnot_immgen <- RUN_SINGLEr_AVERAGE(so, celldex::ImmGenData(), "label.fine")
-    so$clustAnnot_mouseRNAseq_main <- RUN_SINGLEr_AVERAGE(so, celldex::MouseRNAseqData(), "label.main")
-    so$clustAnnot_mouseRNAseq <- RUN_SINGLEr_AVERAGE(so, celldex::MouseRNAseqData(), "label.fine")
+    so$clustAnnot_immgen_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::ImmGenData(),
+      "label.main"
+    )
+    so$clustAnnot_immgen <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::ImmGenData(),
+      "label.fine"
+    )
+    so$clustAnnot_mouseRNAseq_main <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::MouseRNAseqData(),
+      "label.main"
+    )
+    so$clustAnnot_mouseRNAseq <- RUN_SINGLEr_AVERAGE(
+      so,
+      celldex::MouseRNAseqData(),
+      "label.fine"
+    )
   }
   return(so)
 }
@@ -248,7 +374,8 @@ MAIN_BATCH_CORRECTION <- function(so_in, npcs, species, resolution_list, method_
 # Integration Report Functions
 ##################################################################
 OBJECT_SELECT <- function(id) {
-  obj <- switch(id,
+  obj <- switch(
+    id,
     "merged" = so_merged,
     "integrated" = so_integrated,
     "rpca" = so_rpca,
@@ -259,7 +386,8 @@ OBJECT_SELECT <- function(id) {
   return(obj)
 }
 NAME_SELECT <- function(id) {
-  obj <- switch(id,
+  obj <- switch(
+    id,
     "merged" = "Before Batch Correction",
     "integrated" = "Integrated CCA",
     "rpca" = "RPCA",
