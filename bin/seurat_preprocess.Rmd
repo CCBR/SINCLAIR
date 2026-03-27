@@ -27,8 +27,14 @@ params:
   scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
   testing: "N"
 ---
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
 
-```{r, prep_args, message=FALSE}
+```{r, prep_args}
 # set up params
 species <- params$species
 sampleid <- params$sampleid
@@ -51,7 +57,7 @@ scRNA_functions <- params$scRNA_functions
 testing <- params$testing
 ```
 
-```{r, handle_pkg, message=FALSE}
+```{r, handle_pkg}
 # set library dir, load this and remove any other dirs to avoid confusion
 # between personally created pkgs and the pipeline package
 ## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
@@ -95,7 +101,7 @@ source(scRNA_functions)
 # tinytex::install_tinytex(force = TRUE)
 ```
 
-```{r, pre-processing, message=FALSE}
+```{r, pre-processing}
 # read in h5 file
 rnaCounts <- Read10X_h5(h5)
 
@@ -120,7 +126,7 @@ FeatureScatter(so, feature1 = "nFeature_RNA", feature2 = "percent.mt")
 VlnPlot(so, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 ```
 
-```{r, QC, message=FALSE}
+```{r, QC}
 # subset
 so_filt <- subset(so, subset = nFeature_RNA > 200)
 so_filt
@@ -136,7 +142,7 @@ so_qc <- RunMiQC(so_filt,
 # ggplot2::scale_color_gradient(low = "grey", high = "purple")
 ```
 
-```{r qc2, message=FALSE}
+```{r qc2}
 # define feature info
 nCount_out <- outliers_mad(so_qc$nCount_RNA, threshold = 3)$LL_CI_MAD
 nFeature_out <- outliers_mad(so_qc$nFeature_RNA, threshold = 3)$LL_CI_MAD
@@ -173,7 +179,7 @@ so_labeled <- MAIN_SINGLER(so_processed, species)
 so_doublet <- MAIN_DOUBLETS(so_labeled, run_doublet_finder)
 ```
 
-```{r, save, message=FALSE}
+```{r, save}
 # clean final object
 so_output <- UpdateSeuratObject(so_doublet)
 so_output

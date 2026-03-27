@@ -21,8 +21,13 @@ params:
   scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
   testing: "Y"
 ---
-
-```{r, prep_args,  message=FALSE, include=FALSE}
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+```{r, prep_args, include=FALSE}
 # set up params
 species <- params$species
 vars_to_regress <- params$vars_to_regress
@@ -47,7 +52,7 @@ print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
 ```
 
-```{r, handle_pkg, message=FALSE, include=FALSE}
+```{r, handle_pkg include=FALSE}
 # set library dir, load this and remove any other dirs to avoid confusion
 # between personally created pkgs and the pipeline package
 ## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
@@ -92,7 +97,7 @@ source(scRNA_functions)
 options(future.globals.maxSize = 1e12)
 ```
 
-```{r, processing, message=FALSE}
+```{r, processing}
 # print group info
 print(paste0("This merged object includes groups: ", gid))
 
@@ -121,7 +126,7 @@ for (p in readObj) { # TODO use map instead of a for loop
 }
 ```
 
-```{r merge_objs, message=FALSE}
+```{r merge_objs}
 # create ref list
 reference.list <- combinedObj.list[unlist(readObj)]
 
@@ -136,7 +141,7 @@ combinedObj.integratedRNA <- merge(reference.list[[1]], reference.list[2:length(
 VariableFeatures(combinedObj.integratedRNA) <- selectFeatures
 ```
 
-```{r mergedObjDims, message=FALSE, echo=FALSE}
+```{r mergedObjDims }
 # vars.to.regress is NULL by default
 so_merged <- SCTransform(combinedObj.integratedRNA, vars.to.regress = vars_to_regress_list, assay = "RNA")
 

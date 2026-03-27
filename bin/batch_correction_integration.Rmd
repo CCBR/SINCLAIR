@@ -27,8 +27,13 @@ params:
   scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
   testing: "Y"
 ---
-
-```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+```{r, prep_args, include=FALSE}
 # set up params
 # species= params$species
 gid <- params$gid
@@ -55,7 +60,7 @@ unlink(tmp_images, recursive = TRUE)
 dir.create(file.path("tmp_images"), showWarnings = FALSE)
 ```
 
-```{r, handle_pkg, message=FALSE, echo=FALSE, include=FALSE}
+```{r, handle_pkg  include=FALSE}
 # source functions
 source(scRNA_functions)
 
@@ -75,7 +80,7 @@ pkg_df
 scRNA_handle_packages(pkg_df)
 ```
 
-```{r, processing, message=FALSE, echo=FALSE, include=FALSE}
+```{r, processing  include=FALSE}
 # read in merged objects
 so_merged <- readRDS(mergedObj)
 so_rpca <- readRDS(rpcaObj)
@@ -93,7 +98,7 @@ objList <- c("merged", "rpca", "integrated", "harmony", "liger")
 
 ### Samples
 
-```{r sampleBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
+```{r sampleBatchCorrection, fig.width=15, fig.height=15}
 # plot
 plot_list_s <- list()
 
@@ -127,7 +132,7 @@ annotate_figure(p,
 
 ### Groups
 
-```{r groupBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
+```{r groupBatchCorrection, fig.width=15, fig.height=15}
 plot_list_g <- list()
 for (i in 1:length(objList)) {
   obj <- OBJECT_SELECT(objList[i])
@@ -154,7 +159,7 @@ annotate_figure(p,
 
 ### Cell type annotations
 
-```{r annotationBatchCorrection, echo=FALSE, fig.width=15, fig.height=15}
+```{r annotationBatchCorrection, fig.width=15, fig.height=15}
 plot_list_annot <- list()
 for (i in 1:length(objList)) {
   obj <- OBJECT_SELECT(objList[i])
@@ -191,7 +196,7 @@ DT::datatable(
 
 ### RPCA
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "rpca"
 files <- list.files(
   path = tmp_images,
@@ -207,7 +212,7 @@ if (length(files) > 0) {
 
 ### ccaIntegrated
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "int"
 files <- list.files(
   path = tmp_images,
@@ -223,7 +228,7 @@ if (length(files) > 0) {
 
 ### Harmony
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "harmony"
 files <- list.files(
   path = tmp_images,
@@ -241,7 +246,7 @@ if (length(files) > 0) {
 
 ### scvi
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "scvi"
 files <- list.files(
   path = tmp_images,
@@ -259,7 +264,7 @@ if (length(files) > 0) {
 
 ### liger
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "liger"
 files <- list.files(
   path = tmp_images,
@@ -275,7 +280,7 @@ if (length(files) > 0) {
 
 ## Silhouette scores  {.tabset}
 
-```{r silhouetteImages,   message=FALSE, echo=FALSE, include=FALSE}
+```{r silhouetteImages,   , include=FALSE}
 # create matrix
 resSil_merged <- matrix(ncol = 2, nrow = length(resolution))
 resSil_merged[] <- 0
@@ -416,7 +421,7 @@ for (i in 1:length(objList)) {
 
 ### RPCA
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "rpca"
 files <- list.files(
   path = tmp_images,
@@ -432,7 +437,7 @@ if (length(files) > 0) {
 
 ### ccaIntegrated
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "int"
 files <- list.files(
   path = tmp_images,
@@ -448,7 +453,7 @@ if (length(files) > 0) {
 
 ### Harmony
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "harmony"
 files <- list.files(
   path = tmp_images,
@@ -466,7 +471,7 @@ if (length(files) > 0) {
 
 ### scvi
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "scvi"
 files <- list.files(
   path = tmp_images,
@@ -484,7 +489,7 @@ if (length(files) > 0) {
 
 ### liger
 
-```{r, echo=FALSE,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
+```{r,out.width="49%", out.height="20%",fig.show='hold',fig.align='center'}
 method <- "liger"
 files <- list.files(
   path = tmp_images,

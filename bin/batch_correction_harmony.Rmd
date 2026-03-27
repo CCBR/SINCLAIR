@@ -21,8 +21,13 @@ params:
   scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
   testing: "Y"
 ---
-
-```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+```{r, prep_args, include=FALSE}
 # set up params
 species <- params$species
 gid <- params$gid
@@ -40,7 +45,7 @@ Rpkg_config <- params$Rpkg_config
 scRNA_functions <- params$scRNA_functions
 ```
 
-```{r, handle_pkg, message=FALSE}
+```{r, handle_pkg}
 # source functions
 source(scRNA_functions)
 
@@ -64,7 +69,7 @@ scRNA_handle_packages(pkg_df)
 options(future.globals.maxSize = 96000 * 1024^2)
 ```
 
-```{r, processing, message=FALSE}
+```{r, processing}
 # read in merged object
 so <- readRDS(mergedObj)
 
@@ -80,7 +85,7 @@ so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
 )
 ```
 
-```{r saveoutputs, message=FALSE, include=FALSE, echo=FALSE}
+```{r saveoutputs include=FALSE}
 fpath <- paste0(gid, "_batch_correction_harmony.rds")
 saveRDS(so_corrected, fpath)
 ```
