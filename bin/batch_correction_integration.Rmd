@@ -1,8 +1,12 @@
 ---
 title: "Batch Correction Analysis"
-author: "CCBR"
-date: '`r format(Sys.time(), "%a %b %d %Y - %X")`'
-output: html_document
+author: "CCR Collaborative Bioinformatics Resource"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    code_folding: hide
+    downlit_highlight: true
 editor_options:
   chunk_output_type: console
 always_allow_html: true
