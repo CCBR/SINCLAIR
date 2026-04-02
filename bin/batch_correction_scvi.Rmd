@@ -49,7 +49,7 @@ Rpkg_config <- params$Rpkg_config
 scRNA_functions <- params$scRNA_functions
 ```
 
-```{r, handle_pkg  include=FALSE}
+```{r, handle_pkg, include=FALSE}
 # source functions
 source(scRNA_functions)
 
@@ -93,7 +93,7 @@ so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
 so_corrected
 ```
 
-```{r saveoutputs include=FALSE}
+```{r saveoutputs, include=FALSE}
 fpath <- paste0(gid, "_batch_correction_scvi.rds")
 saveRDS(so_corrected, fpath)
 ```

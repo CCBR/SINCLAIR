@@ -60,7 +60,7 @@ unlink(tmp_images, recursive = TRUE)
 dir.create(file.path("tmp_images"), showWarnings = FALSE)
 ```
 
-```{r, handle_pkg  include=FALSE}
+```{r, handle_pkg, include=FALSE}
 # source functions
 source(scRNA_functions)
 
@@ -80,7 +80,7 @@ pkg_df
 scRNA_handle_packages(pkg_df)
 ```
 
-```{r, processing  include=FALSE}
+```{r, processing, include=FALSE}
 # read in merged objects
 so_merged <- readRDS(mergedObj)
 so_rpca <- readRDS(rpcaObj)

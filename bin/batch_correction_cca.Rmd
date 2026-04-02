@@ -87,7 +87,7 @@ so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
 )
 ```
 
-```{r saveoutputs include=FALSE}
+```{r saveoutputs, include=FALSE}
 fpath <- paste0(gid, "_batch_correction_cca.rds")
 saveRDS(so_corrected, fpath)
 ```
