@@ -6,6 +6,15 @@ import tempfile
 from ccbr_tools.shell import shell_run
 
 
+def extract_command_line(output):
+    """Extract the command line from nextflow LOG output."""
+    return {
+        line.split(":")[0].strip(): line.split(":")[1].strip()
+        for line in output.split("\n")
+        if ":" in line
+    }["cmd line"]
+
+
 def test_help():
     output = subprocess.run(
         "./bin/sinclair --help", capture_output=True, shell=True, text=True
@@ -30,13 +39,9 @@ def test_citation():
 def test_preview():
     with tempfile.TemporaryDirectory() as tmp_dir:
         output = shell_run(
-            f"./bin/sinclair init --output {tmp_dir} && ./bin/sinclair run --output {tmp_dir} --mode local -preview"
+            f"./bin/sinclair init --output {tmp_dir} && ./bin/sinclair run --output {tmp_dir} --mode local -preview -profile ci_stub"
         )
-    cmd_line = {
-        line.split(":")[0].strip(): line.split(":")[1].strip()
-        for line in output.split("\n")
-        if ":" in line
-    }["cmd line"]
+    cmd_line = extract_command_line(output)
     assert all(["-preview" in cmd_line, "-resume" in cmd_line])
 
 
@@ -48,16 +53,13 @@ def test_forceall():
         text=True,
         check=True,
     ).stdout
-    cmd_line = {
-        line.split(":")[0].strip(): line.split(":")[1].strip()
-        for line in output.split("\n")
-        if ":" in line
-    }["cmd line"]
+    cmd_line = extract_command_line(output)
     assert "-preview" in cmd_line and "-resume" not in cmd_line
 
 
 def test_init():
     with tempfile.TemporaryDirectory() as tmp_dir:
+        shell_run(f"./bin/sinclair init --output {tmp_dir}")
         outdir = pathlib.Path(tmp_dir)
         assertions = [(outdir / "nextflow.config").exists(), (outdir / "log").exists()]
     assert all(assertions)
@@ -67,7 +69,7 @@ def test_init_default():
     cwd = os.getcwd()
     with tempfile.TemporaryDirectory() as tmp_dir:
         os.chdir(tmp_dir)
-
+        shell_run(f"{cwd}/bin/sinclair init")
         outdir = pathlib.Path(tmp_dir)
         assertions = [(outdir / "nextflow.config").exists(), (outdir / "log").exists()]
 
