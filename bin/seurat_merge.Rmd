@@ -52,7 +52,7 @@ print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
 ```
 
-```{r, handle_pkg include=FALSE}
+```{r, handle_pkg, include=FALSE}
 # set library dir, load this and remove any other dirs to avoid confusion
 # between personally created pkgs and the pipeline package
 ## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
@@ -157,7 +157,7 @@ so_merged <- RunUMAP(so_merged,
 )
 ```
 
-```{r}
+```{r save_rds}
 # save RDS files
 so_merged
 fpath <- paste0(gid, "_seurat_merged.rds")
