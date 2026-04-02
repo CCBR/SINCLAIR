@@ -1,0 +1,68 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0002-8734-9875",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA"
+      },
+      "familyName": "Sevilla",
+      "givenName": "Samantha"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-8882-3401",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA"
+      },
+      "familyName": "Wong",
+      "givenName": "Nathan"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3283-829X",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA"
+      },
+      "familyName": "Sovacool",
+      "givenName": "Kelly"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-2968-6179",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA"
+      },
+      "familyName": "Pehrsson",
+      "givenName": "Erica"
+    },
+    {
+      "@type": "Person",
+      "familyName": "Abdelmaksoud",
+      "givenName": "Abdalla"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8978-8495",
+      "@type": "Person",
+      "affiliation": {
+        "@type": "Organization",
+        "legalName": "Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA"
+      },
+      "familyName": "Koparde",
+      "givenName": "Vishal"
+    }
+  ],
+  "codeRepository": "https://github.com/CCBR/SINCLAIR",
+  "datePublished": "2025-09-19",
+  "identifier": "https://doi.org/10.5281/zenodo.15283503",
+  "license": "https://spdx.org/licenses/MIT",
+  "name": "SINCLAIR: SINgle CelL AnalysIs Resource",
+  "url": "https://ccbr.github.io/SINCLAIR",
+  "version": "v0.3.5"
+}

@@ -14,7 +14,7 @@ on:
 env:
   NFT_DIFF: "pdiff"
   NFT_DIFF_ARGS: "--line-numbers --width 120 --expand-tabs=2"
-  NFT_VER: "0.9.1"
+  NFT_VER: "0.9.4"
   NFT_WORKDIR: "~"
   NXF_ANSI_LOG: false
   NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
@@ -58,7 +58,7 @@ jobs:
       - name: pytest
         if: always()
         run: |
-          pytest tests
+          python -m pytest
       - name: lint nxf
         if: always()
         run: |
