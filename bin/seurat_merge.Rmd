@@ -109,6 +109,8 @@ so_merged <- RunUMAP(so_merged,
   reduction = "pca", dims = 1:npcs, n.components = 2, n.neighbors = 30,
   min.dist = 0.3, learning.rate = 1, spread = 1
 )
+#rejoin RNA layers 
+so_merged <- JoinLayers(so_merged, assay = "RNA")
 ```
 
 ```{r}
