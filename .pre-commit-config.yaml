@@ -4,9 +4,10 @@ exclude: |
   (?x)(
       ^assets/|
       ^_extensions/|
+      ^fullWorkflow_202304/|
       ^nextflow_schema.json|
-      ^.*\.html$|
-      ^.*\.svg$
+      ^.*.html|
+      ^.*.svg
    )
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -24,15 +25,17 @@ repos:
       - id: codespell
         # https://github.com/codespell-project/codespell/issues/1498
   # Python formatting
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 26.3.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.10
     hooks:
-      - id: black
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
   # R formatting
-  - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.3.9021
+  - repo: https://github.com/posit-dev/air-pre-commit
+    rev: 0.9.0
     hooks:
-      - id: style-files
+      - id: air-format
   # general linting
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v4.0.0-alpha.8"
@@ -47,6 +50,7 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: []
+  # validate citation file
   - repo: https://github.com/citation-file-format/cffconvert
     rev: 054bda51dbe278b3e86f27c890e3f3ac877d616c
     hooks:

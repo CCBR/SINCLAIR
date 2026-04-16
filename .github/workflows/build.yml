@@ -14,7 +14,7 @@ on:
 env:
   NFT_DIFF: "pdiff"
   NFT_DIFF_ARGS: "--line-numbers --width 120 --expand-tabs=2"
-  NFT_VER: "0.9.1"
+  NFT_VER: "0.9.4"
   NFT_WORKDIR: "~"
   NXF_ANSI_LOG: false
   NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
@@ -34,7 +34,16 @@ jobs:
       matrix:
         python-version: ["3.11"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
+        if: github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - uses: actions/checkout@v5
+        if: github.event_name != 'pull_request'
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -49,7 +58,7 @@ jobs:
       - name: pytest
         if: always()
         run: |
-          pytest tests
+          python -m pytest
       - name: lint nxf
         if: always()
         run: |
@@ -86,7 +95,7 @@ jobs:
         uses: adamrtalbot/detect-nf-test-changes@v0.0.6
         with:
           head: ${{ github.sha }}
-          base: origin/${{ github.base_ref }}
+          base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
       - name: print list of nf-test files
         run: |

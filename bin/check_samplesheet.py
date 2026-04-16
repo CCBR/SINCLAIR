@@ -11,16 +11,11 @@
 
 from collections import defaultdict
 import os
-import sys
-import errno
 import argparse
-import gzip
 import re
 from os import listdir
 from os.path import isfile, join
-import json
 import pandas as pd
-import numpy as np
 
 
 def parse_args(args=None):
@@ -57,7 +52,7 @@ def check_files(fileid, context):
 
     # check S1_L00 is within file
     sID = re.search("S._L00", fileid)
-    if sID == None:
+    if not sID:
         print_error(
             "Input file must include S[sampleNumber]_L00 in name:",
             context,
@@ -76,7 +71,7 @@ def check_files(fileid, context):
 
     accepted_read_type = ["R1", "R2", "I1", "I2"]
     read_type = postID.split("_")[1]
-    if not read_type in accepted_read_type:
+    if read_type not in accepted_read_type:
         print_error(
             "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type,
             context,
@@ -263,7 +258,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # ###################################################################################################
     # # ALL: Check manifest
     # ###################################################################################################
-    contrast_mapping_dict = {}
+
     with open(file_in_c, "r") as fin:
         ## Check header
         MIN_COLS = 2
@@ -296,7 +291,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         # ALL: Create Contrast DF
         ###################################################################################################
         contrast_df = pd.read_csv(file_in_c, dtype=defaultdict(lambda: str))
-        cols_to_cat = contrast_df.columns.values.tolist()
+
         contrast_df["key"] = contrast_df.astype(str).agg("-".join, axis=1)
         contrast_df["key"] = contrast_df["key"].str.replace("-nan", "")
 
