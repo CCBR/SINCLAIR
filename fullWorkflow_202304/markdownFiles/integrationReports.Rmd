@@ -154,7 +154,7 @@ for (i in 1:length(objList)) {
 ggarrange(g1, g2, g3, g4, g5, ncol = 2, nrow = 3, common.legend = T, legend = "bottom")
 ```
 
-#### Cell type annotations before and after batch corrrection
+#### Cell type annotations before and after batch correction
 ```{r annotationBatchCorrection, fig.width=15, fig.height=15}
 for (i in 1:length(objList)) {
   obj <- objSelector(objList[i])
