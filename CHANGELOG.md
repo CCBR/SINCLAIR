@@ -6,7 +6,7 @@
 
 - Creates cache for celldex reference downloads in working directory (#203, @wong-nw)
 - Set main job memory to 2 GB for slurm mode. (#205, @kelly-sovacool)
-- Checks for joined RNA "layers" in Seurat v5 object (#214, @wong-nw)
+- Checks for joined RNA "layers" in Seurat v5 object (#224, @wong-nw)
 
 ## SINCLAIR 0.3.5
 
