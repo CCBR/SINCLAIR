@@ -250,13 +250,21 @@ MAIN_BATCH_CORRECTION <- function(
     )
   } else if (method_in == "LIGER") {
     print("--running LIGER")
-
-    # preprocess
-    so_norm <- NormalizeData(so_in)
-    so_norm <- FindVariableFeatures(so_norm)
-    so_norm <- ScaleData(so_norm, do.center = FALSE)
-    so_norm <- RunOptimizeALS(so_norm, k = npcs, lambda = 5)
-    so_integrate <- RunQuantileNorm(so_norm)
+    #New catch for rliger version, with updated code from
+    if (packageVersion("rliger") < "2.0") {
+      # preprocess
+      so_norm <- Seurat::NormalizeData(so_in)
+      so_norm <- Seurat::FindVariableFeatures(so_norm)
+      so_norm <- Seurat::ScaleData(so_norm, do.center = FALSE)
+      so_norm <- Seurat::RunOptimizeALS(so_norm, k = npcs, lambda = 5)
+      so_integrate <- Seurat::RunQuantileNorm(so_norm)
+    } else {
+      so_norm <- rliger::normalize(so_in)
+      so_norm <- rliger::selectGenes(so_norm)
+      so_norm <- rliger::scaleNotCenter(so_norm)
+      so_norm <- rliger::runINMF(so_norm, k = npcs)
+      so_integrate <- rliger::quantileNorm(so_norm)
+    }
   } else {
     print("--running SCT")
 
