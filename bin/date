@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Wrapper for the `date` command to ensure `date +%s%3N` returns a
+# 13-digit millisecond timestamp for Nextflow's nxf_date() function.
+#
+# Some conda coreutils builds return full nanoseconds (19 digits) instead
+# of 3-digit-precision milliseconds (13 digits) for the +%s%3N format.
+# Nextflow's hardcoded nxf_date() does not handle the 19-digit case and
+# crashes with "Unexpected: unbound variable" when computing wall time.
+#
+# This wrapper is picked up automatically by Nextflow because the project
+# bin/ directory is prepended to PATH before nxf_date() is called.
+
+_real_date=/usr/bin/date
+[[ ! -x "$_real_date" ]] && _real_date=/bin/date
+
+if [[ "$*" == "+%s%3N" ]]; then
+    ts=$("$_real_date" "+%s%3N")
+    # If the result is a pure integer longer than 13 chars (nanoseconds),
+    # truncate to the first 13 digits (milliseconds).
+    if [[ ${#ts} -gt 13 && $ts =~ ^[0-9]+$ ]]; then
+        printf '%s\n' "${ts:0:13}"
+    else
+        printf '%s\n' "$ts"
+    fi
+else
+    exec "$_real_date" "$@"
+fi
