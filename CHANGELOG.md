@@ -1,7 +1,5 @@
 ## SINCLAIR development version
 
-- Add `bin/date` wrapper to fix Nextflow tracing crash in conda-based containers where `date +%s%3N` returns nanoseconds (19 digits) instead of milliseconds (13 digits). (#219, @copilot)
-
 ## SINCLAIR 0.3.6
 
 - Set main job memory to 2 GB for slurm mode. (#205, @kelly-sovacool)
