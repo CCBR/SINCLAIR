@@ -133,6 +133,8 @@ if (qc_filtering == "manual") {
       nCount_RNA > nCount_out &
       percent.mt < mt_out
   )
+} else {
+  stop(paste0("Invalid qc_filtering value: '", qc_filtering, "'. Must be one of: 'manual', 'miqc', 'mads'."))
 }
 so_qc_select
 
@@ -150,6 +152,8 @@ MAIN_PROCESS_SO <- function(so_in, species, npcs_in) {
     print("--proccesing mouse data")
     s.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$s.genes)
     g2m.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$g2m.genes)
+  } else {
+    stop(paste0("Invalid species value: '", species, "'. Must be one of: 'hg38', 'hg19', 'mm10'."))
   }
 
   # process
