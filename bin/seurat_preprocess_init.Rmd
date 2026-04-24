@@ -1,0 +1,101 @@
+---
+title: "scRNA Notebook"
+output:
+  html_document:
+    toc: yes
+editor_options:
+  chunk_output_type: console
+params:
+  species: "hg19"
+  sampleid: "WB_Lysis_1"
+  h5: "/data/sevillas2/scRNA_test/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  qc_filtering: "miQC"
+  nCount_RNA_max: 500000
+  nCount_RNA_min: 1000
+  nFeature_RNA_max: 5000
+  nFeature_RNA_min: 200
+  percent_mt_max: 10
+  percent_mt_min: 0
+  run_doublet_finder: "N"
+  npcs: 30
+  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
+  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
+  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  testing: "N"
+---
+
+```{r, prep_args, message=FALSE}
+# set up params
+species <- params$species
+sample_id <- params$sampleid
+h5 <- params$h5
+
+qc_filtering <- params$qc_filtering # manual, miqc, mads
+nCount_RNA_max <- as.numeric(params$nCount_RNA_max)
+nCount_RNA_min <- as.numeric(params$nCount_RNA_min)
+nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
+nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
+percent_mt_max <- as.numeric(params$percent_mt_max)
+percent_mt_min <- as.numeric(params$percent_mt_min)
+run_doublet_finder <- params$run_doublet_finder # Y, N
+npcs_val <- as.numeric(params$npcs)
+
+#Need update here for R package import via container
+Rlib_dir <- params$Rlib_dir
+Rpkg_config <- params$Rpkg_config
+
+
+testing <- params$testing
+```
+
+```{r, handle_pkg, message=FALSE}
+if (!("SCOT" %in% installed.packages())){
+  devtools::install_github("CCBR/SCOT", ref = "main" )
+}
+library("SCOT")
+```
+
+```{r, pre-processing, message = FALSE, echo=FALSE, include =FALSE}
+# read in data
+rnaCounts <- Read10X_h5(h5)
+data <- as.matrix(data[["Gene Expression"]])
+
+#REMOVED CONDITION FOR TESTING, WHICH IS NOW IN NEXTFLOW ARGUMENTS
+
+so_pre <- Seurat::CreateSeuratObjects(counts = rnaCounts)
+
+so_pre <- SCOT::calc_prelim_stats(so = so_pre, sampleID = sample_id)
+
+#Violin plots to be moved to secondary visualization
+
+```
+
+```{r QC}
+#Use SCOT function for filtering conditions
+so_pre
+so_filt <- subset(so_pre, subset = nFeature_RNA > 200)
+
+so_filt <- SCOT::filter_cells(so_filt, method = qc_filtering)
+
+so_pre$keep[colnames(so_filt)] <- so_filt$keep
+
+so_filt <- subset(so_filt, subset = keep == "keep")
+```
+
+```{r normalization_and_clustering}
+#Step: Calculate s.genes and g2m.genes
+#Normalize RNA
+#Scale RNA
+#Cell cycle scoring
+#SCTransform
+#SeuratCLUSTERING
+```
+
+```{r cell_type_annotation}
+```
+
+```{r doublet_finding}
+```
+
+```{r save_objects}
+```
