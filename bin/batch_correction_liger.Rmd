@@ -53,9 +53,15 @@ so[["RNA"]] <- as(so[["RNA"]], Class = "Assay5")
 if ("counts" %in% Layers(so)) {
   so[["RNA"]] <- split(so[["RNA"]], f = so$Sample)
 }
+#set reduction name based on version of rliger
+reduction_label <- "inmfNorm"
+if(packageVersion("rliger") < "2.0"){
+  reduction_label <- "iNMF"
+}
+
 # integrate
 so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
-  method_in = "LIGER", reduction_in = "iNMF",
+  method_in = "LIGER", reduction_in = reduction_label,
   v_list = vars_to_regress_list, cache_path = celldex_cache
 )
 ```
