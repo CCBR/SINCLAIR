@@ -145,7 +145,7 @@ plot_list_annot <- list()
 for (i in 1:length(objList)) {
   obj <- OBJECT_SELECT(objList[i])
   title <- NAME_SELECT(objList[i])
-  sampleImage <- DimPlot(obj, group.by = "annot") +
+  sampleImage <- DimPlot(obj, group.by = annot) +
     ggtitle(title) +
     theme(legend.position = "bottom", legend.text = element_text(size = 12)) +
     guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
@@ -285,7 +285,7 @@ for (i in 1:length(objList)) {
   # Skip all calculations for objects greater than 90k cells
   if (ncol(obj) < 90000) {
     # if batch correction is harmony, use harmony reduction
-    # otherwise use PCA
+    # otherwise use PCA 
     if (length(grep("^harmony", objList[i]))) {
       print("----Running harmony")
       dist <- dist(Embeddings(obj, reduction = "harmony")[, 1:npcs])
