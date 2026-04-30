@@ -32,8 +32,6 @@ process BATCH_CORRECT_INTEGRATION {
             ligerObj="$rds_l",
             npcs="$npcs",
             resolution_list="$resolution_list",
-            citeseq="",
-            annot="",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_batch_correction_integration.html")'

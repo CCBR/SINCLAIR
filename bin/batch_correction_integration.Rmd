@@ -18,8 +18,6 @@ params:
   scviObj: "results/batch_correct/group1-group2_batch_correction_scvi.rds"
   ligerObj: "results/batch_correct/group1-group2_batch_correction_liger.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
-  citeseq: "text"
-  annot: "text"
   npcs: 20
   scRNA_functions: "bin/scRNA_functions.R"
   testing: "Y"
@@ -39,8 +37,6 @@ ligerObj <- params$ligerObj
 resolution <- as.numeric(strsplit(params$resolution_list, ",")[[1]])
 npcs <- as.numeric(params$npcs)
 
-citeseq <- params$citeseq
-annot <- params$annot
 
 source(params$scRNA_functions)
 library(Seurat)
@@ -145,7 +141,8 @@ plot_list_annot <- list()
 for (i in 1:length(objList)) {
   obj <- OBJECT_SELECT(objList[i])
   title <- NAME_SELECT(objList[i])
-  sampleImage <- DimPlot(obj, group.by = annot) +
+  obj$annot[is.na(obj$annot)] <- "Undetermined"
+  sampleImage <- DimPlot(obj, group.by = "annot") +
     ggtitle(title) +
     theme(legend.position = "bottom", legend.text = element_text(size = 12)) +
     guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
