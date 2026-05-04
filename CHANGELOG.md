@@ -1,5 +1,7 @@
 ## SINCLAIR development version
 
+## SINCLAIR 0.3.6
+
 - Set main job memory to 2 GB for slurm mode. (#205, @kelly-sovacool)
 - Improvements to R Markdown reports: (#216, @kelly-sovacool)
     - Link to function documentation websites.
