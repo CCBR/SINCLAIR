@@ -282,7 +282,7 @@ for (i in 1:length(objList)) {
   # Skip all calculations for objects greater than 90k cells
   if (ncol(obj) < 90000) {
     # if batch correction is harmony, use harmony reduction
-    # otherwise use PCA 
+    # otherwise use PCA
     if (length(grep("^harmony", objList[i]))) {
       print("----Running harmony")
       dist <- dist(Embeddings(obj, reduction = "harmony")[, 1:npcs])
@@ -290,7 +290,7 @@ for (i in 1:length(objList)) {
       print("----Running LIGER iNMF")
       reduction_liger <- "iNMF"
       if ("inmfNorm" %in% names(obj@reductions)){
-        reduction_liger <- "inmfNorm" 
+        reduction_liger <- "inmfNorm"
       }
       dist <- dist(Embeddings(obj, reduction = reduction_liger)[, 1:npcs])
     } else {
