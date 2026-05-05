@@ -8,16 +8,25 @@ from ccbr_tools.shell import shell_run
 
 def extract_command_line(output):
     """Extract the nextflow command line from sinclair run output."""
+    cmd_line = None
+
     # Nextflow 26+ format: ccbr_tools echoes the command as 'nextflow run ...'
     for line in output.split("\n"):
         stripped = line.strip()
-        if stripped.startswith("nextflow run"):
-            return stripped
+        if stripped.startswith("nextflow run") and cmd_line is None:
+            cmd_line = stripped
+
     # Fallback for older Nextflow format: 'cmd line: nextflow run ...'
-    for line in output.split("\n"):
-        if ":" in line and line.split(":")[0].strip() == "cmd line":
-            return line.split(":", 1)[1].strip()
-    raise ValueError(f"Could not extract command line from output:\n{output}")
+    if cmd_line is None:
+        for line in output.split("\n"):
+            if ":" in line and line.split(":")[0].strip() == "cmd line":
+                cmd_line = line.split(":", 1)[1].strip()
+                break
+
+    if cmd_line is None:
+        raise ValueError(f"Could not extract command line from output:\n{output}")
+
+    return cmd_line
 
 
 def test_help():
