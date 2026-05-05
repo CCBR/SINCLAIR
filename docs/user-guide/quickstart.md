@@ -207,8 +207,8 @@ Final results are saved in the `results` directory unless a different output dir
 - `cellranger_counts` contains the `.h5` counts files for each sample produced by the CellRanger software.
 - `samplesheets` contains the parsed sample sheets based on the manifest files, as interpreted by NextFlow and SINCLAIR.
 - `seurat` contains two subdirectories:
-    > - `merge` contains the combined sample Seurat `.rds` files for each set of contrasts prior to batch correction (which can otherwise be referred to as the "uncorrected" object).
-    > - `preprocess` contains the individual sample `.rds` files.
+  > - `merge` contains the combined sample Seurat `.rds` files for each set of contrasts prior to batch correction (which can otherwise be referred to as the "uncorrected" object).
+  > - `preprocess` contains the individual sample `.rds` files.
 
 When proceeding to downstream secondary analysis, such as [differential expression](./differentialExpression.md), please utilize the `batch_correction_integration.html` files to determine which batch correction method, or even lack thereof, best fits the data. The appropriate file can then be analyzed in R through the Seurat workflow.
 

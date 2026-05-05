@@ -41,8 +41,8 @@ _Default values indicated with \*_
 - `--help` Prints the help statement
 - `--output` The pipeline output directory (same as the nextflow `launchDir`)
 - `--mode` Determines if the workflow runs on the current system or is submitted as a slurm job
-    - `local`\*
-    - `slurm`
+  - `local`\*
+  - `slurm`
 - `--forceall` Forces all steps of the workflow to be run
 
 ### Nextflow arguments
@@ -51,7 +51,7 @@ _Note that [nextflow arguments](https://www.nextflow.io/docs/latest/reference/cl
 
 - `-params-file assets/params.yml` Specify the pipeline parameters in a YAML file
 - `-profile` Uses pre-defined profiles to determine particular run configurations
-    - `test` Applies samples and manifests for the test dataset run
+  - `test` Applies samples and manifests for the test dataset run
 - `-preview` Preview the pipeline without executing it
 
 ### Pipeline parameters
@@ -76,49 +76,49 @@ The following is a list containing parameters that can be used for downstream Se
 
 - vars_to_regress – Optional variables to regress out, as a way of eliminating technical noise:
 
-    - percent.mt: Percentage of mitochondrial reads; high values may indicate dead/stressed cells.
-    - nFeature_RNA: Number of detected features per cell.
-    - S.Score: S-phase cell cycle score.
-    - G2M.Score: G2/M-phase cell cycle score.
-    - nCount_RNA: Total RNA molecule count per cell.
+  - percent.mt: Percentage of mitochondrial reads; high values may indicate dead/stressed cells.
+  - nFeature_RNA: Number of detected features per cell.
+  - S.Score: S-phase cell cycle score.
+  - G2M.Score: G2/M-phase cell cycle score.
+  - nCount_RNA: Total RNA molecule count per cell.
 
 - qc_filtering – Quality control filtering method:
 
-    - miqc: Uses MiQC parameters.
-    - manual: Uses manually specified thresholds.
-    - nCount_RNA_max – Maximum total RNA count allowed per cell (cells above this are removed):
+  - miqc: Uses MiQC parameters.
+  - manual: Uses manually specified thresholds.
+  - nCount_RNA_max – Maximum total RNA count allowed per cell (cells above this are removed):
 
-        - Default: 50000\*
+    - Default: 50000\*
 
-    - nCount_RNA_min – Minimum total RNA count allowed per cell (cells below this are removed):
+  - nCount_RNA_min – Minimum total RNA count allowed per cell (cells below this are removed):
 
-        - Default: 1000\*
+    - Default: 1000\*
 
-    - nFeatures_RNA_max – Maximum number of features (e.g., genes) per cell:
+  - nFeatures_RNA_max – Maximum number of features (e.g., genes) per cell:
 
-        - Default: 5000\*
+    - Default: 5000\*
 
-    - nFeature_RNA_min – Minimum number of features per cell:
+  - nFeature_RNA_min – Minimum number of features per cell:
 
-        - Default: 200\*
+    - Default: 200\*
 
-    - percent_mt_max – Maximum mitochondrial read percentage allowed per cell:
+  - percent_mt_max – Maximum mitochondrial read percentage allowed per cell:
 
-        - Default: 10\*
+    - Default: 10\*
 
-    - percent_mt_min – Minimum mitochondrial read percentage allowed per cell:
-        - Default: 0\*
+  - percent_mt_min – Minimum mitochondrial read percentage allowed per cell:
+    - Default: 0\*
 
 - run_doublet_finder – Boolean flag to run the DoubletFinder tool:
 
-    - Default: true
+  - Default: true
 
-    - seurat_resolution – Comma-separated list of clustering resolutions for Seurat:
+  - seurat_resolution – Comma-separated list of clustering resolutions for Seurat:
 
-        - Default: "0.1,0.2,0.3,0.5,0.6,0.8,1"\*
+    - Default: "0.1,0.2,0.3,0.5,0.6,0.8,1"\*
 
-    - npcs – Number of principal components used in downstream analyses (e.g., UMAP, clustering):
-        - Default: 50\*
+  - npcs – Number of principal components used in downstream analyses (e.g., UMAP, clustering):
+    - Default: 50\*
 
 ## Examples
 
