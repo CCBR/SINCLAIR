@@ -21,7 +21,8 @@ env:
   NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number ||
+    github.ref }}"
   cancel-in-progress: true
 
 permissions:
@@ -32,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: [ "3.11" ]
     steps:
       - uses: actions/checkout@v5
         if: github.event_name == 'pull_request'
@@ -66,6 +67,8 @@ jobs:
       - name: Stub run
         if: always()
         continue-on-error: true # temporarily set this until we create containers for every process
+        env:
+          NXF_DISABLE_DAG: "true"
         run: |
           mkdir tmp && cd tmp
           sinclair init
@@ -95,15 +98,17 @@ jobs:
         uses: adamrtalbot/detect-nf-test-changes@v0.0.6
         with:
           head: ${{ github.sha }}
-          base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
+          base: ${{ github.event.pull_request.base.sha ||
+            github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
       - name: print list of nf-test files
         run: |
           echo ${{ steps.list.outputs.components }}
 
   test:
-    name: "Run tests (${{ matrix.nf_test_files }} ${{ matrix.profile }} NF-${{ matrix.NXF_VER }})"
-    needs: [nf-test-changes]
+    name: "Run tests (${{ matrix.nf_test_files }} ${{ matrix.profile }} NF-${{
+      matrix.NXF_VER }})"
+    needs: [ nf-test-changes ]
     if: needs.nf-test-changes.outputs.nf_test_files != '[]'
     runs-on: ubuntu-latest
     strategy:
@@ -112,8 +117,7 @@ jobs:
         NXF_VER:
           - "24.04.2"
           - "latest-everything"
-        nf_test_files:
-          ["${{ fromJson(needs.nf-test-changes.outputs.nf_test_files) }}"]
+        nf_test_files: [ "${{ fromJson(needs.nf-test-changes.outputs.nf_test_files) }}" ]
         profile:
           - "docker"
         isMaster:
@@ -173,9 +177,10 @@ jobs:
         with:
           report_paths: test.xml
 
-  build-status: # https://github.com/orgs/community/discussions/4324#discussioncomment-3477871
+  build-status:
+    # https://github.com/orgs/community/discussions/4324#discussioncomment-3477871
     runs-on: ubuntu-latest
-    needs: [build, test]
+    needs: [ build, test ]
     if: always()
     steps:
       - name: Successful build
