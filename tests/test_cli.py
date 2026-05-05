@@ -60,13 +60,14 @@ def test_preview():
 
 
 def test_forceall():
-    output = subprocess.run(
+    result = subprocess.run(
         "./bin/sinclair run --forceall -preview -profile ci_stub --mode local",
         capture_output=True,
         shell=True,
         text=True,
         check=True,
-    ).stdout
+    )
+    output = f"{result.stdout}\n{result.stderr}"
     cmd_line = extract_command_line(output)
     assert "-preview" in cmd_line and "-resume" not in cmd_line
 
