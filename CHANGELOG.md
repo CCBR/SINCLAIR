@@ -1,12 +1,13 @@
 ## SINCLAIR development version
 
+- Improvements to R Markdown reports: (#216, @kelly-sovacool)
+  - Link to function documentation websites.
+  - Use code folding to include code in output, but set it to 'hide' by default.
+  - Hide R messages by default.
+
 ## SINCLAIR 0.3.6
 
 - Set main job memory to 2 GB for slurm mode. (#205, @kelly-sovacool)
-- Improvements to R Markdown reports: (#216, @kelly-sovacool)
-    - Link to function documentation websites.
-    - Use code folding to include code in output, but set it to 'hide' by default.
-    - Hide R messages by default.
 
 ## SINCLAIR 0.3.5
 
