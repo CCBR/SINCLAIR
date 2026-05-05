@@ -7,12 +7,17 @@ from ccbr_tools.shell import shell_run
 
 
 def extract_command_line(output):
-    """Extract the command line from nextflow LOG output."""
-    return {
-        line.split(":")[0].strip(): line.split(":")[1].strip()
-        for line in output.split("\n")
-        if ":" in line
-    }["cmd line"]
+    """Extract the nextflow command line from sinclair run output."""
+    # Nextflow 26+ format: ccbr_tools echoes the command as 'nextflow run ...'
+    for line in output.split("\n"):
+        stripped = line.strip()
+        if stripped.startswith("nextflow run"):
+            return stripped
+    # Fallback for older Nextflow format: 'cmd line: nextflow run ...'
+    for line in output.split("\n"):
+        if ":" in line and line.split(":")[0].strip() == "cmd line":
+            return line.split(":", 1)[1].strip()
+    raise ValueError(f"Could not extract command line from output:\n{output}")
 
 
 def test_help():
