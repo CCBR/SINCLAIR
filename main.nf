@@ -24,15 +24,6 @@ include { ATAC_EXQC                                 } from './workflows/atac'
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
-workflow.onComplete {
-    if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-        def message = Utils.spooker(workflow)
-        if (message) {
-            println message
-        }
-    }
-}
-
 
 workflow {
     LOG()
@@ -42,6 +33,15 @@ workflow {
         PREPROCESS_EXQC.out.ch_fqdir_h5,
         PREPROCESS_EXQC.out.group_samplesheet,
     )
+
+    workflow.onComplete {
+        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+            def message = Utils.spooker(workflow)
+            if (message) {
+                println message
+            }
+        }
+    }
 
 }
 
