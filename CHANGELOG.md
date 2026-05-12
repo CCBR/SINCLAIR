@@ -5,6 +5,7 @@
   - Use code folding to include code in output, but set it to 'hide' by default.
   - Hide R messages by default.
 - Updates for compatibility with Nextflow v26. (#233, #234, @kelly-sovacool)
+- Silence warning in Nextflow onComplete handler. (#239, @kelly-sovacool)
 
 ## SINCLAIR 0.3.6
 
