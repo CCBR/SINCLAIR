@@ -37,7 +37,7 @@ nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
 nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
 percent_mt_max <- as.numeric(params$percent_mt_max)
 percent_mt_min <- as.numeric(params$percent_mt_min)
-run_doublet_finder <- params$run_doublet_finder # Y, N
+doublet_finder <- params$doublet_finder # Y, N
 npcs_val <- as.numeric(params$npcs)
 
 #Need update here for R package import via container
@@ -83,19 +83,40 @@ so_filt <- subset(so_filt, subset = keep == "keep")
 ```
 
 ```{r normalization_and_clustering}
-#Step: Calculate s.genes and g2m.genes
+#Calculate s.genes and g2m.genes
 #Normalize RNA
 #Scale RNA
 #Cell cycle scoring
 #SCTransform
-#SeuratCLUSTERING
+#PCA, UMAP, and clustering
+so_filt <- SCOT::preprocess_sample(
+  so_in = so_filt, species = species, npcs_in = npcs_val
+)
 ```
 
 ```{r cell_type_annotation}
+so_filt <- SCOT::run_singleR_db(so_in = so_filt, species = species)
 ```
 
 ```{r doublet_finding}
+if (doublet_finder %in% c("DoubletFinder", "scDblFinder","consensus","union")){
+  so_filt <- SCOT::filter_doublets(
+    so_in = so_filt, doublet_finder_method = doublet_finder
+  )
+}
+
+so_pre$keep[setdiff(colnames(so_pre), colnames(so_filt))] <- "doublet_removed"
+```
+
+```{r process_unfiltered}
+so_pre <- SCOT::preprocess_sample(
+  so_in = so_pre, species = species, npcs_in = npcs_val
+)
 ```
 
 ```{r save_objects}
+fpath_process <- paste0(sample_id, "_seurat_preprocess.rds")
+saveRDS(so_filt, fpath_process)
+fpath_prefilt <- paste0(sample_id, "_seurat_prefilter.rds")
+saveRDS(so_pre, fpath_prefilt)
 ```
