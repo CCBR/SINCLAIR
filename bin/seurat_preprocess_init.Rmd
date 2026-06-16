@@ -6,9 +6,9 @@ output:
 editor_options:
   chunk_output_type: console
 params:
-  species: "hg19"
+  species: "hg38"
   sampleid: "WB_Lysis_1"
-  h5: "/data/sevillas2/scRNA_test/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  h5: "/data/CCBR_Pipeliner/testdata/SINCLAIR/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
   qc_filtering: "miQC"
   nCount_RNA_max: 500000
   nCount_RNA_min: 1000
@@ -16,12 +16,9 @@ params:
   nFeature_RNA_min: 200
   percent_mt_max: 10
   percent_mt_min: 0
-  run_doublet_finder: "N"
+  doublet_finder: "DoubletFinder"
   npcs: 30
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
   scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
-  testing: "N"
 ---
 
 ```{r, prep_args, message=FALSE}
@@ -37,15 +34,8 @@ nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
 nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
 percent_mt_max <- as.numeric(params$percent_mt_max)
 percent_mt_min <- as.numeric(params$percent_mt_min)
-doublet_finder <- params$doublet_finder # Y, N
+doublet_finder <- params$doublet_finder 
 npcs_val <- as.numeric(params$npcs)
-
-#Need update here for R package import via container
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
-
-
-testing <- params$testing
 ```
 
 ```{r, handle_pkg, message=FALSE}
@@ -57,12 +47,10 @@ library("SCOT")
 
 ```{r, pre-processing, message = FALSE, echo=FALSE, include =FALSE}
 # read in data
-rnaCounts <- Read10X_h5(h5)
-data <- as.matrix(data[["Gene Expression"]])
+rnaCounts <- Seurat::Read10X_h5(h5)
 
 #REMOVED CONDITION FOR TESTING, WHICH IS NOW IN NEXTFLOW ARGUMENTS
-
-so_pre <- Seurat::CreateSeuratObjects(counts = rnaCounts)
+so_pre <- Seurat::CreateSeuratObject(counts = rnaCounts)
 
 so_pre <- SCOT::calc_prelim_stats(so = so_pre, sampleID = sample_id)
 
@@ -77,6 +65,7 @@ so_filt <- subset(so_pre, subset = nFeature_RNA > 200)
 
 so_filt <- SCOT::filter_cells(so_filt, method = qc_filtering)
 
+so_pre$keep <- "low_genes"
 so_pre$keep[colnames(so_filt)] <- so_filt$keep
 
 so_filt <- subset(so_filt, subset = keep == "keep")
@@ -88,7 +77,7 @@ so_filt <- subset(so_filt, subset = keep == "keep")
 #Scale RNA
 #Cell cycle scoring
 #SCTransform
-#PCA, UMAP, and clustering
+#PCA, UMAP, and initial clustering
 so_filt <- SCOT::preprocess_sample(
   so_in = so_filt, species = species, npcs_in = npcs_val
 )
@@ -105,7 +94,7 @@ if (doublet_finder %in% c("DoubletFinder", "scDblFinder","consensus","union")){
   )
 }
 
-so_pre$keep[setdiff(colnames(so_pre), colnames(so_filt))] <- "doublet_removed"
+so_pre$keep[setdiff(colnames(so_pre)[which(so_pre$keep=="keep")], colnames(so_filt))] <- "doublet_removed"
 ```
 
 ```{r process_unfiltered}
@@ -119,4 +108,8 @@ fpath_process <- paste0(sample_id, "_seurat_preprocess.rds")
 saveRDS(so_filt, fpath_process)
 fpath_prefilt <- paste0(sample_id, "_seurat_prefilter.rds")
 saveRDS(so_pre, fpath_prefilt)
+```
+
+```{r print_session}
+sessionInfo()
 ```

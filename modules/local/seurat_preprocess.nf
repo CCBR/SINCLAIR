@@ -12,7 +12,7 @@ process SEURAT_PREPROCESS {
     val(nFeature_RNA_min)
     val(percent_mt_max)
     val(percent_mt_min)
-    val(run_doublet_finder)
+    val(doublet_finder)
     val(npcs)
     val(Rlib_dir)
     path(Rpkg_config)
@@ -32,17 +32,14 @@ process SEURAT_PREPROCESS {
             sampleid="$id",
             h5="$h5",
             qc_filtering="$qc_filtering",
-            nCount_RNA_max=$nCount_RNA_max,
-            nCount_RNA_min=$nCount_RNA_min,
-            nFeature_RNA_max=$nFeature_RNA_max,
-            nFeature_RNA_min=$nFeature_RNA_min,
-            percent_mt_max=$percent_mt_max,
-            percent_mt_min=$percent_mt_min,
-            run_doublet_finder="$run_doublet_finder",
-            npcs=$npcs,
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
-            scRNA_functions="$scRNA_functions"),
+            nCount_RNA_max="$nCount_RNA_max",
+            nCount_RNA_min="$nCount_RNA_min",
+            nFeature_RNA_max="$nFeature_RNA_max",
+            nFeature_RNA_min="$nFeature_RNA_min",
+            percent_mt_max="$percent_mt_max",
+            percent_mt_min="$percent_mt_min",
+            doublet_finder="$doublet_finder",
+            npcs="$npcs"),
         output_file = "${id}_seurat_preprocess.html")'
     """
 
