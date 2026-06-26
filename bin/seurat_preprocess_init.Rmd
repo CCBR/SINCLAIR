@@ -1,0 +1,114 @@
+---
+title: "scRNA Sample Processing"
+output:
+  html_document:
+    toc: yes
+editor_options:
+  chunk_output_type: console
+params:
+  species: "hg38"
+  sampleid: "WB_Lysis_1"
+  h5: "./tests/test_dir/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  qc_filtering: "miQC"
+  nCount_RNA_max: 500000
+  nCount_RNA_min: 1000
+  nFeature_RNA_max: 5000
+  nFeature_RNA_min: 200
+  percent_mt_max: 10
+  percent_mt_min: 0
+  doublet_finder: "DoubletFinder"
+  npcs: 30
+---
+
+```{r, prep_args, message=FALSE}
+# set up params
+species <- params$species
+sample_id <- params$sampleid
+h5 <- params$h5
+
+qc_filtering <- params$qc_filtering # manual, miqc, mads
+nCount_RNA_max <- as.numeric(params$nCount_RNA_max)
+nCount_RNA_min <- as.numeric(params$nCount_RNA_min)
+nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
+nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
+percent_mt_max <- as.numeric(params$percent_mt_max)
+percent_mt_min <- as.numeric(params$percent_mt_min)
+doublet_finder <- params$doublet_finder
+npcs_val <- as.numeric(params$npcs)
+```
+
+```{r, handle_pkg, message=FALSE}
+if (!("SCOT" %in% installed.packages())){
+  devtools::install_github("CCBR/SCOT", ref = "main" )
+}
+library("SCOT")
+```
+
+```{r, pre-processing, message = FALSE, echo=FALSE, include =FALSE}
+# read in data
+rnaCounts <- Seurat::Read10X_h5(h5)
+
+#REMOVED CONDITION FOR TESTING, WHICH IS NOW IN NEXTFLOW ARGUMENTS
+so_pre <- Seurat::CreateSeuratObject(counts = rnaCounts)
+
+so_pre <- SCOT::calc_prelim_stats(so = so_pre, sampleID = sample_id)
+
+#Violin plots to be moved to secondary visualization
+
+```
+
+```{r QC}
+#Use SCOT function for filtering conditions
+so_pre
+so_filt <- subset(so_pre, subset = nFeature_RNA > 200)
+
+so_filt <- SCOT::filter_cells(so_filt, method = qc_filtering)
+
+so_pre$keep <- "low_genes"
+so_pre$keep[colnames(so_filt)] <- so_filt$keep
+
+so_filt <- subset(so_filt, subset = keep == "keep")
+```
+
+```{r normalization_and_clustering}
+#Calculate s.genes and g2m.genes
+#Normalize RNA
+#Scale RNA
+#Cell cycle scoring
+#SCTransform
+#PCA, UMAP, and initial clustering
+so_filt <- SCOT::preprocess_sample(
+  so_in = so_filt, species = species, npcs_in = npcs_val
+)
+```
+
+```{r cell_type_annotation}
+so_filt <- SCOT::run_singleR_db(so_in = so_filt, species = species)
+```
+
+```{r doublet_finding}
+if (doublet_finder %in% c("DoubletFinder", "scDblFinder","consensus","union")){
+  so_filt <- SCOT::filter_doublets(
+    so_in = so_filt, doublet_finder_method = doublet_finder
+  )
+}
+
+so_pre$keep[setdiff(colnames(so_pre)[which(so_pre$keep=="keep")], colnames(so_filt))] <- "doublet_removed"
+```
+
+```{r process_unfiltered}
+so_pre <- SCOT::preprocess_sample(
+  so_in = so_pre, species = species, npcs_in = npcs_val
+)
+```
+
+```{r save_objects}
+fpath_process <- paste0(sample_id, "_seurat_preprocess.rds")
+saveRDS(so_filt, fpath_process)
+fpath_prefilt <- paste0(sample_id, "_seurat_prefilter.rds")
+saveRDS(so_pre, fpath_prefilt)
+```
+
+```{r print_session}
+sessionInfo()
+```

@@ -14,14 +14,15 @@ process SEURAT_PREPROCESS {
     val(nFeature_RNA_min)
     val(percent_mt_max)
     val(percent_mt_min)
-    val(run_doublet_finder)
+    val(doublet_finder)
     val(npcs)
     path(rmd)
-    path(scRNA_functions)
 
     output:
-    tuple val(id), path ("*.rds")                 , emit:rds
-    tuple val(id), path ("*.html")                 , emit:logs
+    tuple val(id), path ("*.seurat_preprocess.rds"), emit:rds
+    tuple val(id), path ("*_seurat_prefilter.rds"), emit:prefilter
+    tuple val(id), path ("*seurat_preprocess.html"), emit:logs
+ //   tuple val(id), path ("*seurat_preprocess_report.html"), emit:report
 
     script:
     def args = task.ext.args ?: ''
@@ -33,23 +34,24 @@ process SEURAT_PREPROCESS {
             sampleid="$id",
             h5="$h5",
             qc_filtering="$qc_filtering",
-            nCount_RNA_max=$nCount_RNA_max,
-            nCount_RNA_min=$nCount_RNA_min,
-            nFeature_RNA_max=$nFeature_RNA_max,
-            nFeature_RNA_min=$nFeature_RNA_min,
-            percent_mt_max=$percent_mt_max,
-            percent_mt_min=$percent_mt_min,
-            run_doublet_finder="$run_doublet_finder",
-            npcs=$npcs,
-            scRNA_functions="$scRNA_functions",
+
+            nCount_RNA_max="$nCount_RNA_max",
+            nCount_RNA_min="$nCount_RNA_min",
+            nFeature_RNA_max="$nFeature_RNA_max",
+            nFeature_RNA_min="$nFeature_RNA_min",
+            percent_mt_max="$percent_mt_max",
+            percent_mt_min="$percent_mt_min",
+            doublet_finder="$doublet_finder",
+            npcs="$npcs",
             celldex_cache="$celldex_path"
             ),
-        output_file = "${id}_seurat_preprocess.html"
-    )
+        output_file = "${id}_seurat_preprocess.html")'
+
     """
 
     stub:
     """
+    touch ${id}_seurat_prefilter.rds
     touch ${id}_seurat_preprocess.rds
     touch ${id}_seurat_preprocess.html
     """
