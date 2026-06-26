@@ -19,9 +19,9 @@ geometry:
 ```{r setup, include=FALSE,fig.align='center'}
 require("knitr")
 knitr::opts_chunk$set(
-  echo=FALSE,
-  message=FALSE,
-  warning=FALSE
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
 )
 knitr::opts_knit$set(root.dir = "../..")
 message(getwd())
@@ -31,14 +31,14 @@ message(getwd())
 .libPaths("/data/CCBR_Pipeliner/db/PipeDB")
 .libPaths("/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.1.0_scRNA")
 
-#Visualization libraries
+# Visualization libraries
 library(magick)
 library(ggplot2)
 library(cowplot)
 library(scales)
 library(RColorBrewer)
 
-#Bioconductor dependencies
+# Bioconductor dependencies
 library(BiocGenerics)
 library(Biobase)
 library(farver)
@@ -51,13 +51,13 @@ library(reshape2)
 library(tools)
 library(stringr)
 
-#statistics libraries
+# statistics libraries
 library(Routliers)
 library(VennDiagram)
 library(cluster)
 library(DT)
 
-#scRNASeq libraries
+# scRNASeq libraries
 library(Seurat)
 library(scRNAseq)
 library(SingleCellExperiment)
@@ -69,56 +69,55 @@ library(celldex)
 ```
 
 ```{r dataImport, message=FALSE, warning=FALSE, include=FALSE}
-sample = as.character(params$sample)
-h5_fileName = paste0("cellRangerOut/",sample,"/outs/filtered_feature_bc_matrix.h5")
-sample = paste0("S_",sample)
+sample <- as.character(params$sample)
+h5_fileName <- paste0("cellRangerOut/", sample, "/outs/filtered_feature_bc_matrix.h5")
+sample <- paste0("S_", sample)
 message(h5_fileName)
-species = as.character(params$ref)
-outFile = as.character(params$outFile)
-resolutionString = as.character(strsplit(gsub(",+",",",params$resolution),split=",")[[1]])
-resolution = as.numeric(strsplit(gsub(",+",",",params$resolution),split=",")[[1]])
-imageDir = as.character(params$imageDir)
-annotDB = as.character(params$annot)
+species <- as.character(params$ref)
+outFile <- as.character(params$outFile)
+resolutionString <- as.character(strsplit(gsub(",+", ",", params$resolution), split = ",")[[1]])
+resolution <- as.numeric(strsplit(gsub(",+", ",", params$resolution), split = ",")[[1]])
+imageDir <- as.character(params$imageDir)
+annotDB <- as.character(params$annot)
 
-h5 = Read10X_h5(h5_fileName)
-fileTitle=paste("Initial Quality Control:", sample)
+h5 <- Read10X_h5(h5_fileName)
+fileTitle <- paste("Initial Quality Control:", sample)
 ```
 
 ## `r fileTitle`
 
 ```{r functionNames, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
-seuratClustering = function(so){
+seuratClustering <- function(so) {
+  so <- SCTransform(so, assay = "RNA")
+  so <- NormalizeData(so, normalization.method = "LogNormalize", scale.factor = 10000, assay = "RNA")
+  so <- ScaleData(so, assay = "RNA")
+  DefaultAssay(so) <- "SCT"
 
-  so = SCTransform(so,assay="RNA")
-  so = NormalizeData(so, normalization.method = "LogNormalize", scale.factor = 10000,assay = "RNA")
-  so = ScaleData(so,assay = "RNA")
-  DefaultAssay(so) = "SCT"
+  ### CHECK CODE HERE FOR PC SELECTION?
+  so <- RunPCA(object = so, features = VariableFeatures(object = so), do.print = TRUE, pcs.print = 1:5, genes.print = 0, verbose = F, npcs = 30)
 
-###CHECK CODE HERE FOR PC SELECTION?
-  so <- RunPCA(object = so, features = VariableFeatures(object = so), do.print = TRUE, pcs.print = 1:5,genes.print = 0,verbose=F,npcs = 30)
+  npcs <- 30
 
-  npcs = 30
-
-  so <- FindNeighbors(so,dims = 1:npcs)
-  for(res in resolution){
-    so <- FindClusters(so,dims = 1:npcs, print.output = 0, resolution = res, algorithm = 3)
-    so[[paste0("SLM_res_",res)]] = so$seurat_clusters
+  so <- FindNeighbors(so, dims = 1:npcs)
+  for (res in resolution) {
+    so <- FindClusters(so, dims = 1:npcs, print.output = 0, resolution = res, algorithm = 3)
+    so[[paste0("SLM_res_", res)]] <- so$seurat_clusters
     # so <- FindClusters(so,dims = 1:npcs, print.output = 0, resolution = res, algorithm = 4)
   }
 
-  so <- RunUMAP(so,dims = 1:npcs,n.components = 3L)
+  so <- RunUMAP(so, dims = 1:npcs, n.components = 3L)
 
   return(so)
 }
 
-doublets <-function(dfso){
+doublets <- function(dfso) {
   dfso <- SCTransform(dfso)
-  dfso <- RunPCA(dfso, pc.genes = dfso@var.genes, pcs.print = 0,verbose = F,npcs =10)
-  npcs = 10
-  dfso <- RunUMAP(dfso, verbose=TRUE,dims = 1:npcs)
+  dfso <- RunPCA(dfso, pc.genes = dfso@var.genes, pcs.print = 0, verbose = F, npcs = 10)
+  npcs <- 10
+  dfso <- RunUMAP(dfso, verbose = TRUE, dims = 1:npcs)
 
 
-  sweep.res.list_kidney <- paramSweep_v3(dfso,PCs = 1:10, sct = T)
+  sweep.res.list_kidney <- paramSweep_v3(dfso, PCs = 1:10, sct = T)
   sweep.stats_kidney <- summarizeSweep(sweep.res.list_kidney, GT = FALSE)
   # print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   bcmvn_kidney <- find.pK(sweep.stats_kidney)
@@ -126,288 +125,308 @@ doublets <-function(dfso){
 
   ## Homotypic Doublet Proportion Estimate -------------------------------------------------------------------------------------
   homotypic.prop <- modelHomotypic(dfso$annot)
-  perc = 0.005 * (length(colnames(dfso))/1000)
-  nExp_poi <- round(perc*length(colnames(dfso)))#dfso@cell.names
-  nExp_poi.adj <- round(nExp_poi*(1-homotypic.prop))
+  perc <- 0.005 * (length(colnames(dfso)) / 1000)
+  nExp_poi <- round(perc * length(colnames(dfso))) # dfso@cell.names
+  nExp_poi.adj <- round(nExp_poi * (1 - homotypic.prop))
   # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
   ## Run DoubletFinder with varying classification stringencies ----------------------------------------------------------------
-  dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi, reuse.pANN = FALSE,PCs = 1:10,sct = T)
-  pAAN=tail(names(dfso@meta.data),2)[1]
-  dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi.adj, reuse.pANN = pAAN,PCs = 1:10,sct = T)
+  dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi, reuse.pANN = FALSE, PCs = 1:10, sct = T)
+  pAAN <- tail(names(dfso@meta.data), 2)[1]
+  dfso <- doubletFinder_v3(dfso, pN = 0.25, pK = 0.09, nExp = nExp_poi.adj, reuse.pANN = pAAN, PCs = 1:10, sct = T)
 
   return(dfso)
 }
 
-convertHumanGeneList <- function(x){
-
+convertHumanGeneList <- function(x) {
   require("biomaRt")
-  human = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-  mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
+  human <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+  mouse <- useMart("ensembl", dataset = "mmusculus_gene_ensembl")
 
-  genesV2 = getLDS(attributes = c("hgnc_symbol"), filters = "hgnc_symbol", values = x , mart = human, attributesL = c("mgi_symbol"), martL = mouse, uniqueRows=T)
+  genesV2 <- getLDS(attributes = c("hgnc_symbol"), filters = "hgnc_symbol", values = x, mart = human, attributesL = c("mgi_symbol"), martL = mouse, uniqueRows = T)
 
   humanx <- unique(genesV2[, 2])
 
   return(humanx)
 }
 
-runSingleR = function(obj,refFile,fineORmain){
-  obj = DietSeurat(obj, graphs = "umap")
-  sce = as.SingleCellExperiment(obj,assay = "SCT")
-  ref = refFile
-  s = SingleR(test = sce, ref = ref,labels = ref[[fineORmain]])
+runSingleR <- function(obj, refFile, fineORmain) {
+  obj <- DietSeurat(obj, graphs = "umap")
+  sce <- as.SingleCellExperiment(obj, assay = "SCT")
+  ref <- refFile
+  s <- SingleR(test = sce, ref = ref, labels = ref[[fineORmain]])
   return(s$pruned.labels)
   print(head(s$pruned.labels))
 }
-
 ```
 
 ```{r initialQC, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
 so <- CreateSeuratObject(counts = h5)
-so$Sample = sample
+so$Sample <- sample
 
-if(species=="hg38"){so[["percent.mt"]] <- PercentageFeatureSet(so, pattern = "^MT-")}
-if(species=="mm10"){so[["percent.mt"]] <- PercentageFeatureSet(so, pattern = "^mt-")}
+if (species == "hg38") {
+  so[["percent.mt"]] <- PercentageFeatureSet(so, pattern = "^MT-")
+}
+if (species == "mm10") {
+  so[["percent.mt"]] <- PercentageFeatureSet(so, pattern = "^mt-")
+}
 
-prefilter_count = ncol(so)
+prefilter_count <- ncol(so)
 
-so <- subset(so, subset = nFeature_RNA > 200) #Remove cells with less than 200 unique genes
-#Remove cells below the 3 MADs threshold for unique genes and total reads, and above the 3 MADs threshold for mitochondrial percentage
-nCount_out = outliers_mad(log2(so$nCount_RNA),threshold = 3)$LL_CI_MAD
-nFeature_out = outliers_mad(log2(so$nFeature_RNA),threshold = 3)$LL_CI_MAD
-mt_out = outliers_mad(so$percent.mt,threshold = 3)$UL_CI_MAD
+so <- subset(so, subset = nFeature_RNA > 200) # Remove cells with less than 200 unique genes
+# Remove cells below the 3 MADs threshold for unique genes and total reads, and above the 3 MADs threshold for mitochondrial percentage
+nCount_out <- outliers_mad(log2(so$nCount_RNA), threshold = 3)$LL_CI_MAD
+nFeature_out <- outliers_mad(log2(so$nFeature_RNA), threshold = 3)$LL_CI_MAD
+mt_out <- outliers_mad(so$percent.mt, threshold = 3)$UL_CI_MAD
 
-cellsToRemove.Feature= colnames(so)[which(log2(so$nFeature_RNA)<nFeature_out)]
-cellsToRemove.Count = colnames(so)[which(log2(so$nCount_RNA)<nCount_out)]
-cellsToRemove.Mito = colnames(so)[which(so$percent.mt>mt_out)]
+cellsToRemove.Feature <- colnames(so)[which(log2(so$nFeature_RNA) < nFeature_out)]
+cellsToRemove.Count <- colnames(so)[which(log2(so$nCount_RNA) < nCount_out)]
+cellsToRemove.Mito <- colnames(so)[which(so$percent.mt > mt_out)]
 
-#Preliminary stats images
+# Preliminary stats images
 
 par(mar = c(5, 4, 4, 2) + 0.1)
 
-#Venn Diagram of initial filtered cells
-colorList=hue_pal()(3)
-venn.diagram(x=list(cellsToRemove.Feature,cellsToRemove.Count,cellsToRemove.Mito),
-			 filename=paste0(imageDir,"/cellsRemovedVenn_",sample,".png"),
-       category.names=c("Below feature threshold","Below count threshold","Above mitochondrial threshold"),
-			 main = paste(sample,"filtered cells:",
-						  length(unique(c(cellsToRemove.Feature,cellsToRemove.Count,cellsToRemove.Mito),sep=" "))),
-			 cat.dist=c(-0.07,-0.07,-0.07),
-			 fill = colorList,
-			 alpha = 0.5
+# Venn Diagram of initial filtered cells
+colorList <- hue_pal()(3)
+venn.diagram(
+  x = list(cellsToRemove.Feature, cellsToRemove.Count, cellsToRemove.Mito),
+  filename = paste0(imageDir, "/cellsRemovedVenn_", sample, ".png"),
+  category.names = c("Below feature threshold", "Below count threshold", "Above mitochondrial threshold"),
+  main = paste(
+    sample, "filtered cells:",
+    length(unique(c(cellsToRemove.Feature, cellsToRemove.Count, cellsToRemove.Mito), sep = " "))
+  ),
+  cat.dist = c(-0.07, -0.07, -0.07),
+  fill = colorList,
+  alpha = 0.5
 )
 
-#Pre filter violin plots
-vln_nFeature_preFilter=ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(nFeature_RNA))),fill=orig.ident))
-vln_nFeature_preFilter = vln_nFeature_preFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[1],labels=c("nFeature"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=nFeature_out,linetype="dashed")+
-  labs(x=paste(sample,"Pre-filter"), y="Log2(nFeature_RNA)")+
-	labs(fill = paste(sample,"Pre-filter"),title="Pre-filter nFeature_RNA")
-vln_nCount_preFilter = ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(nCount_RNA))),fill=orig.ident))
-vln_nCount_preFilter = vln_nCount_preFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[2],labels=c("nCount"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=nCount_out,linetype="dashed")+labs(x=paste(sample,"Pre-filter"), y="Log2(nCount_RNA)")+
-	labs(fill = paste(sample,"Pre-filter"),title="Pre-filter nCount_RNA")
-vln_pctMito_preFilter=ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(percent.mt))),fill=orig.ident))
-vln_pctMito_preFilter=vln_pctMito_preFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[3],labels=c("Percent Mito"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=log2(mt_out),linetype="dashed")+labs(x=paste(sample,"Pre-filter"), y="Log2(Percent Mito)")+
-	labs(fill = paste(sample,"Pre-filter"),title="Pre-filter Percent Mito")
+# Pre filter violin plots
+vln_nFeature_preFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(nFeature_RNA))), fill = orig.ident))
+vln_nFeature_preFilter <- vln_nFeature_preFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[1], labels = c("nFeature")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = nFeature_out, linetype = "dashed") +
+  labs(x = paste(sample, "Pre-filter"), y = "Log2(nFeature_RNA)") +
+  labs(fill = paste(sample, "Pre-filter"), title = "Pre-filter nFeature_RNA")
+vln_nCount_preFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(nCount_RNA))), fill = orig.ident))
+vln_nCount_preFilter <- vln_nCount_preFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[2], labels = c("nCount")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = nCount_out, linetype = "dashed") + labs(x = paste(sample, "Pre-filter"), y = "Log2(nCount_RNA)") +
+  labs(fill = paste(sample, "Pre-filter"), title = "Pre-filter nCount_RNA")
+vln_pctMito_preFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(percent.mt))), fill = orig.ident))
+vln_pctMito_preFilter <- vln_pctMito_preFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[3], labels = c("Percent Mito")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = log2(mt_out), linetype = "dashed") + labs(x = paste(sample, "Pre-filter"), y = "Log2(Percent Mito)") +
+  labs(fill = paste(sample, "Pre-filter"), title = "Pre-filter Percent Mito")
 
 
-#Generate initial filter data
+# Generate initial filter data
 so <- subset(so, cells = colnames(so)[which(log2(so$nFeature_RNA) > nFeature_out & log2(so$nCount_RNA) > nFeature_out & so$percent.mt < mt_out)])
-postfilter_count=ncol(so)
+postfilter_count <- ncol(so)
 
-#post filter violin plots
-vln_nFeature_postFilter=ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(nFeature_RNA))),fill=orig.ident))
-vln_nFeature_postFilter = vln_nFeature_postFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[1],labels=c("nFeature"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=log2(nFeature_out),linetype="dashed")+labs(x=paste(sample,"Post-filter"), y="Log2(nFeature_RNA)")+
-	labs(fill = paste(sample,"Post-filter"),title="Post-filter nFeature_RNA")
-vln_nCount_postFilter = ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(nCount_RNA))),fill=orig.ident))
-vln_nCount_postFilter = vln_nCount_postFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[2],labels=c("nCount"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=nCount_out,linetype="dashed")+labs(x=paste(sample,"Post-filter"), y="Log2(nCount_RNA)")+
-	labs(fill = paste(sample,"Post-filter"),title="Post-filter nCount_RNA")
-vln_pctMito_postFilter=ggplot(so@meta.data,aes(x=orig.ident,y=log2(as.numeric(as.character(percent.mt))),fill=orig.ident))
-vln_pctMito_postFilter=vln_pctMito_postFilter+geom_violin(trim=F)+scale_fill_manual(values=hue_pal()(3)[3],labels=c("Percent Mito"))+
-	geom_boxplot(width=0.1,fill="white")+
-	scale_x_discrete(labels=NULL)+
-	theme_classic()+geom_hline(yintercept=log2(mt_out),linetype="dashed")+labs(x=paste(sample,"Post-filter"), y="Log2(Percent Mito)")+
-	labs(fill = paste(sample,"Post-filter"),title="Post-filter Percent Mito")
+# post filter violin plots
+vln_nFeature_postFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(nFeature_RNA))), fill = orig.ident))
+vln_nFeature_postFilter <- vln_nFeature_postFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[1], labels = c("nFeature")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = log2(nFeature_out), linetype = "dashed") + labs(x = paste(sample, "Post-filter"), y = "Log2(nFeature_RNA)") +
+  labs(fill = paste(sample, "Post-filter"), title = "Post-filter nFeature_RNA")
+vln_nCount_postFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(nCount_RNA))), fill = orig.ident))
+vln_nCount_postFilter <- vln_nCount_postFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[2], labels = c("nCount")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = nCount_out, linetype = "dashed") + labs(x = paste(sample, "Post-filter"), y = "Log2(nCount_RNA)") +
+  labs(fill = paste(sample, "Post-filter"), title = "Post-filter nCount_RNA")
+vln_pctMito_postFilter <- ggplot(so@meta.data, aes(x = orig.ident, y = log2(as.numeric(as.character(percent.mt))), fill = orig.ident))
+vln_pctMito_postFilter <- vln_pctMito_postFilter + geom_violin(trim = F) + scale_fill_manual(values = hue_pal()(3)[3], labels = c("Percent Mito")) +
+  geom_boxplot(width = 0.1, fill = "white") +
+  scale_x_discrete(labels = NULL) +
+  theme_classic() + geom_hline(yintercept = log2(mt_out), linetype = "dashed") + labs(x = paste(sample, "Post-filter"), y = "Log2(Percent Mito)") +
+  labs(fill = paste(sample, "Post-filter"), title = "Post-filter Percent Mito")
 
 
-if(species=="hg38"){
+if (species == "hg38") {
   s.genes <- cc.genes$s.genes
   g2m.genes <- cc.genes$g2m.genes
 }
 
-if(species=="mm10"){
+if (species == "mm10") {
   s.genes <- convertHumanGeneList(cc.genes$s.genes)
   g2m.genes <- convertHumanGeneList(cc.genes$g2m.genes)
 }
-so = NormalizeData(so)
-so = CellCycleScoring(so,s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
-so = seuratClustering(so)
+so <- NormalizeData(so)
+so <- CellCycleScoring(so, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+so <- seuratClustering(so)
 
 
-if(species == "hg38"){
-  so$HPCA_main <- runSingleR(so,celldex::HumanPrimaryCellAtlasData(),"label.main")
-  so$HPCA <-  runSingleR(so,celldex::HumanPrimaryCellAtlasData(),"label.fine")
-  so$BP_encode_main <-  runSingleR(so,celldex::BlueprintEncodeData(),"label.main")
-  so$BP_encode <-  runSingleR(so,celldex::BlueprintEncodeData(),"label.fine")
-  so$monaco_main <-  runSingleR(so,celldex::MonacoImmuneData(),"label.main")
-  so$monaco <-     runSingleR(so,celldex::MonacoImmuneData(),"label.fine")
-  so$immu_cell_exp_main <-  runSingleR(so,celldex::DatabaseImmuneCellExpressionData(),"label.main")
-  so$immu_cell_exp <- runSingleR(so,celldex::DatabaseImmuneCellExpressionData(),"label.fine")
-  so$annot = so[[paste0(annotDB,"_main")]]
+if (species == "hg38") {
+  so$HPCA_main <- runSingleR(so, celldex::HumanPrimaryCellAtlasData(), "label.main")
+  so$HPCA <- runSingleR(so, celldex::HumanPrimaryCellAtlasData(), "label.fine")
+  so$BP_encode_main <- runSingleR(so, celldex::BlueprintEncodeData(), "label.main")
+  so$BP_encode <- runSingleR(so, celldex::BlueprintEncodeData(), "label.fine")
+  so$monaco_main <- runSingleR(so, celldex::MonacoImmuneData(), "label.main")
+  so$monaco <- runSingleR(so, celldex::MonacoImmuneData(), "label.fine")
+  so$immu_cell_exp_main <- runSingleR(so, celldex::DatabaseImmuneCellExpressionData(), "label.main")
+  so$immu_cell_exp <- runSingleR(so, celldex::DatabaseImmuneCellExpressionData(), "label.fine")
+  so$annot <- so[[paste0(annotDB, "_main")]]
 }
 
-if(species == "mm10"){
-  so$immgen_main <-  runSingleR(so,celldex::ImmGenData(),"label.main")
-  so$immgen <- runSingleR(so,celldex::ImmGenData(),"label.fine")
-  so$mouseRNAseq_main <-  runSingleR(so,celldex::MouseRNAseqData(),"label.main")
-  so$mouseRNAseq <- runSingleR(so,celldex::MouseRNAseqData(),"label.fine")
-  so$annot = so$immgen_main
+if (species == "mm10") {
+  so$immgen_main <- runSingleR(so, celldex::ImmGenData(), "label.main")
+  so$immgen <- runSingleR(so, celldex::ImmGenData(), "label.fine")
+  so$mouseRNAseq_main <- runSingleR(so, celldex::MouseRNAseqData(), "label.main")
+  so$mouseRNAseq <- runSingleR(so, celldex::MouseRNAseqData(), "label.fine")
+  so$annot <- so$immgen_main
 }
 
 
-dfso = doublets(so)
-so$DF_hi.lo = dfso[[tail(names(dfso@meta.data),1)]]
+dfso <- doublets(so)
+so$DF_hi.lo <- dfso[[tail(names(dfso@meta.data), 1)]]
 
-##doublet DimPlot
-doubletCount = length(which(so$DF_hi.lo =="Doublet"))
-doubletPlot=DimPlot(so,group.by="DF_hi.lo")
+## doublet DimPlot
+doubletCount <- length(which(so$DF_hi.lo == "Doublet"))
+doubletPlot <- DimPlot(so, group.by = "DF_hi.lo")
 # print(doubletPlot+labs(title = paste0(sample," Doublets")))
 
-so=subset(so,cells=names(so$DF_hi.lo)[so$DF_hi.lo =="Singlet"])
+so <- subset(so, cells = names(so$DF_hi.lo)[so$DF_hi.lo == "Singlet"])
 
-saveRDS(so,outFile)
-
+saveRDS(so, outFile)
 ```
 
 ```{r qcReportImages, message = FALSE, warning = FALSE, echo=FALSE, include=FALSE}
-#Preliminary stats table : need to rework into sortable table
-png(paste0(imageDir,"/filterStats_",sample,".png"),height=3000,width=3000,res=500,units="px")
-par(mar=c(0,0,0,0))
-plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
-text(x=0.05, y=0.95, paste0("QC Metrics for ",sample,":"),
-     cex = 1.5, col = "black", family="serif", font=2, adj=0)
+# Preliminary stats table : need to rework into sortable table
+png(paste0(imageDir, "/filterStats_", sample, ".png"), height = 3000, width = 3000, res = 500, units = "px")
+par(mar = c(0, 0, 0, 0))
+plot(c(0, 1), c(0, 1), ann = F, bty = "n", type = "n", xaxt = "n", yaxt = "n")
+text(
+  x = 0.05, y = 0.95, paste0("QC Metrics for ", sample, ":"),
+  cex = 1.5, col = "black", family = "serif", font = 2, adj = 0
+)
 
-text(x=0.075, y=0.9, paste0("Cells before filtering: ", prefilter_count),
-     cex = 1.25, col = "black", family="serif", font=3, adj=0)
-text(x=0.075, y=0.865, paste0("Cells after filtering: ", ncol(so)),
-     cex = 1.25, col = "black", family="serif", font=3, adj=0)
+text(
+  x = 0.075, y = 0.9, paste0("Cells before filtering: ", prefilter_count),
+  cex = 1.25, col = "black", family = "serif", font = 3, adj = 0
+)
+text(
+  x = 0.075, y = 0.865, paste0("Cells after filtering: ", ncol(so)),
+  cex = 1.25, col = "black", family = "serif", font = 3, adj = 0
+)
 
-text(x=0.1, y=0.815,paste0("Cells removed for nFeature (number of genes): ",length(cellsToRemove.Feature)),
-		 cex = 1, col="dimgray",family="serif", font = 1, adj =0)
-text(x=0.1, y=0.785,paste0("Cells removed for nCount (number of reads): ",length(cellsToRemove.Count)),
-		 cex = 1, col="dimgray",family="serif", font = 1, adj =0)
-text(x=0.1, y=0.755,paste0("Cells removed for mitochondrial percentage: ",length(cellsToRemove.Mito)),
-		 cex = 1, col="dimgray",family="serif", font = 1, adj =0)
-text(x=0.1, y=0.725,paste0("Cells removed as doublets: ",doubletCount),
-		 cex = 1, col="dimgray",family="serif", font = 1, adj =0)
+text(
+  x = 0.1, y = 0.815, paste0("Cells removed for nFeature (number of genes): ", length(cellsToRemove.Feature)),
+  cex = 1, col = "dimgray", family = "serif", font = 1, adj = 0
+)
+text(
+  x = 0.1, y = 0.785, paste0("Cells removed for nCount (number of reads): ", length(cellsToRemove.Count)),
+  cex = 1, col = "dimgray", family = "serif", font = 1, adj = 0
+)
+text(
+  x = 0.1, y = 0.755, paste0("Cells removed for mitochondrial percentage: ", length(cellsToRemove.Mito)),
+  cex = 1, col = "dimgray", family = "serif", font = 1, adj = 0
+)
+text(
+  x = 0.1, y = 0.725, paste0("Cells removed as doublets: ", doubletCount),
+  cex = 1, col = "dimgray", family = "serif", font = 1, adj = 0
+)
 
-text(x=0.1, y=0.68, paste0("Number of principal components used: ",so@misc$npcs),
-		 cex = 1, col="dimgray",family="serif", font = 1, adj =0)
+text(
+  x = 0.1, y = 0.68, paste0("Number of principal components used: ", so@misc$npcs),
+  cex = 1, col = "dimgray", family = "serif", font = 1, adj = 0
+)
 
 dev.off()
 
-cellCyclePlot=DimPlot(so,group.by="Phase")+labs(title = paste0(sample," Cell Cycle"))
-singleRPlot = DimPlot(so,group.by="annot",label=T,repel=T) + NoLegend()+ labs(title = paste0(sample," annotations by ",annotDB)) + theme(plot.title = element_text(hjust=0.5))
+cellCyclePlot <- DimPlot(so, group.by = "Phase") + labs(title = paste0(sample, " Cell Cycle"))
+singleRPlot <- DimPlot(so, group.by = "annot", label = T, repel = T) + NoLegend() + labs(title = paste0(sample, " annotations by ", annotDB)) + theme(plot.title = element_text(hjust = 0.5))
 
 
-#cluster analysis
-coord = Embeddings(so,reduction='pca')[,1:30]#based on npcs above
-objDist = dist(coord, method = "euclidean")
-resSil_SLM = matrix(ncol =2, nrow = length(resolutionString))
-resSil_SLM[] = NA
-resSil_Leiden=resSil_SLM
+# cluster analysis
+coord <- Embeddings(so, reduction = "pca")[, 1:30] # based on npcs above
+objDist <- dist(coord, method = "euclidean")
+resSil_SLM <- matrix(ncol = 2, nrow = length(resolutionString))
+resSil_SLM[] <- NA
+resSil_Leiden <- resSil_SLM
 
-for (algorithm in c("SLM","Leiden")){
-  if(algorithm == "Leiden"){next}
-  for (i in 1:length(resolution)){
-
-    Idents(so) = paste0(algorithm,"_res_",resolution[i])
+for (algorithm in c("SLM", "Leiden")) {
+  if (algorithm == "Leiden") {
+    next
+  }
+  for (i in 1:length(resolution)) {
+    Idents(so) <- paste0(algorithm, "_res_", resolution[i])
     ## print cluster DimPlots
-    objName = paste("clusterPlot",algorithm,resolution[i],sep="_")
-    clusterPlot=DimPlot(so,label=T,repel=T)
-    assign(objName,clusterPlot)
+    objName <- paste("clusterPlot", algorithm, resolution[i], sep = "_")
+    clusterPlot <- DimPlot(so, label = T, repel = T)
+    assign(objName, clusterPlot)
     ## print cluster silhouette plot
-    clusters = Idents(so)
-    pdf(paste0(imageDir,"/silhouetteResolution_",algorithm,"_",resolution[i],".pdf"))
-    if(length(unique(clusters))==1){ #edge case of failed sample, only one cluster
-  		plot.new()
-  		text(0.5,0.5,"No silhouette available for single cluster samples")
-  		dev.off()
-  		next
-  	}
-    if(ncol(so) > 90000){
+    clusters <- Idents(so)
+    pdf(paste0(imageDir, "/silhouetteResolution_", algorithm, "_", resolution[i], ".pdf"))
+    if (length(unique(clusters)) == 1) { # edge case of failed sample, only one cluster
       plot.new()
-      text(0.5,0.5,"No silhouette available for datasets with more than 90,000 cells")
+      text(0.5, 0.5, "No silhouette available for single cluster samples")
       dev.off()
       next
     }
-    sil = silhouette(as.numeric(as.character(clusters)),dist = objDist)
-    palette=alpha(colour=hue_pal()(length(unique(Idents(so)))),alpha=0.7)
-    print(plot(sil, col=palette[as.factor(clusters[order(as.numeric(as.character(clusters)),decreasing=F)])],
-  	main=paste0("Silhouette plot of clustering resolution ", resolutionString[i]), lty=2,
-  	sub=paste("Average silhouette width:",format(round(mean(sil[,3]), 4), nsmall = 4))))
-
-  	abline(v=mean(sil[,3]), col="red4", lty=2)
-  	dev.off()
-
-    if(algorithm=="SLM"){
-      resSil_SLM[i,] = c(resolution[i], format(round(mean(sil[,3]), 4), nsmall = 4))
-    }else if(algorithm=="Leiden"){
-      resSil_Leiden[i,] = c(resolution[i], format(round(mean(sil[,3]), 4), nsmall = 4))
+    if (ncol(so) > 90000) {
+      plot.new()
+      text(0.5, 0.5, "No silhouette available for datasets with more than 90,000 cells")
+      dev.off()
+      next
     }
+    sil <- silhouette(as.numeric(as.character(clusters)), dist = objDist)
+    palette <- alpha(colour = hue_pal()(length(unique(Idents(so)))), alpha = 0.7)
+    print(plot(sil,
+      col = palette[as.factor(clusters[order(as.numeric(as.character(clusters)), decreasing = F)])],
+      main = paste0("Silhouette plot of clustering resolution ", resolutionString[i]), lty = 2,
+      sub = paste("Average silhouette width:", format(round(mean(sil[, 3]), 4), nsmall = 4))
+    ))
 
+    abline(v = mean(sil[, 3]), col = "red4", lty = 2)
+    dev.off()
+
+    if (algorithm == "SLM") {
+      resSil_SLM[i, ] <- c(resolution[i], format(round(mean(sil[, 3]), 4), nsmall = 4))
+    } else if (algorithm == "Leiden") {
+      resSil_Leiden[i, ] <- c(resolution[i], format(round(mean(sil[, 3]), 4), nsmall = 4))
+    }
   }
 }
-
 ```
 
 ### Cell Counts
 
 ```{r prelimStats, fig.width=15, fig.height=7}
-p1 = ggdraw() + draw_image(list.files(path=imageDir,pattern="filterStats_",full.names=T))
-p2 = ggdraw() + draw_image(list.files(path=imageDir,pattern="Venn.*png$",full.names=T),scale=1)
+p1 <- ggdraw() + draw_image(list.files(path = imageDir, pattern = "filterStats_", full.names = T))
+p2 <- ggdraw() + draw_image(list.files(path = imageDir, pattern = "Venn.*png$", full.names = T), scale = 1)
 
-plot_grid(p1, p2,ncol=2)
-##code for table of statistics here
-
+plot_grid(p1, p2, ncol = 2)
+## code for table of statistics here
 ```
 
 ### Cell Filtering Criteria {.tabset}
 
 #### nFeature (Number of genes)
 ```{r nFeature, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-p1 = ggdraw(vln_nFeature_preFilter)
-p2 = ggdraw(vln_nFeature_postFilter)
-plot_grid(p1,p2, ncol=2)
+p1 <- ggdraw(vln_nFeature_preFilter)
+p2 <- ggdraw(vln_nFeature_postFilter)
+plot_grid(p1, p2, ncol = 2)
 ```
 
 #### nCount (Number of reads)
 ```{r nCount, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-p1 = ggdraw(vln_nCount_preFilter)
-p2 = ggdraw(vln_nCount_postFilter)
-plot_grid(p1,p2, ncol=2)
+p1 <- ggdraw(vln_nCount_preFilter)
+p2 <- ggdraw(vln_nCount_postFilter)
+plot_grid(p1, p2, ncol = 2)
 ```
 
 #### Mitochondrial percentage
 ```{r mitoPct, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-p1 = ggdraw(vln_pctMito_preFilter)
-p2 = ggdraw(vln_pctMito_postFilter)
-plot_grid(p1,p2, ncol=2)
+p1 <- ggdraw(vln_pctMito_preFilter)
+p2 <- ggdraw(vln_pctMito_postFilter)
+plot_grid(p1, p2, ncol = 2)
 ```
 
 #### Doublets
@@ -420,7 +439,7 @@ plot_grid(p1)
 
 #### Cell Cycle
 ```{r CellCycle, fig.width=6, fig.height=6}
-p1<- ggdraw(cellCyclePlot)
+p1 <- ggdraw(cellCyclePlot)
 plot_grid(p1)
 ```
 
@@ -428,9 +447,9 @@ plot_grid(p1)
 ```{r SingleR, fig.width=6, fig.height=6}
 p1 <- ggdraw(singleRPlot)
 plot_grid(p1)
-datatable(as.data.frame.matrix(table(so$annot,so$Sample)),
-  colnames=c("nCells"))
-
+datatable(as.data.frame.matrix(table(so$annot, so$Sample)),
+  colnames = c("nCells")
+)
 ```
 
 ### Initial clustering {.tabset}
@@ -438,24 +457,28 @@ datatable(as.data.frame.matrix(table(so$annot,so$Sample)),
 #### Clustering with the SLM algorithm
 
 ```{r clusteringResults_SLM,fig.width=15,fig.height=9,echo=FALSE,results="asis"}
-for (res in resolutionString){
-  resMod = as.numeric(res)
-  fileName = paste0(imageDir,"/silhouetteResolution_SLM_",resMod,".pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(so, group.by=paste0("SLM_res_",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(so[[paste0("SLM_res_",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("SLM clustering at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resolutionString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(imageDir, "/silhouetteResolution_SLM_", resMod, ".pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(so,
+    group.by = paste0("SLM_res_", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(so[[paste0("SLM_res_", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("SLM clustering at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_SLM,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(as.numeric(resSil_SLM[,1]))-0.1,max(as.numeric(resSil_SLM[,1]))+0.1),
-  ylim=c(round(min(as.numeric(resSil_SLM[,2]))-0.005,digits=3),round(max(as.numeric(resSil_SLM[,2]))+0.005,digits=3)))
+plot(resSil_SLM,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(as.numeric(resSil_SLM[, 1])) - 0.1, max(as.numeric(resSil_SLM[, 1])) + 0.1),
+  ylim = c(round(min(as.numeric(resSil_SLM[, 2])) - 0.005, digits = 3), round(max(as.numeric(resSil_SLM[, 2])) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```
@@ -463,25 +486,29 @@ cat("  \n")
 <!--
 #### Clustering with the Leiden algorithm
 ```{r clusteringResults_Leiden,fig.width=15,fig.height=9,echo=FALSE,results="asis",eval=FALSE}
-for (res in resolutionString){
-  resMod = as.numeric(res)
-  fileName = paste0(imageDir,"/silhouetteResolution_Leiden_",resolution[i],".pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(so, group.by=paste0("Leiden_res_",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(so[[paste0("Leiden",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("Leiden clustering at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resolutionString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(imageDir, "/silhouetteResolution_Leiden_", resolution[i], ".pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(so,
+    group.by = paste0("Leiden_res_", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(so[[paste0("Leiden", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("Leiden clustering at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_Leiden,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_Leiden[,1])-0.1,max(resSil_Leiden[,1])+0.1),
-  ylim=c(round(min(resSil_Leiden[,2])-0.005,digits=3),round(max(resSil_Leiden[,2])+0.005,digits=3)))
+plot(resSil_Leiden,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_Leiden[, 1]) - 0.1, max(resSil_Leiden[, 1]) + 0.1),
+  ylim = c(round(min(resSil_Leiden[, 2]) - 0.005, digits = 3), round(max(resSil_Leiden[, 2]) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```

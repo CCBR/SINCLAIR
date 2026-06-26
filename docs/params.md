@@ -17,20 +17,20 @@ Define where the pipeline should find input data and save output data.
 
 | Parameter                     | Description                                                                             | Type      | Default                   | Required | Hidden |
 | ----------------------------- | --------------------------------------------------------------------------------------- | --------- | ------------------------- | -------- | ------ |
-| `species`                     |                                                                                         | `string`  | hg19                      |          |        |
+| `species`                     |                                                                                         | `string`  | hg38                      |          |        |
 | `vars_to_regress`             |                                                                                         | `string`  |                           |          |        |
-| `qc_filtering`                |                                                                                         | `string`  | manual                    |          |        |
+| `qc_filtering`                |                                                                                         | `string`  | miqc                      |          |        |
 | `nCount_RNA_max`              |                                                                                         | `integer` | 500000                    |          |        |
 | `nCount_RNA_min`              |                                                                                         | `integer` | 1000                      |          |        |
 | `nFeature_RNA_max`            |                                                                                         | `integer` | 5000                      |          |        |
 | `nFeature_RNA_min`            |                                                                                         | `integer` | 200                       |          |        |
 | `percent_mt_max`              |                                                                                         | `integer` | 10                        |          |        |
 | `percent_mt_min`              |                                                                                         | `integer` | 0                         |          |        |
-| `run_doublet_finder`          |                                                                                         | `string`  | Y                         |          |        |
+| `run_doublet_finder`          | (accepted: `Y`\|`N`)                                                                    | `string`  | Y                         |          |        |
 | `seurat_resolution`           |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
 | `npcs`                        |                                                                                         | `integer` | 50                        |          |        |
 | `resolution_list`             |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
-| `save_cellranger_extra_files` | Whether to save extra cellranger files (bam, bai, cloupe) in addition to h5 files       | `boolean` | False                     |          |        |
+| `save_cellranger_extra_files` | Whether to save extra cellranger files (bam, bai, cloupe) in addition to h5 files       | `boolean` |                           |          |        |
 | `genome_dir`                  | Path to the genome references. Overridden by platform configs, e.g. conf/biowulf.config | `string`  |                           |          |        |
 
 ## Institutional config options
@@ -48,34 +48,29 @@ Define where the pipeline should find input data and save output data.
 | ------------------ | ----------- | --------- | ------------------------------ | -------- | ------ |
 | `publish_dir_mode` |             | `string`  | link                           | True     |        |
 | `tracedir`         |             | `string`  | ${params.outdir}/pipeline_info | True     |        |
-| `max_memory`       |             | `string`  | 128.GB                         | True     |        |
+| `max_memory`       |             | `string`  | 1500.GB                        | True     |        |
 | `max_cpus`         |             | `integer` | 48                             | True     |        |
 | `max_time`         |             | `string`  | 240.h                          | True     |        |
 
-## Containers
-
-Docker/Singularity containers to use for processes. Must be available in dockerhub
-
-| Parameter         | Description | Type     | Default                             | Required | Hidden |
-| ----------------- | ----------- | -------- | ----------------------------------- | -------- | ------ |
-| `base_container`  |             | `string` | nciccbr/ccbr_ubuntu_base_20.04:v6.1 |          | True   |
-| `baser_container` |             | `string` | nciccbr/sinclair_baser:0.1.0        |          | True   |
-
 ## Hidden options
 
-| Parameter               | Description | Type     | Default                                                 | Required | Hidden |
-| ----------------------- | ----------- | -------- | ------------------------------------------------------- | -------- | ------ |
-| `Rlib_dir`              |             | `string` | /data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8 |          | True   |
-| `conda_path`            |             | `string` | /data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env      |          | True   |
-| `python_path`           |             | `string` | /data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env/bin  |          | True   |
-| `Rpkg`                  |             | `string` | ${projectDir}/conf/Rpack.config                         |          | True   |
-| `script_functions`      |             | `string` | ${projectDir}/bin/scRNA_functions.R                     |          | True   |
-| `script_preprocess`     |             | `string` | ${projectDir}/bin/seurat_preprocess.Rmd                 |          | True   |
-| `script_merge`          |             | `string` | ${projectDir}/bin/seurat_merge.Rmd                      |          | True   |
-| `script_bc_harmony`     |             | `string` | ${projectDir}/bin/batch_correction_harmony.Rmd          |          | True   |
-| `script_bc_rpca`        |             | `string` | ${projectDir}/bin/batch_correction_rpca.Rmd             |          | True   |
-| `script_bc_cca`         |             | `string` | ${projectDir}/bin/batch_correction_cca.Rmd              |          | True   |
-| `script_liger`          |             | `string` | ${projectDir}/bin/batch_correction_liger.Rmd            |          | True   |
-| `script_bc_integration` |             | `string` | ${projectDir}/bin/batch_correction_integration.Rmd      |          | True   |
+| Parameter               | Description | Type     | Default                                            | Required | Hidden |
+| ----------------------- | ----------- | -------- | -------------------------------------------------- | -------- | ------ |
+| `celldex_path`          |             | `string` | /data/CCBR_Pipeliner/db/PipeDB/celldex_cache       |          | True   |
+| `script_functions`      |             | `string` | ${projectDir}/bin/scRNA_functions.R                |          | True   |
+| `script_preprocess`     |             | `string` | ${projectDir}/bin/seurat_preprocess.Rmd            |          | True   |
+| `script_merge`          |             | `string` | ${projectDir}/bin/seurat_merge.Rmd                 |          | True   |
+| `script_bc_harmony`     |             | `string` | ${projectDir}/bin/batch_correction_harmony.Rmd     |          | True   |
+| `script_bc_rpca`        |             | `string` | ${projectDir}/bin/batch_correction_rpca.Rmd        |          | True   |
+| `script_bc_cca`         |             | `string` | ${projectDir}/bin/batch_correction_cca.Rmd         |          | True   |
+| `script_liger`          |             | `string` | ${projectDir}/bin/batch_correction_liger.Rmd       |          | True   |
+| `script_bc_integration` |             | `string` | ${projectDir}/bin/batch_correction_integration.Rmd |          | True   |
+
+## Containers
+
+| Parameter          | Description | Type     | Default                           | Required | Hidden |
+| ------------------ | ----------- | -------- | --------------------------------- | -------- | ------ |
+| `container_base`   |             | `string` | nciccbr/ccbr_ubuntu_base_20.04:v7 |          |        |
+| `container_seurat` |             | `string` | nciccbr/seurat_5:v1               |          |        |
 
 <!-- this doc is generated by: nf-core pipelines schema docs -->

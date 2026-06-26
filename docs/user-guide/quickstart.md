@@ -70,7 +70,7 @@ Matrix Market Exchange (.mtx) files can also be used to store sparse matrices of
 
 For example, a matrix containing 20000 genes across 5000 barcoded cells, with 10000 non-zero entries can be represented in a mtx file like:
 
-**Matrix dimensions:** 20000 rows × 5000 columns  
+**Matrix dimensions:** 20000 rows × 5000 columns
 **Non-zero entries:** 10000
 
 | Row | Column | Value |
@@ -207,8 +207,8 @@ Final results are saved in the `results` directory unless a different output dir
 - `cellranger_counts` contains the `.h5` counts files for each sample produced by the CellRanger software.
 - `samplesheets` contains the parsed sample sheets based on the manifest files, as interpreted by NextFlow and SINCLAIR.
 - `seurat` contains two subdirectories:
-    > - `merge` contains the combined sample Seurat `.rds` files for each set of contrasts prior to batch correction (which can otherwise be referred to as the "uncorrected" object).
-    > - `preprocess` contains the individual sample `.rds` files.
+  > - `merge` contains the combined sample Seurat `.rds` files for each set of contrasts prior to batch correction (which can otherwise be referred to as the "uncorrected" object).
+  > - `preprocess` contains the individual sample `.rds` files.
 
 When proceeding to downstream secondary analysis, such as [differential expression](./differentialExpression.md), please utilize the `batch_correction_integration.html` files to determine which batch correction method, or even lack thereof, best fits the data. The appropriate file can then be analyzed in R through the Seurat workflow.
 

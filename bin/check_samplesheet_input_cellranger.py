@@ -11,16 +11,10 @@
 
 from collections import defaultdict
 import os
-import sys
-import errno
 import argparse
-import gzip
-import re
 from os import listdir
 from os.path import isfile, join
-import json
 import pandas as pd
-import numpy as np
 
 
 def parse_args(args=None):
@@ -50,7 +44,7 @@ def print_error(error, context="Line", context_str="", sheet="samplesheet"):
 def check_files(fileid, context):
     # check filtered_feature_bc_matrix is within file
     sID = "filtered_feature_bc_matrix" in fileid
-    if sID == False:
+    if not sID:
         print_error(
             "Input file must include filtered_feature_bc_matrix in name:",
             context,
@@ -63,7 +57,7 @@ def check_files(fileid, context):
     if ext != ".h5":
         print_error(
             "Input dir must include filtered_feature_bc_matrix.h5 in name:",
-            f"masterID {sample_id}",
+            f"file ID {fileid}",
             f"extension: {ext}",
         )
 
@@ -217,7 +211,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # ###################################################################################################
     # # ALL: Check manifest
     # ###################################################################################################
-    contrast_mapping_dict = {}
+
     with open(file_in_c, "r") as fin:
         ## Check header
         MIN_COLS = 2
@@ -259,7 +253,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         # ALL: Create Contrast DF
         ###################################################################################################
         contrast_df = pd.read_csv(file_in_c, dtype=defaultdict(lambda: str))
-        cols_to_cat = contrast_df.columns.values.tolist()
+
         contrast_df["key"] = contrast_df.astype(str).agg("-".join, axis=1)
         contrast_df["key"] = contrast_df["key"].str.replace("-nan", "")
 

@@ -1,14 +1,16 @@
 ---
 title: "scRNA Notebook"
+author: "CCR Collaborative Bioinformatics Resource"
+date: "`r Sys.Date()`"
 output:
   html_document:
-    toc: yes
+    toc: true
 editor_options:
   chunk_output_type: console
 params:
   species: "hg19"
   sampleid: "WB_Lysis_1"
-  h5: "/data/sevillas2/scRNA_test/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  h5: "cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
   qc_filtering: "manual"
   nCount_RNA_max: 500000
   nCount_RNA_min: 1000
@@ -18,13 +20,23 @@ params:
   percent_mt_min: 0
   run_doublet_finder: "N"
   npcs: 30
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  scRNA_functions: "bin/scRNA_functions.R"
+  celldex_cache: NULL
   testing: "N"
 ---
 
-```{r, prep_args, message=FALSE}
+```{r setup, include = FALSE}
+options(rlang_trace_top_env = rlang::current_env())
+options(error = function() {
+  sink()
+  print(rlang::trace_back(bottom = sys.frame(-1)), simplify = "none")
+})
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+```{r deps}
 # set up params
 species <- params$species
 sampleid <- params$sampleid
@@ -39,59 +51,33 @@ percent_mt_max <- as.numeric(params$percent_mt_max)
 percent_mt_min <- as.numeric(params$percent_mt_min)
 run_doublet_finder <- params$run_doublet_finder # Y, N
 npcs_val <- as.numeric(params$npcs)
-
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
-scRNA_functions <- params$scRNA_functions
-
+celldex_cache <- params$celldex_cache
 testing <- params$testing
+
+source(params$scRNA_functions)
+library(AnnotationDbi)
+library(celldex)
+library(cluster)
+library(DoubletFinder)
+library(farver)
+library(flexmix)
+library(GenomeInfoDbData)
+library(ggplot2)
+library(hdf5r)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
+library(Routliers)
+library(RSQLite)
+library(R.utils)
+library(Seurat)
+library(SeuratWrappers)
+library(SingleCellExperiment)
+library(SingleR)
+library(tinytex)
 ```
 
-```{r, handle_pkg, message=FALSE}
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ", Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-.libPaths()
-
-# read in package info
-pkg_df <- read.csv(Rpkg_config)
-pkg_df <- subset(pkg_df, preprocess == "Y")
-pkg_df
-
-# for each package check installation, if present then load library
-for (rowid in rownames(pkg_df)) {
-  pkg <- pkg_df[rowid, "package"]
-  source <- pkg_df[rowid, "source"]
-  version <- pkg_df[rowid, "version"]
-  gh_name <- pkg_df[rowid, "gh_name"]
-
-  need_install <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(need_install) != 0) {
-    print(paste0("Installing: ", pkg))
-    if (source == "bc") BiocManager::install(pkg)
-    if (source == "cr") {
-      install.packages(pkg,
-        version = version, repos = "http://cran.us.r-project.org",
-        local = FALSE
-      )
-    }
-    if (source == "gh") remotes::install_github(gh_name, version = version, local = FALSE)
-  }
-
-  print(paste0("Loading: ", pkg))
-  invisible(lapply(pkg, library, character.only = TRUE))
-}
-
-# source functions
-source(scRNA_functions)
-
-# additional options
-# tinytex::install_tinytex(force = TRUE)
-```
-
-```{r, pre-processing, message=FALSE}
+```{r pre-processing}
 # read in h5 file
 rnaCounts <- Read10X_h5(h5)
 
@@ -116,7 +102,7 @@ FeatureScatter(so, feature1 = "nFeature_RNA", feature2 = "percent.mt")
 VlnPlot(so, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 ```
 
-```{r, QC, message=FALSE}
+```{r QC}
 # subset
 so_filt <- subset(so, subset = nFeature_RNA > 200)
 so_filt
@@ -132,7 +118,7 @@ so_qc <- RunMiQC(so_filt,
 # ggplot2::scale_color_gradient(low = "grey", high = "purple")
 ```
 
-```{r qc2, message=FALSE}
+```{r qc2}
 # define feature info
 nCount_out <- outliers_mad(so_qc$nCount_RNA, threshold = 3)$LL_CI_MAD
 nFeature_out <- outliers_mad(so_qc$nFeature_RNA, threshold = 3)$LL_CI_MAD
@@ -154,22 +140,59 @@ if (qc_filtering == "manual") {
       nCount_RNA > nCount_out &
       percent.mt < mt_out
   )
+} else {
+  stop(paste0("Invalid qc_filtering value: '", qc_filtering, "'. Must be one of: 'manual', 'miqc', 'mads'."))
 }
 so_qc_select
 
 VlnPlot(so_qc_select, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+```
+
+```{r process}
+MAIN_PROCESS_SO <- function(so_in, species, npcs_in) {
+  # assign genes depending on species input
+  if (species == "hg38" || species == "hg19") {
+    print("--proccesing human data")
+    s.genes <- cc.genes$s.genes
+    g2m.genes <- cc.genes$g2m.genes
+  } else if (species == "mm10") {
+    print("--proccesing mouse data")
+    s.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$s.genes)
+    g2m.genes <- CONVERT_TO_HUMAN_GENELIST(cc.genes$g2m.genes)
+  } else {
+    stop(paste0("Invalid species value: '", species, "'. Must be one of: 'hg38', 'hg19', 'mm10'."))
+  }
+
+  # process
+  so_1 <- NormalizeData(so_in,
+    normalization.method = "LogNormalize",
+    scale.factor = 10000,
+    assay = "RNA"
+  )
+  so_2 <- ScaleData(so_1, assay = "RNA")
+  so_3 <- CellCycleScoring(so_2,
+    s.features = s.genes,
+    g2m.features = g2m.genes,
+    set.ident = TRUE
+  )
+  so_4 <- SCTransform(so_3)
+  so_out <- SEURAT_CLUSTERING(so_4, npcs_in)
+  return(so_out)
+}
 
 # Process data
 so_processed <- MAIN_PROCESS_SO(so_qc_select, species, npcs_val)
+```
 
+```{r label}
 # Label data
-so_labeled <- MAIN_SINGLER(so_processed, species)
+so_labeled <- MAIN_SINGLER(so_processed, species, celldex_cache)
 
 # ID doublets
 so_doublet <- MAIN_DOUBLETS(so_labeled, run_doublet_finder)
 ```
 
-```{r, save, message=FALSE}
+```{r save}
 # clean final object
 so_output <- UpdateSeuratObject(so_doublet)
 so_output

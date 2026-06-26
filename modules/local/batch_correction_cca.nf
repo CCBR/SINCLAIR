@@ -2,16 +2,17 @@ process BATCH_CORRECT_CCA {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.container_seurat}"
+
     input:
     tuple val(gid), path(mergedObj)
     val(species)
     val(npcs)
     val(vars_to_regress)
     val(resolution_list)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
+    path(celldex_path)
 
     output:
     tuple val(gid), path ("*.rds")                 , emit:rds
@@ -27,10 +28,10 @@ process BATCH_CORRECT_CCA {
             npcs="$npcs",
             vars_to_regress="$vars_to_regress",
             resolution_list="$resolution_list",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
-            testing="N"),
+            testing="N",
+            celldex_cache="$celldex_path"
+        ),
         output_file = "${gid}_batch_correction_cca.html")'
     """
 

@@ -1,24 +1,33 @@
 ---
 title: "merge Notebook"
+author: "CCR Collaborative Bioinformatics Resource"
+date: "`r Sys.Date()`"
 output:
   html_document:
-    toc: yes
+    toc: true
+    code_folding: hide
+    downlit_highlight: true
 editor_options:
   chunk_output_type: console
 params:
   species: "hg38"
   npcs: 50
   vars_to_regress: NULL
-  samplesheet: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/assets/input_manifest_cellranger.csv"
-  rdsFiles: "/data/sevillas2/sinclair/dev/results/seurat/preprocess/sample2_seurat_preprocess.rds /data/sevillas2/sinclair/dev/results/seurat/preprocess/sample4_seurat_preprocess.rds"
+  samplesheet: "assets/input_manifest_cellranger.csv"
+  rdsFiles: "results/seurat/preprocess/sample2_seurat_preprocess.rds results/seurat/preprocess/sample4_seurat_preprocess.rds"
   gid: "group1-group2"
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  scRNA_functions: "bin/scRNA_functions.R"
   testing: "Y"
 ---
 
-```{r, prep_args,  message=FALSE, include=FALSE}
+```{r setup,  message=FALSE, include=FALSE}
+options(future.globals.maxSize = 1e12)
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+```{r deps}
 # set up params
 species <- params$species
 vars_to_regress <- params$vars_to_regress
@@ -31,64 +40,28 @@ rds_files <- strsplit(params$rdsFiles, " ")[[1]]
 gid <- params$gid
 samplesheet <- params$samplesheet
 npcs <- as.numeric(params$npcs)
-
-scRNA_functions <- params$scRNA_functions
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
 testing <- params$testing
 
 print("These variables are used:")
 print(paste0("species:", species))
 print(paste0("vars_to_regress_list:", vars_to_regress_list))
 print(paste0("gid:", gid))
+
+library(Seurat)
+library(SingleCellExperiment)
+library(SingleR)
+library(celldex)
+library(tinytex)
+library(stringr)
+library(scRNAseq)
+library(Orthology.eg.db)
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(Orthology.eg.db)
 ```
 
-```{r, handle_pkg, message=FALSE, include=FALSE}
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ", Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-message(.libPaths())
-
-# read in package info
-pkg_df <- read.csv(Rpkg_config)
-pkg_df <- subset(pkg_df, merge == "Y")
-pkg_df
-
-# for each package check installation, if present then load library
-for (rowid in rownames(pkg_df)) {
-  pkg <- pkg_df[rowid, "package"]
-  source <- pkg_df[rowid, "source"]
-  version <- pkg_df[rowid, "version"]
-  gh_name <- pkg_df[rowid, "gh_name"]
-
-  need_install <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(need_install) != 0) {
-    print(paste0("Installing: ", pkg))
-    if (source == "bc") BiocManager::install(pkg)
-    if (source == "cr") {
-      install.packages(pkg,
-        version = version, repos = "http://cran.us.r-project.org",
-        local = FALSE
-      )
-    }
-    if (source == "gh") remotes::install_github(gh_name, version = version, local = FALSE)
-  }
-
-  print(paste0("Loading: ", pkg))
-  invisible(lapply(pkg, library, character.only = TRUE))
-}
-
-# source functions
-source(scRNA_functions)
-
-# additional options
-# tinytex::install_tinytex(force = TRUE)
-options(future.globals.maxSize = 1e12)
-```
-
-```{r, processing, message=FALSE}
+```{r processing}
 # print group info
 print(paste0("This merged object includes groups: ", gid))
 
@@ -117,7 +90,7 @@ for (p in readObj) { # TODO use map instead of a for loop
 }
 ```
 
-```{r merge_objs, message=FALSE}
+```{r merge_objs}
 # create ref list
 reference.list <- combinedObj.list[unlist(readObj)]
 
@@ -132,7 +105,7 @@ combinedObj.integratedRNA <- merge(reference.list[[1]], reference.list[2:length(
 VariableFeatures(combinedObj.integratedRNA) <- selectFeatures
 ```
 
-```{r mergedObjDims, message=FALSE, echo=FALSE}
+```{r mergedObjDims }
 # vars.to.regress is NULL by default
 so_merged <- SCTransform(combinedObj.integratedRNA, vars.to.regress = vars_to_regress_list, assay = "RNA")
 
@@ -146,9 +119,11 @@ so_merged <- RunUMAP(so_merged,
   reduction = "pca", dims = 1:npcs, n.components = 2, n.neighbors = 30,
   min.dist = 0.3, learning.rate = 1, spread = 1
 )
+# rejoin RNA layers
+so_merged <- JoinLayers(so_merged, assay = "RNA")
 ```
 
-```{r}
+```{r save_rds}
 # save RDS files
 so_merged
 fpath <- paste0(gid, "_seurat_merged.rds")

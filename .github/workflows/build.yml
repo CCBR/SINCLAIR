@@ -14,14 +14,15 @@ on:
 env:
   NFT_DIFF: "pdiff"
   NFT_DIFF_ARGS: "--line-numbers --width 120 --expand-tabs=2"
-  NFT_VER: "0.9.1"
+  NFT_VER: "0.9.4"
   NFT_WORKDIR: "~"
   NXF_ANSI_LOG: false
   NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
   NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number ||
+    github.ref }}"
   cancel-in-progress: true
 
 permissions:
@@ -32,16 +33,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
+        nextflow-version: ["25.10.0", "latest-stable"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref ||
+            github.ref_name }}
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
       - name: Install nextflow
-        uses: nf-core/setup-nextflow@v1
+        uses: nf-core/setup-nextflow@v3
+        with:
+          version: "${{ matrix.nextflow-version }}"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools
@@ -49,7 +57,7 @@ jobs:
       - name: pytest
         if: always()
         run: |
-          pytest tests
+          python -m pytest
       - name: lint nxf
         if: always()
         run: |
@@ -57,6 +65,8 @@ jobs:
       - name: Stub run
         if: always()
         continue-on-error: true # temporarily set this until we create containers for every process
+        env:
+          NXF_DISABLE_DAG: "true"
         run: |
           mkdir tmp && cd tmp
           sinclair init
@@ -86,14 +96,16 @@ jobs:
         uses: adamrtalbot/detect-nf-test-changes@v0.0.6
         with:
           head: ${{ github.sha }}
-          base: ${{ github.base_ref }}
+          base: ${{ github.event.pull_request.base.sha ||
+            github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
       - name: print list of nf-test files
         run: |
           echo ${{ steps.list.outputs.components }}
 
   test:
-    name: "Run tests (${{ matrix.nf_test_files }} ${{ matrix.profile }} NF-${{ matrix.NXF_VER }})"
+    name: "Run tests (${{ matrix.nf_test_files }} ${{ matrix.profile }} NF-${{
+      matrix.NXF_VER }})"
     needs: [nf-test-changes]
     if: needs.nf-test-changes.outputs.nf_test_files != '[]'
     runs-on: ubuntu-latest
@@ -101,8 +113,8 @@ jobs:
       fail-fast: false
       matrix:
         NXF_VER:
-          - "24.04.2"
-          - "latest-everything"
+          - "25.10.0"
+          - "latest-stable"
         nf_test_files:
           ["${{ fromJson(needs.nf-test-changes.outputs.nf_test_files) }}"]
         profile:
@@ -117,9 +129,9 @@ jobs:
             profile: "singularity"
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
+        uses: actions/checkout@v5
       - name: Set up Nextflow
-        uses: nf-core/setup-nextflow@v2
+        uses: nf-core/setup-nextflow@v3
         with:
           version: "${{ matrix.NXF_VER }}"
       - name: Set up Apptainer
@@ -134,9 +146,9 @@ jobs:
         uses: nf-core/setup-nf-test@v1
         with:
           version: ${{ env.NFT_VER }}
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
           architecture: "x64"
       - name: Install pdiff to see diff between nf-test snapshots
         run: |
@@ -164,7 +176,8 @@ jobs:
         with:
           report_paths: test.xml
 
-  build-status: # https://github.com/orgs/community/discussions/4324#discussioncomment-3477871
+  build-status:
+    # https://github.com/orgs/community/discussions/4324#discussioncomment-3477871
     runs-on: ubuntu-latest
     needs: [build, test]
     if: always()

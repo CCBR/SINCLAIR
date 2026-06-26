@@ -1,26 +1,34 @@
 ---
 title: "Batch Correction: scvi"
-author: "Samantha Sevilla"
+author: "CCR Collaborative Bioinformatics Resource"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    code_folding: hide
+    downlit_highlight: true
 editor_options:
   chunk_output_type: console
 params:
   species: "hg38"
   gid: "group1_group2"
-  mergedObj: "/data/sevillas2/sinclair/dev/results/seurat/merge/group1-group2_seurat_merged.rds"
   resolution_list: "0.1,0.2,0.3,0.5,0.6,0.8,1"
   npcs: "50"
   vars_to_regress: NULL
-  python_path: "/data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env/bin"
-  conda_path: "/data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env"
-  Rlib_dir: "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8/"
-  Rpkg_config: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/conf/Rpack.config"
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
+  celldex_cache: NULL
   testing: "Y"
+  scRNA_functions: "bin/scRNA_functions.R"
 ---
 
-```{r, prep_args,  message=FALSE, echo=FALSE, include=FALSE}
+```{r setup,  include=FALSE}
+options(future.globals.maxSize = 96000 * 1024^2)
+knitr::opts_chunk$set(
+  message = FALSE,
+  echo = TRUE
+)
+```
+
+```{r deps}
 # set up params
 species <- params$species
 gid <- params$gid
@@ -33,40 +41,15 @@ vars_to_regress_list <- if (is.null(vars_to_regress) || toupper(vars_to_regress)
 } else {
   unlist(strsplit(gsub(" ", "", vars_to_regress), ","))
 }
-python_path <- params$python_path
-conda_path <- params$conda_path
-Rlib_dir <- params$Rlib_dir
-Rpkg_config <- params$Rpkg_config
-scRNA_functions <- params$scRNA_functions
+celldex_cache <- params$celldex_cache
+
+source(params$scRNA_functions)
+library(Seurat)
+library(SeuratWrappers)
+library(SingleR)
 ```
 
-```{r, handle_pkg, message=FALSE, echo=FALSE, include=FALSE}
-# source functions
-source(scRNA_functions)
-
-# set library dir, load this and remove any other dirs to avoid confusion
-# between personally created pkgs and the pipeline package
-## saving old path "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"
-print(paste0("Using the lib.loc location: ", Rlib_dir))
-assign(".lib.loc", Rlib_dir, envir = environment(.libPaths))
-.libPaths()
-
-# read in package info
-pkg_df <- read.csv(Rpkg_config)
-pkg_df <- subset(pkg_df, scvi == "Y")
-pkg_df
-
-# for each package check installation, if present then load library
-scRNA_handle_packages(pkg_df)
-reticulate::use_condaenv(conda_path)
-reticulate::use_python(python_path)
-
-# additional options
-# tinytex::install_tinytex(force = TRUE)
-options(future.globals.maxSize = 96000 * 1024^2)
-```
-
-```{r, processing,  message=FALSE, echo=FALSE, include=FALSE}
+```{r, processing}
 # read in merged object
 so <- readRDS(mergedObj)
 
@@ -79,12 +62,12 @@ so[["RNA"]] <- split(so[["RNA"]], f = so$Sample)
 so_corrected <- MAIN_BATCH_CORRECTION(so, npcs, species, resolution,
   method_in = "scVIIntegration", reduction_in = "integrated.scvi",
   v_list = vars_to_regress_list,
-  conda_env = conda_path
+  cache_path = celldex_cache
 )
 so_corrected
 ```
 
-```{r saveoutputs, message=FALSE, include=FALSE, echo=FALSE}
+```{r save-outputs}
 fpath <- paste0(gid, "_batch_correction_scvi.rds")
 saveRDS(so_corrected, fpath)
 ```

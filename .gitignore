@@ -39,6 +39,8 @@ log/
 .nf-test/
 results/
 output
+.singularity/
+submit_slurm.sh
 
 # tmp ignore testing fastqs
 test_dir/*/*/*.gz
@@ -65,3 +67,6 @@ tmp_images
 /build/
 *.egg-info/
 __pycache__/
+
+# slurm submission script
+submit_slurm.sh

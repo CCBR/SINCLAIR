@@ -4,14 +4,6 @@ Validate inputs
 =======================================================================================================
 */
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-//input on command line
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet/list not specified!' }
-
 /*
 =======================================================================================================
 Assign local subworkflows
@@ -33,6 +25,8 @@ RUN MAIN WORKFLOW
 */
 workflow ATAC_EXQC {
     main:
+        ch_input = file(params.input, checkIfExists: true)
+
         // Set output path to relative
         outdir_path = Channel.fromPath(params.outdir,relative:true)
 

@@ -2,14 +2,14 @@ process SEURAT_MERGE {
     tag "${gid}"
     label 'process_high'
 
+    container "${params.container_seurat}"
+
     input:
     tuple val(gid), path(rdsFiles)
     path(samplesheet)
     val(species)
     val(npcs)
     val(vars_to_regress)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
     path(scRNA_functions)
 
@@ -27,8 +27,6 @@ process SEURAT_MERGE {
             rdsFiles="$rdsFiles",
             gid="$gid",
             samplesheet="$samplesheet",
-            Rlib_dir="$Rlib_dir",
-            Rpkg_config="$Rpkg_config",
             scRNA_functions="$scRNA_functions",
             testing="N"),
         output_file = "${gid}_seurat_merged.html")'

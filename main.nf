@@ -33,8 +33,8 @@ workflow.onComplete {
     }
 }
 
-
 workflow {
+    main:
     LOG()
     validateParameters()
     PREPROCESS_EXQC ()

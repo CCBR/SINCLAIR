@@ -32,9 +32,9 @@ data = data[
 ]
 
 data["finalName"] = "Sample_" + data["Library ID"] + "_" + data["FCID"]
-data[
-    "fastq"
-] = "/data/khanlab/ref/scRNAseq/fastqs/"  # +  "Sample_" + data["Library ID"] + "_" + data["FCID"]
+data["fastq"] = (
+    "/data/khanlab/ref/scRNAseq/fastqs/"  # +  "Sample_" + data["Library ID"] + "_" + data["FCID"]
+)
 
 # fastqs = data["fastq"].str.split("/",expand=True).iloc[:,5]
 # print(fastqs)

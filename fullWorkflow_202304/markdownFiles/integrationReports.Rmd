@@ -21,15 +21,15 @@ geometry:
 ---
 
 ```{r setup, include=FALSE}
-path = dirname(params$imageDir)
+path <- dirname(params$imageDir)
 require("knitr")
 knitr::opts_chunk$set(
-	echo = FALSE,
-	message = FALSE,
-	warning = FALSE
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
 )
 knitr::opts_knit$set(
-  root.dir=path
+  root.dir = path
 )
 ```
 
@@ -38,7 +38,7 @@ knitr::opts_knit$set(
 .libPaths("/data/CCBR_Pipeliner/db/PipeDB/")
 .libPaths("/data/CCBR_Pipeliner/db/PipeDB/scrna4.2Rlibs")
 
-#Visualization libraries
+# Visualization libraries
 library(magick)
 library(ggplot2)
 library(cowplot)
@@ -46,7 +46,7 @@ library(scales)
 library(RColorBrewer)
 library(ggpubr)
 
-#Bioconductor dependencies
+# Bioconductor dependencies
 library(BiocGenerics)
 library(Biobase)
 library(farver)
@@ -59,13 +59,13 @@ library(reshape2)
 library(tools)
 library(stringr)
 
-#statistics libraries
+# statistics libraries
 # library(Routliers)
 library(VennDiagram)
 library(cluster)
 library(DT)
 
-#scRNASeq libraries
+# scRNASeq libraries
 library(Seurat)
 library(scRNAseq)
 library(SingleCellExperiment)
@@ -77,240 +77,245 @@ library(celldex)
 ```
 
 ```{r dataLoad, message=FALSE, warning=FALSE}
-fileTitle=paste("Contrast:",params$contrasts)
-mergedObjName = params$mergedObj
-integratedObjName=params$integratedObj
-rpcaObjName=params$rpcaObj
-harmonyGroupName=params$harmonyGroupObj
-harmonySampleName=params$harmonySampleObj
-resString = as.character(strsplit(gsub(",+",",",params$resolution),split=",")[[1]])
+fileTitle <- paste("Contrast:", params$contrasts)
+mergedObjName <- params$mergedObj
+integratedObjName <- params$integratedObj
+rpcaObjName <- params$rpcaObj
+harmonyGroupName <- params$harmonyGroupObj
+harmonySampleName <- params$harmonySampleObj
+resString <- as.character(strsplit(gsub(",+", ",", params$resolution), split = ",")[[1]])
 # print(mergedObjName)
 # print(integratedObjName)
-merged = readRDS(mergedObjName)
-integrated = readRDS(integratedObjName)
-rpca = readRDS(rpcaObjName)
-harmonyGroup = readRDS(harmonyGroupName)
-harmonySample = readRDS(harmonySampleName)
+merged <- readRDS(mergedObjName)
+integrated <- readRDS(integratedObjName)
+rpca <- readRDS(rpcaObjName)
+harmonyGroup <- readRDS(harmonyGroupName)
+harmonySample <- readRDS(harmonySampleName)
 
-objSelector = function(id){
-  obj = switch(
-    id,
-    "merged"=merged,
-    "integrated"=integrated,
-    "rpca"=rpca,
-    "harmonyGroup"=harmonyGroup,
-    "harmonySample"=harmonySample
+objSelector <- function(id) {
+  obj <- switch(id,
+    "merged" = merged,
+    "integrated" = integrated,
+    "rpca" = rpca,
+    "harmonyGroup" = harmonyGroup,
+    "harmonySample" = harmonySample
   )
-  return (obj)
+  return(obj)
 }
-nameSelector = function(id){
-  obj = switch(
-    id,
-    "merged"="Merged",
-    "integrated"="Integrated CCA",
-    "rpca"="RPCA",
-    "harmonyGroup"="Harmony (Group)",
-    "harmonySample"="Harmony (Sample)"
+nameSelector <- function(id) {
+  obj <- switch(id,
+    "merged" = "Merged",
+    "integrated" = "Integrated CCA",
+    "rpca" = "RPCA",
+    "harmonyGroup" = "Harmony (Group)",
+    "harmonySample" = "Harmony (Sample)"
   )
-  return (obj)
+  return(obj)
 }
-objList = c("merged","integrated","harmonyGroup","harmonySample","rpca")
-
+objList <- c("merged", "integrated", "harmonyGroup", "harmonySample", "rpca")
 ```
 
 ## `r fileTitle`
 
 ```{r message=FALSE, include=FALSE}
-#Notes:
-#Sections to include:
-#Side by side: samples
-#Side by side: groups (if necessary)
-#Annotation file
-#Side by side: main annotation
-#CITESeq ridge plots, if applicable
-#Clustering: tabs for pre-/post-batch correction
-#cluster + silhouette
+# Notes:
+# Sections to include:
+# Side by side: samples
+# Side by side: groups (if necessary)
+# Annotation file
+# Side by side: main annotation
+# CITESeq ridge plots, if applicable
+# Clustering: tabs for pre-/post-batch correction
+# cluster + silhouette
 ```
 
 ### Batch correction selection
 
 #### Samples before and after batch correction:
 ```{r sampleBatchCorrection, fig.width=15, fig.height=15}
-for(i in 1:length(objList)){
-  obj = objSelector(objList[i])
-  title = nameSelector(objList[i])
-  sampleImage = DimPlot(obj,group.by="Sample",pt.size = 0.01) + ggtitle("",paste0(title,", colored by Sample"))+
-    theme(legend.position="bottom",legend.text=element_text(size=12))+guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("s",i),value=sampleImage)
+for (i in 1:length(objList)) {
+  obj <- objSelector(objList[i])
+  title <- nameSelector(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "Sample", pt.size = 0.01) + ggtitle("", paste0(title, ", colored by Sample")) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12)) + guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
+  assign(x = paste0("s", i), value = sampleImage)
 }
-ggarrange(s1, s2, s3, s4,s5, ncol=2,nrow=3,common.legend=T,legend="bottom")
+ggarrange(s1, s2, s3, s4, s5, ncol = 2, nrow = 3, common.legend = T, legend = "bottom")
 ```
 
 ```{r groupBatchCorrection, fig.width=15, fig.height=15}
-for(i in 1:length(objList)){
-  obj = objSelector(objList[i])
-  title = nameSelector(objList[i])
-  sampleImage = DimPlot(obj,group.by="groups",raster=F, pt.size= 0.001) + ggtitle("",paste0(title,", colored by Groups"))+
-    theme(legend.position="bottom",legend.text=element_text(size=12))+guides(colour=guide_legend(override.aes = list(size=3)))
-  assign(x=paste0("g",i),value=sampleImage)
+for (i in 1:length(objList)) {
+  obj <- objSelector(objList[i])
+  title <- nameSelector(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "groups", raster = F, pt.size = 0.001) + ggtitle("", paste0(title, ", colored by Groups")) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12)) + guides(colour = guide_legend(override.aes = list(size = 3)))
+  assign(x = paste0("g", i), value = sampleImage)
 }
-ggarrange(g1, g2, g3, g4,g5, ncol=2,nrow=3,common.legend=T,legend="bottom")
+ggarrange(g1, g2, g3, g4, g5, ncol = 2, nrow = 3, common.legend = T, legend = "bottom")
 ```
 
-#### Cell type annotations before and after batch corrrection
+#### Cell type annotations before and after batch correction
 ```{r annotationBatchCorrection, fig.width=15, fig.height=15}
-for(i in 1:length(objList)){
-  obj = objSelector(objList[i])
-  title = nameSelector(objList[i])
-  sampleImage = DimPlot(obj,group.by="annot") + ggtitle("",paste0(title,", colored by primary annotation"))+
-    theme(legend.position="bottom",legend.text=element_text(size=12))+guides(colour=guide_legend(ncol=6,override.aes = list(size=3)))
-  assign(x=paste0("ct",i),value=sampleImage)
+for (i in 1:length(objList)) {
+  obj <- objSelector(objList[i])
+  title <- nameSelector(objList[i])
+  sampleImage <- DimPlot(obj, group.by = "annot") + ggtitle("", paste0(title, ", colored by primary annotation")) +
+    theme(legend.position = "bottom", legend.text = element_text(size = 12)) + guides(colour = guide_legend(ncol = 6, override.aes = list(size = 3)))
+  assign(x = paste0("ct", i), value = sampleImage)
 }
-ggarrange(ct1, ct2, ct3, ct4,ct5, ncol=2,nrow=3,common.legend=T,legend="bottom")
+ggarrange(ct1, ct2, ct3, ct4, ct5, ncol = 2, nrow = 3, common.legend = T, legend = "bottom")
 
-datatable(as.data.frame.matrix(cbind(table(merged$annot, merged$Sample),table(merged$annot))),
-  colnames=c(unique(merged$Sample),"Total"))
+datatable(as.data.frame.matrix(cbind(table(merged$annot, merged$Sample), table(merged$annot))),
+  colnames = c(unique(merged$Sample), "Total")
+)
 ```
 
 ### Clustering and silhouette scores before and after batch correction {.tabset}
 
 
 ```{r silhouetteImages,  echo=FALSE, include=FALSE}
-resSil_merged =matrix(ncol=2,nrow=length(resString))
-resSil_merged[]<-0
-resSil_integrated=resSil_merged
-resSil_rpca=resSil_merged
-resSil_harmonyGroup=resSil_merged
-resSil_harmonySample=resSil_merged
+resSil_merged <- matrix(ncol = 2, nrow = length(resString))
+resSil_merged[] <- 0
+resSil_integrated <- resSil_merged
+resSil_rpca <- resSil_merged
+resSil_harmonyGroup <- resSil_merged
+resSil_harmonySample <- resSil_merged
 
-i=1
-resString = as.character(strsplit(gsub(",+",",",params$resolution),split=",")[[1]])
+i <- 1
+resString <- as.character(strsplit(gsub(",+", ",", params$resolution), split = ",")[[1]])
 
 # Initial loop through integration methods
-for(k in 1:length(objList)){
-  obj = objSelector(objList[k])
+for (k in 1:length(objList)) {
+  obj <- objSelector(objList[k])
 
-  i=1
-  #Initialize silhouette  scores matrix
-  resSil_mat = matrix(ncol=2,nrow=length(resString))
-  resSil_mat[,1]<- as.numeric(resString)
-  resSil_mat[,2]<-0
+  i <- 1
+  # Initialize silhouette  scores matrix
+  resSil_mat <- matrix(ncol = 2, nrow = length(resString))
+  resSil_mat[, 1] <- as.numeric(resString)
+  resSil_mat[, 2] <- 0
 
-  #Skip all calculations for objects greater than 90k cells
-  if(ncol(obj)>90000){
-    for (res in resString){
-      fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_",objList[k],".pdf")
+  # Skip all calculations for objects greater than 90k cells
+  if (ncol(obj) > 90000) {
+    for (res in resString) {
+      fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_", objList[k], ".pdf")
       pdf(fileName)
       plot.new()
-      text(0.5,0.5,"No silhouette available for datasets with more than 90,000 cells")
+      text(0.5, 0.5, "No silhouette available for datasets with more than 90,000 cells")
       dev.off()
     }
-  }else{
-    if(length(grep("^harmony",objList[k]))){
-      dist = dist(Embeddings(obj,reduction='harmony')[,1:30])
-    }else{
-      dist = dist(Embeddings(obj,reduction='pca')[,1:30])
+  } else {
+    if (length(grep("^harmony", objList[k]))) {
+      dist <- dist(Embeddings(obj, reduction = "harmony")[, 1:30])
+    } else {
+      dist <- dist(Embeddings(obj, reduction = "pca")[, 1:30])
     }
 
-    for (res in resString){
-      #convert resolution to numeric value
-      resMod=as.numeric(res)
-      #SLM name ident determination, based on integration method
-      slm_name = grep("^SLM",colnames(obj@meta.data),value=T)
-      if (objList[k] %in% c("integrated","rpca")){
-        slm_name=gsub("\\..*","",grep("int",slm_name,value=T)[1])
-      }else{
-        slm_name=gsub("\\..*","",grep("SCT",slm_name,value=T)[1])
+    for (res in resString) {
+      # convert resolution to numeric value
+      resMod <- as.numeric(res)
+      # SLM name ident determination, based on integration method
+      slm_name <- grep("^SLM", colnames(obj@meta.data), value = T)
+      if (objList[k] %in% c("integrated", "rpca")) {
+        slm_name <- gsub("\\..*", "", grep("int", slm_name, value = T)[1])
+      } else {
+        slm_name <- gsub("\\..*", "", grep("SCT", slm_name, value = T)[1])
       }
-      #create file for resolution and integration method
-      fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_",objList[k],".pdf")
+      # create file for resolution and integration method
+      fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_", objList[k], ".pdf")
       pdf(fileName)
 
-      slm_name = paste0(slm_name,".",resMod)
+      slm_name <- paste0(slm_name, ".", resMod)
 
-      if ((slm_name %in% colnames(obj@meta.data))==FALSE){
-        obj = FindClusters(obj, algorithm =3, resolution = resMod)
-        obj[[slm_name]] = Idents(obj)
-        rdsFile = params[[grep(objList[k],names(params),value=T)]]
-        saveRDS(obj,file=rdsFile)
-        message(paste(objList[k],"object has been overwritten to include clustering at resolution",res))
+      if ((slm_name %in% colnames(obj@meta.data)) == FALSE) {
+        obj <- FindClusters(obj, algorithm = 3, resolution = resMod)
+        obj[[slm_name]] <- Idents(obj)
+        rdsFile <- params[[grep(objList[k], names(params), value = T)]]
+        saveRDS(obj, file = rdsFile)
+        message(paste(objList[k], "object has been overwritten to include clustering at resolution", res))
       }
 
-      #Calculate silhouette scores for resolutions with more than one cluster
-      Idents(obj)=slm_name
-      clusters=Idents(obj)
+      # Calculate silhouette scores for resolutions with more than one cluster
+      Idents(obj) <- slm_name
+      clusters <- Idents(obj)
 
-      if(length(unique(clusters))==1){ #edge case of failed sample, only one cluster
+      if (length(unique(clusters)) == 1) { # edge case of failed sample, only one cluster
         plot.new()
-        text(0.5,0.5,"No silhouette available for single cluster samples")
+        text(0.5, 0.5, "No silhouette available for single cluster samples")
         dev.off()
-      }else{
-        sil=silhouette(as.numeric(as.character(clusters)),dist=dist)
-        palette=alpha(colour=hue_pal()(length(unique(Idents(obj)))),alpha=0.7)
-        #Export silhouette plot to file
-        print(plot(sil, col=palette[as.factor(clusters[order(as.numeric(as.character(clusters)),decreasing=F)])],
-        main=paste0("Silhouette plot of clustering resolution ", res), lty=2,
-        sub=paste("Average silhouette width:",format(round(mean(sil[,3]), 4), nsmall = 4))))
-        abline(v=mean(sil[,3]), col="red4", lty=2)
+      } else {
+        sil <- silhouette(as.numeric(as.character(clusters)), dist = dist)
+        palette <- alpha(colour = hue_pal()(length(unique(Idents(obj)))), alpha = 0.7)
+        # Export silhouette plot to file
+        print(plot(sil,
+          col = palette[as.factor(clusters[order(as.numeric(as.character(clusters)), decreasing = F)])],
+          main = paste0("Silhouette plot of clustering resolution ", res), lty = 2,
+          sub = paste("Average silhouette width:", format(round(mean(sil[, 3]), 4), nsmall = 4))
+        ))
+        abline(v = mean(sil[, 3]), col = "red4", lty = 2)
         dev.off()
-        #Store resolution vs average silhouette score
-        resSil_mat[i,2] = format(round(mean(sil[,3]), 4), nsmall = 4)
+        # Store resolution vs average silhouette score
+        resSil_mat[i, 2] <- format(round(mean(sil[, 3]), 4), nsmall = 4)
       }
-      i=i+1
+      i <- i + 1
     }
   }
-  #Convert character matrix to numeric matrix and assign to appropriate variable
-  resSil_mat = matrix(as.numeric(resSil_mat),ncol=ncol(resSil_mat))
-  assign(x=paste0("resSil_",objList[k]),value=resSil_mat)
+  # Convert character matrix to numeric matrix and assign to appropriate variable
+  resSil_mat <- matrix(as.numeric(resSil_mat), ncol = ncol(resSil_mat))
+  assign(x = paste0("resSil_", objList[k]), value = resSil_mat)
 }
-
-
 ```
 
 #### Clustering without batch correction
 ```{r clusterResultsMerged,fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-
-for (res in resString){
-  resMod = as.numeric(res)
-  fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_merged.pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(merged, group.by=paste0("SLM_SCT_snn_res.",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(merged[[paste0("SLM_SCT_snn_res.",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("Merged clusters at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_merged.pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(merged,
+    group.by = paste0("SLM_SCT_snn_res.", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(merged[[paste0("SLM_SCT_snn_res.", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("Merged clusters at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_merged,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_merged[,1])-0.1,max(resSil_merged[,1])+0.1),
-  ylim=c(round(min(resSil_merged[,2])-0.005,digits=3),round(max(resSil_merged[,2])+0.005,digits=3)))
+plot(resSil_merged,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_merged[, 1]) - 0.1, max(resSil_merged[, 1]) + 0.1),
+  ylim = c(round(min(resSil_merged[, 2]) - 0.005, digits = 3), round(max(resSil_merged[, 2]) + 0.005, digits = 3))
+)
 cat("  \n")
 ```
 
 #### Clustering after batch correction with CCA Integration
 ```{r clusterIntegrated, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-for (res in resString){
-  resMod = as.numeric(res)
-  fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_integrated.pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(integrated, group.by=paste0("SLM_int_snn_res.",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(integrated[[paste0("SLM_int_snn_res.",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("Integrated clusters at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_integrated.pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(integrated,
+    group.by = paste0("SLM_int_snn_res.", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(integrated[[paste0("SLM_int_snn_res.", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("Integrated clusters at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_integrated,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_integrated[,1])-0.1,max(resSil_integrated[,1])+0.1),
-  ylim=c(round(min(resSil_integrated[,2])-0.005,digits=3),round(max(resSil_integrated[,2])+0.005,digits=3)))
+plot(resSil_integrated,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_integrated[, 1]) - 0.1, max(resSil_integrated[, 1]) + 0.1),
+  ylim = c(round(min(resSil_integrated[, 2]) - 0.005, digits = 3), round(max(resSil_integrated[, 2]) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```
@@ -318,24 +323,28 @@ cat("  \n")
 
 #### Clustering after batch correction with Harmony (by group ID)
 ```{r clusterHarmonyGroup, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-for (res in resString){
-  resMod = as.numeric(res)
-  fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_harmonyGroup.pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(harmonyGroup, group.by=paste0("SLM_SCT_snn_res.",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(harmonyGroup[[paste0("SLM_SCT_snn_res.",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("Harmony (group) clusters at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_harmonyGroup.pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(harmonyGroup,
+    group.by = paste0("SLM_SCT_snn_res.", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(harmonyGroup[[paste0("SLM_SCT_snn_res.", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("Harmony (group) clusters at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_harmonyGroup,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_harmonyGroup[,1])-0.1,max(resSil_harmonyGroup[,1])+0.1),
-  ylim=c(round(min(resSil_harmonyGroup[,2])-0.005,digits=3),round(max(resSil_harmonyGroup[,2])+0.005,digits=3)))
+plot(resSil_harmonyGroup,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_harmonyGroup[, 1]) - 0.1, max(resSil_harmonyGroup[, 1]) + 0.1),
+  ylim = c(round(min(resSil_harmonyGroup[, 2]) - 0.005, digits = 3), round(max(resSil_harmonyGroup[, 2]) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```
@@ -343,48 +352,56 @@ cat("  \n")
 
 #### Clustering after batch correction with Harmony (by sample ID)
 ```{r clusterHarmonySample, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-for (res in resString){
-  resMod = as.numeric(res)
-  fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_harmonySample.pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(harmonySample, group.by=paste0("SLM_SCT_snn_res.",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(harmonySample[[paste0("SLM_SCT_snn_res.",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("Harmony (sample) clusters at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_harmonySample.pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(harmonySample,
+    group.by = paste0("SLM_SCT_snn_res.", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(harmonySample[[paste0("SLM_SCT_snn_res.", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("Harmony (sample) clusters at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_harmonySample,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_harmonySample[,1])-0.1,max(resSil_harmonySample[,1])+0.1),
-  ylim=c(round(min(resSil_harmonyGroup[,2])-0.005,digits=3),round(max(resSil_harmonySample[,2])+0.005,digits=3)))
+plot(resSil_harmonySample,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_harmonySample[, 1]) - 0.1, max(resSil_harmonySample[, 1]) + 0.1),
+  ylim = c(round(min(resSil_harmonyGroup[, 2]) - 0.005, digits = 3), round(max(resSil_harmonySample[, 2]) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```
 
 #### Clustering after batch correction with Reciprocal PCA
 ```{r clusterRPCA, fig.width=15, fig.height=9, echo=FALSE, results="asis"}
-for (res in resString){
-  resMod = as.numeric(res)
-  fileName = paste0(params$imageDir,"/silhouetteResolution_",res,"_rpca.pdf")
-  cat("  \n##### Clustering at Resolution ", res," \n")
-  clusterPlot = DimPlot(rpca, group.by=paste0("SLM_int_snn_res.",resMod),label=T,repel=T,
-    order=sort(as.numeric(as.character(unique(rpca[[paste0("SLM_int_snn_res.",resMod)]][,1]))),decreasing=T))+
-    ggtitle(paste("RPCA clusters at resolution",res))
-  p1 = ggdraw(clusterPlot)
-  p2 = ggdraw()+draw_image(fileName)
-  print(plot_grid(p1,p2))
+for (res in resString) {
+  resMod <- as.numeric(res)
+  fileName <- paste0(params$imageDir, "/silhouetteResolution_", res, "_rpca.pdf")
+  cat("  \n##### Clustering at Resolution ", res, " \n")
+  clusterPlot <- DimPlot(rpca,
+    group.by = paste0("SLM_int_snn_res.", resMod), label = T, repel = T,
+    order = sort(as.numeric(as.character(unique(rpca[[paste0("SLM_int_snn_res.", resMod)]][, 1]))), decreasing = T)
+  ) +
+    ggtitle(paste("RPCA clusters at resolution", res))
+  p1 <- ggdraw(clusterPlot)
+  p2 <- ggdraw() + draw_image(fileName)
+  print(plot_grid(p1, p2))
   cat("  \n")
 }
 
 cat("  \n##### Average silhouette scores vs clustering resolution \n")
-plot(resSil_rpca,lty=3,pch=1,type="b",lwd=2,cex=3,
-  main="Average silhouette score vs clustering resolution",xlab = "Resolution", ylab="Average Silhouette Score",
-  xlim=c(min(resSil_rpca[,1])-0.1,max(resSil_rpca[,1])+0.1),
-  ylim=c(round(min(resSil_rpca[,2])-0.005,digits=3),round(max(resSil_rpca[,2])+0.005,digits=3)))
+plot(resSil_rpca,
+  lty = 3, pch = 1, type = "b", lwd = 2, cex = 3,
+  main = "Average silhouette score vs clustering resolution", xlab = "Resolution", ylab = "Average Silhouette Score",
+  xlim = c(min(resSil_rpca[, 1]) - 0.1, max(resSil_rpca[, 1]) + 0.1),
+  ylim = c(round(min(resSil_rpca[, 2]) - 0.005, digits = 3), round(max(resSil_rpca[, 2]) + 0.005, digits = 3))
+)
 
 cat("  \n")
 ```

@@ -56,14 +56,14 @@
       "properties": {
         "species": {
           "type": "string",
-          "default": "hg19"
+          "default": "hg38"
         },
         "vars_to_regress": {
           "type": "string"
         },
         "qc_filtering": {
           "type": "string",
-          "default": "manual"
+          "default": "miqc"
         },
         "nCount_RNA_max": {
           "type": "integer",
@@ -108,8 +108,7 @@
         },
         "save_cellranger_extra_files": {
           "type": "boolean",
-          "description": "Whether to save extra cellranger files (bam, bai, cloupe) in addition to h5 files",
-          "default": false
+          "description": "Whether to save extra cellranger files (bam, bai, cloupe) in addition to h5 files"
         },
         "genome_dir": {
           "type": "string",
@@ -156,7 +155,7 @@
         },
         "max_memory": {
           "type": "string",
-          "default": "128.GB"
+          "default": "1500.GB"
         },
         "max_cpus": {
           "type": "integer",
@@ -175,52 +174,16 @@
         "max_time"
       ]
     },
-    "containers": {
-      "title": "Containers",
-      "type": "object",
-      "description": "Docker/Singularity containers to use for processes. Must be available in dockerhub",
-      "default": "",
-      "properties": {
-        "base_container": {
-          "type": "string",
-          "default": "nciccbr/ccbr_ubuntu_base_20.04:v6.1",
-          "hidden": true
-        },
-        "baser_container": {
-          "type": "string",
-          "default": "nciccbr/sinclair_baser:0.1.0",
-          "hidden": true
-        }
-      }
-    },
     "hidden_options": {
       "title": "Hidden options",
       "type": "object",
       "description": "",
       "default": "",
       "properties": {
-        "Rlib_dir": {
+        "celldex_path": {
           "type": "string",
           "format": "directory-path",
-          "default": "/data/CCBR_Pipeliner/db/PipeDB/Rlibrary_4.3_scRNA_RHEL8",
-          "hidden": true
-        },
-        "conda_path": {
-          "type": "string",
-          "format": "directory-path",
-          "default": "/data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env",
-          "hidden": true
-        },
-        "python_path": {
-          "type": "string",
-          "format": "directory-path",
-          "default": "/data/CCBR_Pipeliner/db/PipeDB/Conda/envs/scvi-env/bin",
-          "hidden": true
-        },
-        "Rpkg": {
-          "type": "string",
-          "format": "file-path",
-          "default": "${projectDir}/conf/Rpack.config",
+          "default": "/data/CCBR_Pipeliner/db/PipeDB/celldex_cache",
           "hidden": true
         },
         "script_functions": {
@@ -272,6 +235,22 @@
           "hidden": true
         }
       }
+    },
+    "containers": {
+      "title": "Containers",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "container_base": {
+          "type": "string",
+          "default": "nciccbr/ccbr_ubuntu_base_20.04:v7"
+        },
+        "container_seurat": {
+          "type": "string",
+          "default": "nciccbr/seurat_5:v1"
+        }
+      }
     }
   },
   "allOf": [
@@ -288,10 +267,10 @@
       "$ref": "#/$defs/generic_options"
     },
     {
-      "$ref": "#/$defs/containers"
+      "$ref": "#/$defs/hidden_options"
     },
     {
-      "$ref": "#/$defs/hidden_options"
+      "$ref": "#/$defs/containers"
     }
   ]
 }

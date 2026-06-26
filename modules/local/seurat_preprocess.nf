@@ -2,8 +2,10 @@ process SEURAT_PREPROCESS {
     tag "${id}"
     label 'process_medium'
 
+    container "${params.container_seurat}"
+
     input:
-    tuple val(id), val(inDir), path(h5)
+    tuple val(id), val(inDir), path(h5), path(celldex_path)
     val(species)
     val(qc_filtering)
     val(nCount_RNA_max)
@@ -25,12 +27,14 @@ process SEURAT_PREPROCESS {
     script:
     def args = task.ext.args ?: ''
     """
-    Rscript -e 'rmarkdown::render("${rmd}",
+    #!/usr/bin/env Rscript --vanilla
+    rmarkdown::render("${rmd}",
         params=list(
             species="$species",
             sampleid="$id",
             h5="$h5",
             qc_filtering="$qc_filtering",
+
             nCount_RNA_max="$nCount_RNA_max",
             nCount_RNA_min="$nCount_RNA_min",
             nFeature_RNA_max="$nFeature_RNA_max",
@@ -38,8 +42,11 @@ process SEURAT_PREPROCESS {
             percent_mt_max="$percent_mt_max",
             percent_mt_min="$percent_mt_min",
             doublet_finder="$doublet_finder",
-            npcs="$npcs"),
+            npcs="$npcs",
+            celldex_cache="$celldex_path"
+            ),
         output_file = "${id}_seurat_preprocess.html")'
+
     """
 
     stub:
