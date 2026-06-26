@@ -37,7 +37,7 @@ nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
 nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
 percent_mt_max <- as.numeric(params$percent_mt_max)
 percent_mt_min <- as.numeric(params$percent_mt_min)
-doublet_finder <- params$doublet_finder 
+doublet_finder <- params$doublet_finder
 npcs_val <- as.numeric(params$npcs)
 ```
 
@@ -62,7 +62,7 @@ n_processed <- ncol(so_processed)
 
 ## Filtering Summary
 ```{r summary_table}
-#UPDATE TO INDICATE 
+#UPDATE TO INDICATE
 summary_table <- data.frame(
   Stage = c("Prefilter", "Processed"),
   Cells = c(n_prefilter, n_processed)
