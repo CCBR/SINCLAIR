@@ -14,14 +14,13 @@ process SEURAT_PREPROCESS {
     val(percent_mt_min)
     val(doublet_finder)
     val(npcs)
-    val(Rlib_dir)
-    path(Rpkg_config)
     path(rmd)
-    path(scRNA_functions)
 
     output:
-    tuple val(id), path ("*.rds")                 , emit:rds
-    tuple val(id), path ("*.html")                 , emit:logs
+    tuple val(id), path ("*.seurat_preprocess.rds"), emit:rds
+    tuple val(id), path ("*_seurat_prefilter.rds"), emit:prefilter
+    tuple val(id), path ("*seurat_preprocess.html"), emit:logs
+ //   tuple val(id), path ("*seurat_preprocess_report.html"), emit:report
 
     script:
     def args = task.ext.args ?: ''
@@ -45,6 +44,7 @@ process SEURAT_PREPROCESS {
 
     stub:
     """
+    touch ${id}_seurat_prefilter.rds
     touch ${id}_seurat_preprocess.rds
     touch ${id}_seurat_preprocess.html
     """

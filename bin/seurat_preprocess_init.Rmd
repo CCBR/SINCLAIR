@@ -1,5 +1,5 @@
 ---
-title: "scRNA Notebook"
+title: "scRNA Sample Processing"
 output:
   html_document:
     toc: yes
@@ -8,7 +8,7 @@ editor_options:
 params:
   species: "hg38"
   sampleid: "WB_Lysis_1"
-  h5: "/data/CCBR_Pipeliner/testdata/SINCLAIR/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  h5: "./tests/test_dir/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
   qc_filtering: "miQC"
   nCount_RNA_max: 500000
   nCount_RNA_min: 1000
@@ -18,7 +18,6 @@ params:
   percent_mt_min: 0
   doublet_finder: "DoubletFinder"
   npcs: 30
-  scRNA_functions: "/data/CCBR_Pipeliner/Pipelines/SINCLAIR/dev/bin/scRNA_functions.R"
 ---
 
 ```{r, prep_args, message=FALSE}

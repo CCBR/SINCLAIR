@@ -58,12 +58,13 @@ workflow GEX_EXQC {
             params.nFeature_RNA_min,
             params.percent_mt_max,
             params.percent_mt_min,
-            params.run_doublet_finder,
+            params.doublet_finder,
             params.npcs,
-            params.Rlib_dir,
-            params.Rpkg,
-            params.script_preprocess,
-            params.script_functions
+// commented for testing           params.Rlib_dir,
+// commented for testing            params.Rpkg,
+            params.script_preprocess //remember to add the comma after this for adding the preprocess report
+// commented for testing            params.script_functions
+// commented as spaceholder            params.script_preprocess_report
         )
 
         // creates metadata

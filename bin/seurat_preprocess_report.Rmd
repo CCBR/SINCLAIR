@@ -1,0 +1,104 @@
+---
+title: "scRNA Sample Report"
+output:
+  html_document:
+    toc: yes
+editor_options:
+  chunk_output_type: console
+params:
+  species: "hg38"
+  sampleid: "WB_Lysis_1"
+  h5: "./tests/test_dir/cellranger_counts/sample1/outs/filtered_feature_bc_matrix.h5"
+  preprocess_rds: "./tests/test_dir/process_sample/WB_Lysis_1_seurat_preprocess.rds"
+  prefilter_rds: "./tests/test_dir/process_sample/WB_Lysis_1_seurat_prefilter.rds"
+  qc_filtering: "miQC"
+  nCount_RNA_max: 500000
+  nCount_RNA_min: 1000
+  nFeature_RNA_max: 5000
+  nFeature_RNA_min: 200
+  percent_mt_max: 10
+  percent_mt_min: 0
+  doublet_finder: "DoubletFinder"
+  npcs: 30
+---
+
+
+```{r, prep_args, message=FALSE}
+# set up params
+species <- params$species
+sample_id <- params$sampleid
+h5 <- params$h5
+processed <- params$preprocess_rds
+prefilter <- params$prefilter_rds
+qc_filtering <- params$qc_filtering # manual, miqc, mads
+nCount_RNA_max <- as.numeric(params$nCount_RNA_max)
+nCount_RNA_min <- as.numeric(params$nCount_RNA_min)
+nFeature_RNA_max <- as.numeric(params$nFeature_RNA_max)
+nFeature_RNA_min <- as.numeric(params$nFeature_RNA_min)
+percent_mt_max <- as.numeric(params$percent_mt_max)
+percent_mt_min <- as.numeric(params$percent_mt_min)
+doublet_finder <- params$doublet_finder 
+npcs_val <- as.numeric(params$npcs)
+```
+
+```{r, handle_pkg, message=FALSE}
+if (!("SCOT" %in% installed.packages())){
+  devtools::install_github("CCBR/SCOT", ref = "main" )
+}
+library("SCOT")
+if (!requireNamespace("Seurat", quietly = TRUE)) {
+  install.packages("Seurat")
+}
+
+```
+
+```{r load_objects, echo=FALSE, message=FALSE, warning=FALSE}
+so_prefilter <- Seurat::readRDS(prefilter)
+so_processed <- Seurat::readRDS(processed)
+
+n_prefilter <- ncol(so_prefilter)
+n_processed <- ncol(so_processed)
+```
+
+## Filtering Summary
+```{r summary_table}
+#UPDATE TO INDICATE 
+summary_table <- data.frame(
+  Stage = c("Prefilter", "Processed"),
+  Cells = c(n_prefilter, n_processed)
+)
+
+knitr::kable(summary_table, caption = "Cell counts before and after filtering")
+```
+
+## UMAP of Filtered Cells
+
+## Violin plots for QC metrics
+
+```{r violin_plots, echo=FALSE, message=FALSE, warning=FALSE}
+qc_features <- c("nFeature_RNA", "nCount_RNA", "percent.mt")
+
+p_prefilter <- Seurat::VlnPlot(
+  so_prefilter,
+  features = qc_features,
+  ncol = 3,
+  pt.size = 0.1,
+  log = 10
+) + ggplot2::ggtitle("QC metrics before filtering")
+
+p_processed <- Seurat::VlnPlot(
+  so_processed,
+  features = qc_features,
+  ncol = 3,
+  pt.size = 0.1,
+  log = 10
+) + ggplot2::ggtitle("QC metrics after filtering")
+
+p_prefilter
+p_processed
+```
+
+
+```{r print_session}
+sessionInfo()
+```

@@ -89,10 +89,10 @@
           "type": "integer",
           "default": 0
         },
-        "run_doublet_finder": {
+        "doublet_finder": {
           "type": "string",
-          "default": "Y",
-          "enum": ["Y", "N"]
+          "default": "DoubletFinder",
+          "enum": ["scDblFinder", "union", "consensus"]
         },
         "seurat_resolution": {
           "type": "string",
