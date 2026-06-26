@@ -26,7 +26,7 @@ Define where the pipeline should find input data and save output data.
 | `nFeature_RNA_min`            |                                                                                         | `integer` | 200                       |          |        |
 | `percent_mt_max`              |                                                                                         | `integer` | 10                        |          |        |
 | `percent_mt_min`              |                                                                                         | `integer` | 0                         |          |        |
-| `run_doublet_finder`          | (accepted: `Y`\|`N`)                                                                    | `string`  | Y                         |          |        |
+| `doublet_finder`              | (accepted: `scDblFinder`\|`union`\|`consensus`)                                         | `string`  | DoubletFinder             |          |        |
 | `seurat_resolution`           |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
 | `npcs`                        |                                                                                         | `integer` | 50                        |          |        |
 | `resolution_list`             |                                                                                         | `string`  | 0.1,0.2,0.3,0.5,0.6,0.8,1 |          |        |
