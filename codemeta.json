@@ -59,10 +59,10 @@
     }
   ],
   "codeRepository": "https://github.com/CCBR/SINCLAIR",
-  "datePublished": "2026-05-12",
+  "datePublished": "2026-05-13",
   "identifier": "https://doi.org/10.5281/zenodo.15283503",
   "license": "https://spdx.org/licenses/MIT",
   "name": "SINCLAIR: SINgle CelL AnalysIs Resource",
   "url": "https://ccbr.github.io/SINCLAIR",
-  "version": "v0.3.7"
+  "version": "v0.4.0"
 }
