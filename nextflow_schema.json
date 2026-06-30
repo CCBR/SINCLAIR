@@ -92,7 +92,7 @@
         "doublet_finder": {
           "type": "string",
           "default": "DoubletFinder",
-          "enum": ["scDblFinder", "union", "consensus"]
+          "enum": ["DoubletFinder", "scDblFinder", "union", "consensus"]
         },
         "seurat_resolution": {
           "type": "string",
