@@ -19,8 +19,8 @@ process SEURAT_PREPROCESS {
     path(rmd)
 
     output:
-    tuple val(id), path ("*.seurat_preprocess.rds"), emit:rds
-    tuple val(id), path ("*_seurat_prefilter.rds"), emit:prefilter
+    tuple val(id), path ("*seurat_preprocess.rds"), emit:rds
+    tuple val(id), path ("*seurat_prefilter.rds"), emit:prefilter
     tuple val(id), path ("*seurat_preprocess.html"), emit:logs
  //   tuple val(id), path ("*seurat_preprocess_report.html"), emit:report
 
