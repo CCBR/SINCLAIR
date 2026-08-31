@@ -1,8 +1,9 @@
 import os.path
 import pathlib
-import pytest
 import subprocess
 import tempfile
+
+import pytest
 from ccbr_tools.shell import shell_run
 
 
@@ -93,12 +94,11 @@ def test_init_default():
 
 
 def test_run_no_init():
-    with pytest.raises(Exception):
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            output = shell_run(
-                f"./bin/sinclair run --output {tmp_dir} --mode local",
-                check=True,
-                capture_output=True,
-            )
-            assertions = ["Hint: you must initialize the output directory" in output]
-            assert all(assertions)
+    with pytest.raises(Exception), tempfile.TemporaryDirectory() as tmp_dir:
+        output = shell_run(
+            f"./bin/sinclair run --output {tmp_dir} --mode local",
+            check=True,
+            capture_output=True,
+        )
+        assertions = ["Hint: you must initialize the output directory" in output]
+        assert all(assertions)
