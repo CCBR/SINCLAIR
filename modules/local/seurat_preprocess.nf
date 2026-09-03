@@ -45,7 +45,7 @@ process SEURAT_PREPROCESS {
             npcs="$npcs",
             celldex_cache="$celldex_path"
             ),
-        output_file = "${id}_seurat_preprocess.html")'
+        output_file = "${id}_seurat_preprocess.html")
 
     """
 

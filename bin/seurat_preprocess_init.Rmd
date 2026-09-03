@@ -18,6 +18,7 @@ params:
   percent_mt_min: 0
   doublet_finder: "DoubletFinder"
   npcs: 30
+  celldex_cache: NULL
 ---
 
 ```{r, prep_args, message=FALSE}
@@ -35,6 +36,7 @@ percent_mt_max <- as.numeric(params$percent_mt_max)
 percent_mt_min <- as.numeric(params$percent_mt_min)
 doublet_finder <- params$doublet_finder
 npcs_val <- as.numeric(params$npcs)
+celldex_cache <- as.character(params$celldex_cache)
 ```
 
 ```{r, handle_pkg, message=FALSE}
@@ -83,6 +85,19 @@ so_filt <- SCOT::preprocess_sample(
 ```
 
 ```{r cell_type_annotation}
+#Fix for AnnotationHub cache
+cache_dir <- params$celldex_cache
+if (is.null(cache_dir) || is.na(cache_dir) || cache_dir == "NULL") {
+  cache_dir <- file.path(Sys.getenv("HOME"), ".cache", "R", "AnnotationHub")
+}
+
+dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
+
+AnnotationHub::setAnnotationHubOption(
+  "CACHE",
+  normalizePath(cache_dir, mustWork = FALSE)
+)
+options(timeout = 900)
 so_filt <- SCOT::run_singleR_db(so_in = so_filt, species = species)
 ```
 
