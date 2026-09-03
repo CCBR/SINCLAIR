@@ -145,7 +145,7 @@ def run(main_path, output, _mode, force_all, **kwargs):
             force_all=force_all,
             pipeline_name="SINCLAIR",
             hpc_modules="nextflow/25.10",
-            hpc_memory="2G",
+            hpc_memory="12G",
             **kwargs,
         )
     finally:
