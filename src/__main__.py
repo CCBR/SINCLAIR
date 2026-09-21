@@ -2,13 +2,13 @@
 Entrypoint for SINCLAIR CLI
 """
 
-import click
 import os
 import pathlib
 
-import ccbr_tools.pkg_util
-import ccbr_tools.pipeline.util
 import ccbr_tools.pipeline.nextflow
+import ccbr_tools.pipeline.util
+import ccbr_tools.pkg_util
+import click
 
 
 def repo_base(*paths):
@@ -50,7 +50,6 @@ def cli():
 
     For more options, run:
     sinclair [command] --help"""
-    pass
 
 
 help_msg_extra = """

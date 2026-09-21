@@ -9,12 +9,13 @@
 # Testing
 # bin/check_samplesheet.py assets/input_manifest.csv assets/contrast_manifest.csv /data/sevillas2/tmp/scRNA/project
 
-from collections import defaultdict
-import os
 import argparse
+import os
 import re
+from collections import defaultdict
 from os import listdir
 from os.path import isfile, join
+
 import pandas as pd
 
 
@@ -34,7 +35,7 @@ def parse_args(args=None):
 
 
 def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
+    error_str = f"ERROR: Please check samplesheet -> {error}"
     if context:
         error_str += f"\n{context.strip()}"
         if context_str:
@@ -131,7 +132,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             )
 
         ## Check sample entries
-        for line in fin.readlines():
+        for line in fin:
             lspl = [x.strip().strip('"') for x in line.strip().split(",")]
 
             # If it's a blank line, next
@@ -142,16 +143,14 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             # Check valid number of columns per row
             if len(lspl) < len(HEADER):
                 print_error(
-                    "Invalid number of columns (minimum = {})!".format(len(HEADER)),
+                    f"Invalid number of columns (minimum = {len(HEADER)})!",
                     "Line",
                     line,
                 )
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     "Line",
                     line,
                 )
@@ -272,9 +271,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     "Line",
                     line,
                 )
@@ -344,8 +341,9 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
         with open(fname, "a+") as fout:
             gid_list = keyid.split("-")
             for gid in gid_list:
-                for sid in group_sample_mapping_dict[gid]:
-                    fout.write(keyid + "," + sid + "\n")
+                fout.writelines(
+                    keyid + "," + sid + "\n" for sid in group_sample_mapping_dict[gid]
+                )
     fout.close()
 
 
