@@ -9,12 +9,13 @@
 # Testing
 # bin/check_samplesheet.py assets/input_manifest.csv assets/contrast_manifest.csv /data/sevillas2/tmp/scRNA/project
 
-from collections import defaultdict
-import os
 import argparse
+import os
 import re
+from collections import defaultdict
 from os import listdir
 from os.path import isfile, join
+
 import pandas as pd
 
 
@@ -34,7 +35,7 @@ def parse_args(args=None):
 
 
 def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
+    error_str = f"ERROR: Please check samplesheet -> {error}"
     if context:
         error_str += f"\n{context.strip()}"
         if context_str:
@@ -46,7 +47,7 @@ def check_files(fileid, context):
     # ensure that the file follows the structure
     ## [Sample Name]_S[Sample Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
     # create sample list - will check all samples are the same name
-    sample_list = list()
+    sample_list = []
     sampleID = re.split("_S.*", fileid)[0]
     sample_list.append(sampleID)
 
@@ -73,7 +74,7 @@ def check_files(fileid, context):
     read_type = postID.split("_")[1]
     if read_type not in accepted_read_type:
         print_error(
-            "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type,
+            f"Input file read_type must be R1/R2/I1/I2 but {read_type} was given",
             context,
         )
 
@@ -131,7 +132,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             )
 
         ## Check sample entries
-        for line in fin.readlines():
+        for line in fin:
             lspl = [x.strip().strip('"') for x in line.strip().split(",")]
 
             # If it's a blank line, next
@@ -142,16 +143,14 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             # Check valid number of columns per row
             if len(lspl) < len(HEADER):
                 print_error(
-                    "Invalid number of columns (minimum = {})!".format(len(HEADER)),
+                    f"Invalid number of columns (minimum = {len(HEADER)})!",
                     "Line",
                     line,
                 )
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     "Line",
                     line,
                 )
@@ -180,8 +179,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                     # ensure all samples names are the same
                     if len(set(sample_list)) != 1:
                         print_error(
-                            "All input files within given dir must have the same sample ID %s"
-                            % sample_list
+                            f"All input files within given dir must have the same sample ID {sample_list}"
                         )
 
                 ###################################################################################################
@@ -189,7 +187,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 ###################################################################################################
                 if DATATYPE == "atac":
                     # for every tile
-                    sample_list = list()
+                    sample_list = []
                     for fileid in onlyfiles:
                         # ensure that the file follows the structure
                         ## [Sample Name]_S1_L00[Lane Number]_[Read Type]_001.fastq.gz
@@ -200,8 +198,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                     # ensure all samples names are the same
                     if len(set(sample_list)) != 1:
                         print_error(
-                            "All input files within given dir must have the same sample ID %s"
-                            % sample_list
+                            f"All input files within given dir must have the same sample ID {sample_list}"
                         )
 
             ###################################################################################################
@@ -272,9 +269,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     "Line",
                     line,
                 )
@@ -312,7 +307,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_gex_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "gex_input_dir"]) + "\n")
+                        fout.write("sample,gex_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -323,7 +318,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_atac_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "atac_input_dir"]) + "\n")
+                        fout.write("sample,atac_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -338,14 +333,15 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # Write validated group samplesheets
     fname = file_out + "_groups_samplesheet.csv"
     with open(fname, "w") as fout:
-        fout.write(",".join(["keyid", "sampleid"]) + "\n")
+        fout.write("keyid,sampleid\n")
         fout.close()
     for keyid in contrast_df["key"]:
         with open(fname, "a+") as fout:
             gid_list = keyid.split("-")
             for gid in gid_list:
-                for sid in group_sample_mapping_dict[gid]:
-                    fout.write(keyid + "," + sid + "\n")
+                fout.writelines(
+                    keyid + "," + sid + "\n" for sid in group_sample_mapping_dict[gid]
+                )
     fout.close()
 
 

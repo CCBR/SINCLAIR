@@ -9,11 +9,12 @@
 # Testing
 # bin/check_samplesheet.py assets/input_manifest.csv assets/contrast_manifest.csv /data/sevillas2/tmp/scRNA/project
 
-from collections import defaultdict
-import os
 import argparse
+import os
+from collections import defaultdict
 from os import listdir
 from os.path import isfile, join
+
 import pandas as pd
 
 
@@ -121,16 +122,14 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             # Check valid number of columns per row
             if len(lspl) < len(HEADER):
                 print_error(
-                    "Invalid number of columns (minimum = {})!".format(len(HEADER)),
+                    f"Invalid number of columns (minimum = {len(HEADER)})!",
                     f"Line {line_num}",
                     line,
                 )
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     f"Line {line_num}",
                     line,
                 )
@@ -232,9 +231,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
             num_cols = len([x for x in lspl if x])
             if num_cols < MIN_COLS:
                 print_error(
-                    "Invalid number of populated columns (minimum = {})!".format(
-                        MIN_COLS
-                    ),
+                    f"Invalid number of populated columns (minimum = {MIN_COLS})!",
                     f"Line {line_num}",
                     line,
                     sheet="contrast sheet",
@@ -274,7 +271,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_gex_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "gex_input_dir"]) + "\n")
+                        fout.write("sample,gex_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -285,7 +282,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_atac_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "atac_input_dir"]) + "\n")
+                        fout.write("sample,atac_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -300,14 +297,15 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # Write validated group samplesheets
     fname = file_out + "_groups_samplesheet.csv"
     with open(fname, "w") as fout:
-        fout.write(",".join(["keyid", "sampleid"]) + "\n")
+        fout.write("keyid,sampleid\n")
         fout.close()
     for keyid in contrast_df["key"]:
         with open(fname, "a+") as fout:
             gid_list = keyid.split("-")
             for gid in gid_list:
-                for sid in group_sample_mapping_dict[gid]:
-                    fout.write(keyid + "," + sid + "\n")
+                fout.writelines(
+                    keyid + "," + sid + "\n" for sid in group_sample_mapping_dict[gid]
+                )
     fout.close()
 
 
