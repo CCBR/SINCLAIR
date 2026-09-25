@@ -70,3 +70,11 @@ __pycache__/
 
 # slurm submission script
 submit_slurm.sh
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+pixi.lock
+
+# IDEs
+/.vscode
