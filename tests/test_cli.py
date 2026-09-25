@@ -3,7 +3,6 @@ import pathlib
 import subprocess
 import tempfile
 
-import pytest
 from ccbr_tools.shell import shell_run
 
 
@@ -106,11 +105,12 @@ def test_init_default():
 
 
 def test_run_no_init():
-    with pytest.raises(FileNotFoundError), tempfile.TemporaryDirectory() as tmp_dir:
-        output = shell_run(
-            f"./bin/sinclair run --output {tmp_dir} --mode local",
-            check=True,
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        result = subprocess.run(
+            ["./bin/sinclair", "run", "--output", tmp_dir, "--mode", "local"],
+            check=False,
             capture_output=True,
+            text=True,
         )
-        assertions = ["Hint: you must initialize the output directory" in output]
-        assert all(assertions)
+    assert result.returncode != 0
+    assert "Hint: you must initialize the output directory" in result.stderr
