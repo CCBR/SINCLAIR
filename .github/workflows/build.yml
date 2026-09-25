@@ -93,7 +93,7 @@ jobs:
           fetch-depth: 0
       - name: List nf-test files
         id: list
-        uses: adamrtalbot/detect-nf-test-changes@v0.0.6
+        uses: adamrtalbot/detect-nf-test-changes@accef9459c66baa65dbca647615f088b98eefa9c
         with:
           head: ${{ github.sha }}
           base: ${{ github.event.pull_request.base.sha ||
@@ -113,8 +113,7 @@ jobs:
       fail-fast: false
       matrix:
         NXF_VER:
-          - "25.10.0"
-          - "latest-stable"
+          - "25.10.4"
         nf_test_files:
           ["${{ fromJson(needs.nf-test-changes.outputs.nf_test_files) }}"]
         profile:
