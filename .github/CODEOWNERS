@@ -1,5 +1,7 @@
 * @wong-nw
+/.gitattributes @kelly-sovacool
 /.github @kelly-sovacool
-/src @kelly-sovacool
 /.pre* @kelly-sovacool
 /main.py @kelly-sovacool
+/pyproject.toml @kelly-sovacool
+/src @kelly-sovacool
