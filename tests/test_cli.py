@@ -32,21 +32,33 @@ def extract_command_line(output):
 
 def test_help():
     output = subprocess.run(
-        "./bin/sinclair --help", capture_output=True, shell=True, text=True
+        "./bin/sinclair --help",
+        capture_output=True,
+        shell=True,
+        text=True,
+        check=False,
     ).stdout
     assert "Usage: sinclair [OPTIONS]" in output
 
 
 def test_version():
     output = subprocess.run(
-        "./bin/sinclair --version", capture_output=True, shell=True, text=True
+        "./bin/sinclair --version",
+        capture_output=True,
+        shell=True,
+        text=True,
+        check=False,
     ).stdout
     assert "sinclair, version" in output
 
 
 def test_citation():
     output = subprocess.run(
-        "./bin/sinclair --citation", capture_output=True, shell=True, text=True
+        "./bin/sinclair --citation",
+        capture_output=True,
+        shell=True,
+        text=True,
+        check=False,
     ).stdout
     assert "title = {SINCLAIR" in output
 
@@ -94,7 +106,7 @@ def test_init_default():
 
 
 def test_run_no_init():
-    with pytest.raises(Exception), tempfile.TemporaryDirectory() as tmp_dir:
+    with pytest.raises(FileNotFoundError), tempfile.TemporaryDirectory() as tmp_dir:
         output = shell_run(
             f"./bin/sinclair run --output {tmp_dir} --mode local",
             check=True,

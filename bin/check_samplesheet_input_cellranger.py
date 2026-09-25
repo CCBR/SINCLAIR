@@ -271,7 +271,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_gex_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "gex_input_dir"]) + "\n")
+                        fout.write("sample,gex_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -282,7 +282,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_atac_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "atac_input_dir"]) + "\n")
+                        fout.write("sample,atac_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -297,7 +297,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # Write validated group samplesheets
     fname = file_out + "_groups_samplesheet.csv"
     with open(fname, "w") as fout:
-        fout.write(",".join(["keyid", "sampleid"]) + "\n")
+        fout.write("keyid,sampleid\n")
         fout.close()
     for keyid in contrast_df["key"]:
         with open(fname, "a+") as fout:

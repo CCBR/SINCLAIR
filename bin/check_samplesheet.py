@@ -47,7 +47,7 @@ def check_files(fileid, context):
     # ensure that the file follows the structure
     ## [Sample Name]_S[Sample Number]_L00[Lane Number]_[Read Type]_001.fastq.gz
     # create sample list - will check all samples are the same name
-    sample_list = list()
+    sample_list = []
     sampleID = re.split("_S.*", fileid)[0]
     sample_list.append(sampleID)
 
@@ -74,7 +74,7 @@ def check_files(fileid, context):
     read_type = postID.split("_")[1]
     if read_type not in accepted_read_type:
         print_error(
-            "Input file read_type must be R1/R2/I1/I2 but %s was given" % read_type,
+            f"Input file read_type must be R1/R2/I1/I2 but {read_type} was given",
             context,
         )
 
@@ -179,8 +179,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                     # ensure all samples names are the same
                     if len(set(sample_list)) != 1:
                         print_error(
-                            "All input files within given dir must have the same sample ID %s"
-                            % sample_list
+                            f"All input files within given dir must have the same sample ID {sample_list}"
                         )
 
                 ###################################################################################################
@@ -188,7 +187,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 ###################################################################################################
                 if DATATYPE == "atac":
                     # for every tile
-                    sample_list = list()
+                    sample_list = []
                     for fileid in onlyfiles:
                         # ensure that the file follows the structure
                         ## [Sample Name]_S1_L00[Lane Number]_[Read Type]_001.fastq.gz
@@ -199,8 +198,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                     # ensure all samples names are the same
                     if len(set(sample_list)) != 1:
                         print_error(
-                            "All input files within given dir must have the same sample ID %s"
-                            % sample_list
+                            f"All input files within given dir must have the same sample ID {sample_list}"
                         )
 
             ###################################################################################################
@@ -309,7 +307,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_gex_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "gex_input_dir"]) + "\n")
+                        fout.write("sample,gex_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -320,7 +318,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
                 fname = file_out + "_atac_samplesheet.csv"
                 if not os.path.isfile(fname):
                     with open(fname, "w") as fout:
-                        fout.write(",".join(["sample", "atac_input_dir"]) + "\n")
+                        fout.write("sample,atac_input_dir\n")
                         fout.close()
                 with open(fname, "a+") as fout:
                     for idir in mani_mapping_dict[sample][dt]:
@@ -335,7 +333,7 @@ def check_samplesheet(file_in_s, file_in_c, file_out):
     # Write validated group samplesheets
     fname = file_out + "_groups_samplesheet.csv"
     with open(fname, "w") as fout:
-        fout.write(",".join(["keyid", "sampleid"]) + "\n")
+        fout.write("keyid,sampleid\n")
         fout.close()
     for keyid in contrast_df["key"]:
         with open(fname, "a+") as fout:
