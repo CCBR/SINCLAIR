@@ -68,6 +68,9 @@ so_filt <- SCOT::filter_cells(so_filt, method = qc_filtering)
 
 so_pre$keep <- "low_genes"
 so_pre$keep[colnames(so_filt)] <- so_filt$keep
+if (method == "miqc"){
+  so_pre$miQC.probability <- so_filt$miQC.probability
+}
 
 so_filt <- subset(so_filt, subset = keep == "keep")
 ```
@@ -109,6 +112,20 @@ if (doublet_finder %in% c("DoubletFinder", "scDblFinder","consensus","union")){
 }
 
 so_pre$keep[setdiff(colnames(so_pre)[which(so_pre$keep=="keep")], colnames(so_filt))] <- "doublet_removed"
+```
+
+```{r clustering}
+for (cluster_res in c(0.2, 0.4, 0.6, 0.8, 1.0, 1.2)){
+  so_filt <- Seurat::FindClusters(
+    so_filt, algorithm = 3, resolution = cluster_res
+  )
+}
+
+for (cluster_res in c(0.2, 0.4, 0.6, 0.8, 1.0, 1.2)){
+  so_filt <- Seurat::FindClusters(
+    so_filt, algorithm = 3, resolution = cluster_res
+  )
+}
 ```
 
 ```{r process_unfiltered}
