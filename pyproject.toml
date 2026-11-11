@@ -38,7 +38,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "pyyaml >= 6.0",
-    "ccbr_tools@git+https://github.com/CCBR/Tools@v0.4",
+    "ccbr_tools@git+https://github.com/CCBR/Tools@v0.7",
     "Click >= 8.1.3"
 ]
 
